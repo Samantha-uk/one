@@ -1,0 +1,40 @@
+{
+  "badges": [
+    {
+      "alt": "Custom badge",
+      "img": "https://img.shields.io/badge/custom-badge-f39f37.svg",
+      "url": "https://github.com/badges/shields"
+    }
+  ],
+  "blueprint": "blueprint.md",
+  "headingPrefix": {
+    "1": "",
+    "2": ""
+  },
+  "ids": {
+    "github": "samantha-uk",
+    "npm": "@samantha-uk"
+  },
+  "input": "blueprint.md",
+  "line": "grass",
+  "output": "README.md",
+  "package": "package.json",
+  "templates": [
+    {
+      "name": "dependencies",
+      "template": "![Libraries.io dependency status for latest release, scoped npm package](https://img.shields.io/librariesio/release/npm/{{ pkg.name }})"
+    },
+    {
+      "name": "version",
+      "template": "![npm (scoped)](https://img.shields.io/npm/v/{{ pkg.name }})"
+    },
+    {
+      "name": "vulnerabilities",
+      "template": "![Snyk Vulnerabilities for npm scoped package](https://img.shields.io/snyk/vulnerabilities/npm/{{ pkg.name }})"
+    },
+    {
+      "name": "licence",
+      "template": "![NPM](https://img.shields.io/npm/l/{{ pkg.name }})"
+    }
+  ]
+}

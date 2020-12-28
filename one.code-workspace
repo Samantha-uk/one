@@ -1,0 +1,113 @@
+{
+  "folders": [
+    {
+      "name": "✨ @samantha-uk/one",
+      "path": "."
+    },
+    {
+      "name": "⚙️ @samantha-uk/tools-builder",
+      "path": "tools/builder"
+    },
+    {
+      "name": "⚙️ @samantha-uk/utils-logger",
+      "path": "utils/logger"
+    },
+    {
+      "name": "⚙️ @samantha-uk/utils-plugin",
+      "path": "utils/plugin"
+    },
+    {
+      "name": "爵 @samantha-uk/zigzag-wc",
+      "path": "home-assistant/zigzag/components/zigzag-wc"
+    },
+    {
+      "name": "全 @samantha-uk/zigzag-data",
+      "path": "home-assistant/zigzag/modules/data"
+    },
+    {
+      "name": "全 @samantha-uk/zigzag-grapher",
+      "path": "home-assistant/zigzag/modules/grapher"
+    },
+    {
+      "name": "全 @samantha-uk/zigzag-layout",
+      "path": "home-assistant/zigzag/modules/layout"
+    },
+    {
+      "name": "全 @samantha-uk/zigzag-render",
+      "path": "home-assistant/zigzag/modules/render"
+    }
+  ],
+  "settings": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "eslint.alwaysShowStatus": true,
+    "eslint.debug": true,
+    "eslint.format.enable": true,
+    "eslint.nodePath": "/home/samantha/github/one/.yarn/sdks/",
+    "eslint.packageManager": "yarn",
+    "eslint.trace.server": "verbose",
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "json",
+      "jsonc"
+    ],
+    "eslint.workingDirectories": [
+      "/home/samantha/github/one"
+    ],
+    "files.associations": {
+      "**/*.json": "jsonc",
+    },
+    "files.autoSave": "onFocusChange",
+    "files.exclude": {
+      "**/.git": false
+    },
+    "monorepoWorkspace.folders.custom": [
+      {
+        "prefix": "爵 ",
+        "regex": "components"
+      },
+      {
+        "prefix": "全 ",
+        "regex": "modules"
+      },
+      {
+        "prefix": "⚙ ",
+        "regex": "tools"
+      }
+    ],
+    "peacock.remoteColor": "#832561",
+    "search.exclude": {
+      "**/bower_components": true,
+      "**/coverage": true,
+      "**/dist": true,
+      "**/lib": true,
+      "**/lib-amd": true,
+      "**/node_modules": true,
+      "**/temp": true,
+      "**/test/**/temp": false
+    },
+    "typescript.tsdk": "✨ @samantha-uk/one/.yarn/sdks/typescript/lib",
+    "workbench.colorCustomizations": {
+      "activityBar.activeBackground": "#ab307e",
+      "activityBar.activeBorder": "#25320e",
+      "activityBar.background": "#ab307e",
+      "activityBar.foreground": "#e7e7e7",
+      "activityBar.inactiveForeground": "#e7e7e799",
+      "activityBarBadge.background": "#25320e",
+      "activityBarBadge.foreground": "#e7e7e7",
+      "statusBar.background": "#832561",
+      "statusBar.foreground": "#e7e7e7",
+      "statusBarItem.hoverBackground": "#ab307e",
+      "titleBar.activeBackground": "#832561",
+      "titleBar.activeForeground": "#e7e7e7",
+      "titleBar.inactiveBackground": "#83256199",
+      "titleBar.inactiveForeground": "#e7e7e799"
+    }
+  }
+}
