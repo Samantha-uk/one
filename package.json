@@ -1,0 +1,91 @@
+{
+  "dependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@manypkg/cli": "^0.17.0",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "@yarnpkg/doctor": "^2.1.3",
+    "@yarnpkg/pnpify": "^2.4.0",
+    "eslint": "^7.16.0",
+    "eslint-config-airbnb-typescript": "^12.0.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-import-resolver-node": "^0.3.4",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.3",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-lit": "^1.3.0",
+    "eslint-plugin-prettier": "^3.3.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-unicorn": "^24.0.0",
+    "eslint-plugin-wc": "^1.2.0",
+    "gulp": "^4.0.2",
+    "node-dir": "^0.1.17",
+    "prettier": "^2.2.1",
+    "syncpack": "^5.6.10",
+    "tslib": "^2.0.3",
+    "typescript": "^4.1.3"
+  },
+  "devDependencies": {
+    "commitizen": "^4.2.2",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "next",
+    "lint-staged": "^10.5.3",
+    "pinst": "^2.1.1"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E  HUSKY_GIT_PARAMS",
+      "pre-commit": "echo git hooks are awesome!"
+    }
+  },
+  "name": "@samantha-uk/one",
+  "private": true,
+  "resolutions": {
+    "three": "0.123.0"
+  },
+  "scripts": {
+    "lint": "yarn eslint '*/**/*.{js,ts,tsx}'"
+  },
+  "syncpack": {
+    "dev": true,
+    "filter": ".",
+    "indent": "  ",
+    "peer": true,
+    "prod": true,
+    "semverRange": "",
+    "sortAz": [
+      "contributors",
+      "dependencies",
+      "devDependencies",
+      "keywords",
+      "peerDependencies",
+      "scripts"
+    ],
+    "sortFirst": [
+      "name",
+      "description",
+      "version",
+      "author"
+    ],
+    "source": [
+      "components/*/package.json",
+      "package.json",
+      "packages/*/package.json"
+    ],
+    "versionGroups": []
+  },
+  "workspaces": [
+    "home-assistant",
+    "tools",
+    "utils"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
