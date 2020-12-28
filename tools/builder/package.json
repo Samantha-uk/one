@@ -1,7 +1,12 @@
 {
+  "author": "Samantha-uk <samantha.uk.github@gmail.com>",
   "bin": {
     "builder": "./dist/builder.js"
   },
+  "bugs": {
+    "url": "http://github.com/Samantha-uk/one/issues"
+  },
+  "contributors": [],
   "dependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.1",
@@ -25,13 +30,28 @@
     "signale": "1.4.0",
     "tslib": "^2.0.3"
   },
+  "description": "Builder tool for the one monorepo.",
   "devDependencies": {
     "typescript": "^4.1.3"
   },
-  "name": "@samantha-uk/tools-builder",
-  "scripts": {
-    "build": "tsc"
+  "engines": {
+    "node": ">=14.0.0"
   },
+  "keywords": [],
+  "license": "MIT",
+  "maintainers": [
+    "Samantha-uk <samantha.uk.github@gmail.com>"
+  ],
+  "name": "@samantha-uk/tools-builder",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Samantha-uk/one.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json"
+  },
+  "title": "@samantha-uk/tools-builder",
   "type": "commonjs",
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
