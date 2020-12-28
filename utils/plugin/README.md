@@ -14,7 +14,7 @@
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#description)
 
 ## Description
-A basic plugin base class and loder for same.
+A basic plugin base class and loader for same.
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#usage)

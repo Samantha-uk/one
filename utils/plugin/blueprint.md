@@ -4,7 +4,7 @@
 {{ template:toc }}
 
 ## Description
-A basic plugin base class and loder for same.
+A basic plugin base class and loader for same.
 
 ## Usage
 Intended for internal usage only.
