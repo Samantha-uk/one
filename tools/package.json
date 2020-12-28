@@ -1,0 +1,7 @@
+{
+  "name": "@samantha-uk/tools",
+  "private": true,
+  "workspaces": [
+    "builder"
+  ]
+}

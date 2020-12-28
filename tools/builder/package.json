@@ -1,0 +1,37 @@
+{
+  "bin": {
+    "builder": "./dist/builder.js"
+  },
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
+    "@rollup/plugin-typescript": "portal:/home/samantha/github/plugins/packages/typescript",
+    "@samantha-uk/utils-logger": "workspace:*",
+    "@types/node": "~14.14.16",
+    "@types/rollup-plugin-progress": "^1.1.0",
+    "@types/signale": "^1.4.1",
+    "chalk": "^4.1.0",
+    "figures": "^3.2.0",
+    "meow": "^8.1.0",
+    "rollup": "^2.35.1",
+    "rollup-plugin-analyzer": "^4.0.0",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-banner": "^0.2.1",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-filesize": "^9.1.0",
+    "rollup-plugin-progress": "^1.1.2",
+    "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-sizes": "^1.0.3",
+    "signale": "1.4.0",
+    "tslib": "^2.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  },
+  "name": "@samantha-uk/tools-builder",
+  "scripts": {
+    "build": "tsc"
+  },
+  "type": "commonjs",
+  "version": "0.1.0"
+}
