@@ -1,0 +1,752 @@
+// NOTE Babylon uses a y-up left-handed convention.
+// +y is up, +x is to the right, -z is coming out of screen.
+import {
+  RenderDictionary,
+  RenderEngine,
+  RenderEvents,
+  RenderPerformanceInfo,
+  RenderPoint,
+  RenderWidget,
+} from "../render";
+
+import { Nullable } from "@babylonjs/core/types";
+import { Engine } from "@babylonjs/core/Engines/engine";
+import { SceneInstrumentation } from "@babylonjs/core/Instrumentation/sceneInstrumentation";
+import { Scene } from "@babylonjs/core/scene";
+import { Color3, Color4, Vector3 } from "@babylonjs/core/Maths/math";
+import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
+import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
+import { PointLight } from "@babylonjs/core/Lights/pointLight";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { GroundBuilder } from "@babylonjs/core/Meshes/Builders/groundBuilder";
+import { InstancedMesh } from "@babylonjs/core/Meshes/instancedMesh";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { CylinderBuilder } from "@babylonjs/core/Meshes/Builders/cylinderBuilder";
+import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
+import { PlaneBuilder } from "@babylonjs/core/Meshes/Builders/planeBuilder";
+import "@babylonjs/core/Meshes/meshBuilder";
+import "@babylonjs/core/Debug/debugLayer";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
+import {
+  PointerEventTypes,
+  PointerInfo,
+} from "@babylonjs/core/Events/pointerEvents";
+import { KeyboardEventTypes } from "@babylonjs/core/Events/keyboardEvents";
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { TextToCanvas } from "./text-to-canvas";
+
+export type RenderIconBabylon = {
+  color: Color3;
+  index: number;
+  instancedMesh: any;
+  matrix: any;
+};
+export type RenderLabelBabylon = { mesh: Mesh; t2c: TextToCanvas };
+export type RenderLinkBabylon = {
+  color: Color3;
+  from: Vector3;
+  index: number;
+  radius: number;
+  transform: TransformNode;
+  mesh: InstancedMesh;
+  to: Vector3;
+};
+export type RenderNodeBabylon = {
+  color: Color3;
+  index: number;
+  matrix: any;
+  mesh: InstancedMesh;
+  transform: TransformNode;
+};
+
+enum PointerState {
+  IDLE,
+  HOVERED,
+  GRABBED,
+  DRAGGING,
+}
+
+function renderPointToVector3(rp: RenderPoint): Vector3 {
+  return new Vector3().set(rp.x, -rp.z, rp.y);
+}
+
+function vector3ToRenderPoint(v3: Vector3): RenderPoint {
+  return { x: v3.x, y: -v3.z, z: v3.y } as RenderPoint;
+}
+
+export class RenderEngineBabylon implements RenderEngine {
+  private _camera: ArcRotateCamera;
+
+  private _canvas: HTMLCanvasElement;
+
+  private _colorCSS: RenderDictionary<string> = {};
+
+  private _engine: Engine;
+
+  private _fontCSS: RenderDictionary<string> = {};
+
+  private _ground: Mesh;
+
+  private _hasChanged = true;
+
+  private _height = 0;
+
+  private _linkRoot!: Mesh;
+
+  private _meshOfInterest: Nullable<AbstractMesh> | null | undefined;
+
+  private _nodeRoot!: Mesh;
+
+  private _pointerState: PointerState = PointerState.IDLE;
+
+  private _scene: Scene;
+
+  private _scenePerf: SceneInstrumentation;
+
+  private _sharedColor: RenderDictionary<Color3> = {};
+
+  private _sharedMaterial: RenderDictionary<StandardMaterial> = {};
+
+  private _startPosition: Nullable<Vector3> = null;
+
+  private _width = 0;
+
+  constructor() {
+    // Create the canvas for the render engine to use, add it to the parent element.
+    this._canvas = document.createElement(`canvas`) as HTMLCanvasElement;
+    this._canvas.style.position = `absolute`;
+    this._canvas.style.top = `0`;
+    this._canvas.style.width = `100%`;
+    this._canvas.style.height = `100%`;
+
+    // Create the render engine.
+    this._engine = new Engine(this._canvas, true, { stencil: true }, true);
+
+    // Create the scene.
+    this._scene = new Scene(this._engine);
+
+    this._ground = GroundBuilder.CreateGround(
+      `ground`,
+      {
+        width: Number.MAX_SAFE_INTEGER,
+        height: Number.MAX_SAFE_INTEGER,
+        updatable: false,
+      },
+      this._scene
+    );
+    const _groundMaterial = (this._ground.material = new StandardMaterial(
+      `groundMaterial`,
+      this._scene
+    ));
+    _groundMaterial.emissiveColor = _groundMaterial.diffuseColor = _groundMaterial.specularColor = _groundMaterial.ambientColor = this._sharedColor.background_primary_color;
+    this._ground.material = _groundMaterial;
+
+    // Lights...
+    const _light = new HemisphericLight(
+      `light1`,
+      new Vector3(0, 0, -1),
+      this._scene
+    );
+    _light.intensity = 0.6;
+
+    const _pointLight = new PointLight(
+      `pointLight`,
+      new Vector3(1, 300, -10),
+      this._scene
+    );
+    _pointLight.intensity = 0.6;
+
+    // Camera ...
+    this._camera = new ArcRotateCamera(
+      `Camera`,
+      -Math.PI / 2,
+      Math.PI / 3,
+      25,
+      Vector3.Zero(),
+      this._scene
+    );
+
+    this._camera.setTarget(Vector3.Zero());
+    this._camera.lowerBetaLimit = 0.1;
+    this._camera.upperBetaLimit = (Math.PI / 2) * 0.99;
+    this._camera.lowerRadiusLimit = 150;
+
+    // Action!
+    this._scene.onPointerObservable.add((pointerInfo) => {
+      switch (pointerInfo.type) {
+        case PointerEventTypes.POINTERDOWN:
+          // We're only interested if we are over a mesh.
+          if (
+            pointerInfo.pickInfo?.hit &&
+            pointerInfo.pickInfo.pickedMesh !== this._ground
+          ) {
+            this._pointerDownOnMesh(pointerInfo);
+          }
+          break;
+
+        case PointerEventTypes.POINTERUP:
+          this._pointerUp();
+          break;
+
+        case PointerEventTypes.POINTERMOVE:
+          switch (this._pointerState) {
+            case PointerState.DRAGGING:
+              this._pointerDrag(pointerInfo);
+              return;
+            case PointerState.GRABBED:
+            case PointerState.HOVERED:
+            case PointerState.IDLE:
+              this._pointerMove(pointerInfo);
+          }
+          break;
+
+        case PointerEventTypes.POINTERPICK:
+          if (
+            pointerInfo.pickInfo?.hit &&
+            pointerInfo.pickInfo.pickedMesh !== this._ground
+          ) {
+            pointerInfo.pickInfo.pickedMesh?.metadata.emit(
+              `clicked`,
+              pointerInfo.pickInfo.pickedMesh?.metadata
+            );
+          }
+          break;
+
+        case PointerEventTypes.POINTERTAP:
+          break;
+      }
+    });
+
+    this._scene.onKeyboardObservable.add((kbInfo) => {
+      switch (kbInfo.type) {
+        case KeyboardEventTypes.KEYDOWN:
+          break;
+
+        case KeyboardEventTypes.KEYUP:
+          break;
+      }
+    });
+
+    this._camera.wheelPrecision = 0.1;
+
+    this._camera.attachControl(this._canvas, false);
+
+    // Performance monitoring & debugging.
+    this._scenePerf = new SceneInstrumentation(this._scene);
+
+    /*     this._scene.debugLayer.show({
+      showExplorer: true,
+      overlay: true,
+      globalRoot: window.document.body,
+    }); */
+  }
+
+  public get hasChanged(): boolean {
+    return this._hasChanged;
+  }
+
+  public get viewSize(): RenderPoint {
+    return { x: this._width, y: this._height, z: 0 };
+  }
+
+  public set viewSize(newDimensions: RenderPoint) {
+    this._hasChanged = true;
+
+    this._width = newDimensions.x;
+    this._height = newDimensions.y;
+  }
+
+  public get viewPosition(): RenderPoint {
+    return { x: 0, y: 0, z: 0 };
+  }
+
+  public get viewZoom(): number {
+    return 1;
+  }
+
+  public set viewZoom(_scale: number) {
+    this._hasChanged = true;
+  }
+
+  public addLink(
+    from: RenderPoint,
+    to: RenderPoint,
+    radius: number,
+    color: string,
+    widget: RenderWidget
+  ): RenderLinkBabylon {
+    const RLnk: RenderLinkBabylon = {
+      color: this._sharedColor[color],
+      from: renderPointToVector3(from),
+      index: 0,
+      mesh: this._linkRoot.createInstance(`link`),
+      radius,
+      to: renderPointToVector3(to),
+      transform: new TransformNode(`linkTransform`, this._scene),
+    };
+
+    RLnk.mesh.isPickable = false;
+    RLnk.mesh.metadata = widget;
+    RLnk.mesh.parent = RLnk.transform;
+    RLnk.mesh.scaling = new Vector3(radius, radius, 1);
+    RLnk.mesh.translate(Vector3.Up(), radius * 2);
+
+    this.setLinkColor(RLnk, color);
+    this.setLinkPosition(RLnk, from, to);
+
+    return RLnk;
+  }
+
+  public addLinkLabel(
+    RLnk: RenderLinkBabylon,
+    offset: number,
+    rotation: number,
+    text: string,
+    size: number,
+    visible: boolean,
+    id: string[]
+  ): RenderLabelBabylon {
+    const RLbl: RenderLabelBabylon = this._addLabel(
+      rotation,
+      text,
+      size,
+      0,
+      visible,
+      id
+    );
+    RLbl.mesh.parent = RLnk.transform;
+    RLbl.mesh.billboardMode = Mesh.BILLBOARDMODE_ALL; // Always face the camera.
+
+    // offset.z = -offset.z; // Offset is in RenderPoint space.
+    this.setLinkLabelOffset(RLnk, RLbl, offset);
+    return RLbl;
+  }
+
+  public addNode(
+    position: RenderPoint,
+    _radius: number,
+    height: number,
+    color: string,
+    _id: string[],
+    widget: RenderWidget
+  ): RenderNodeBabylon {
+    const RNde: RenderNodeBabylon = {
+      color: this._sharedColor[color],
+      index: 0,
+      matrix: undefined,
+      mesh: this._nodeRoot.createInstance(`node`),
+      transform: new TransformNode(`nodeTransform`, this._scene),
+    };
+    RNde.mesh.metadata = widget;
+    RNde.mesh.isPickable = true;
+    RNde.mesh.parent = RNde.transform;
+    RNde.mesh.translate(Vector3.Up(), height / 2);
+    RNde.mesh.scaling.y = height;
+
+    this.setNodeColor(RNde, color);
+    this.setNodePosition(RNde, position);
+    return RNde;
+  }
+
+  public addNodeIcon(
+    _RNde: RenderNodeBabylon,
+    _offset: RenderPoint,
+    _radius: number,
+    _height: number,
+    _iconName: string,
+    color: string,
+    _visible: boolean,
+    _id: string[]
+  ): RenderIconBabylon {
+    // TODO Implement
+    const RIcn: RenderIconBabylon = {
+      color: this._sharedColor[color],
+      index: 0,
+      instancedMesh: undefined,
+      matrix: undefined,
+    };
+    return RIcn;
+  }
+
+  public addNodeLabel(
+    RNde: RenderNodeBabylon,
+    offset: RenderPoint,
+    rotation: number,
+    text: string,
+    size: number,
+    visible: boolean,
+    id: string[]
+  ): RenderLabelBabylon {
+    const RLbl: RenderLabelBabylon = this._addLabel(
+      rotation,
+      text,
+      size,
+      32,
+      visible,
+      id
+    );
+    RLbl.mesh.parent = RNde.transform;
+    RLbl.mesh.billboardMode = Mesh.BILLBOARDMODE_ALL; // Always face the camera.
+
+    offset.z = -offset.z; // Offset is in RenderPoint space.
+    this.setNodeLabelOffset(RNde, RLbl, offset);
+    return RLbl;
+  }
+
+  public init(
+    parentDivElement: HTMLDivElement,
+    font: RenderDictionary<string>,
+    color: RenderDictionary<string>
+  ): boolean {
+    this._fontCSS = font;
+    this._colorCSS = color;
+
+    this._createSharedResources();
+
+    this._scene.clearColor = Color4.FromHexString(
+      this._colorCSS.background_primary_color
+    );
+
+    parentDivElement.append(this._canvas);
+    return true;
+  }
+
+  public render(): RenderPerformanceInfo {
+    // this._axes.position.copy(this._cameraControls.getPosition());
+
+    this._scene.render();
+
+    return {
+      drawCalls: this._scenePerf.drawCallsCounter.current,
+    } as RenderPerformanceInfo;
+
+    // console.log("%c scene", "color:green", this._scene);
+  }
+
+  public setIconColor(_RIcn3: RenderIconBabylon, _color: string): void {}
+
+  public setIconVisibility(_RIcn3: RenderIconBabylon, _visible: boolean): void {
+    this._hasChanged = true;
+  }
+
+  public setLabelRotation(
+    _RLbl: RenderLabelBabylon,
+    _rotation: number
+  ): RenderLabelBabylon {
+    return _RLbl;
+  }
+
+  public setLabelText(_RLbl3: RenderLabelBabylon, _text: string): void {
+    this._hasChanged = true;
+  }
+
+  public setLabelVisibility(RLbl: RenderLabelBabylon, _visible: boolean): void {
+    this._hasChanged = true;
+    RLbl.mesh.isVisible = _visible;
+  }
+
+  public setLinkColor(RLnk: RenderLinkBabylon, color: string): void {
+    RLnk.color = this._sharedColor[color];
+    RLnk.mesh.instancedBuffers.color = RLnk.color;
+    this._hasChanged = true;
+  }
+
+  setLinkLabelOffset(
+    RLnk: RenderLinkBabylon,
+    RLbl: RenderLabelBabylon,
+    offset: number
+  ): void {
+    RLbl.mesh.position = RLnk.to
+      .subtract(RLnk.from)
+      .scale(offset)
+      .add(RLnk.from);
+    RLbl.mesh.translate(Vector3.Up(), RLnk.radius * 4);
+
+    this._hasChanged = true;
+  }
+
+  setLinkPosition(
+    RLnk: RenderLinkBabylon,
+    from: RenderPoint,
+    to: RenderPoint
+  ): void {
+    RLnk.from = renderPointToVector3(from);
+    RLnk.to = renderPointToVector3(to);
+    RLnk.mesh.position = Vector3.Center(RLnk.from, RLnk.to);
+    RLnk.mesh.lookAt(RLnk.to);
+    RLnk.mesh.scaling.z = Vector3.Distance(RLnk.from, RLnk.to);
+
+    this._hasChanged = true;
+  }
+
+  setNodeColor(RNde: RenderNodeBabylon, color: string): void {
+    RNde.color = this._sharedColor[color];
+    RNde.mesh.instancedBuffers.color = RNde.color;
+    this._hasChanged = true;
+  }
+
+  setNodeIconOffset(
+    _RNde3: RenderNodeBabylon,
+    RIcn3: RenderIconBabylon,
+    _offset: RenderPoint
+  ): RenderIconBabylon {
+    this._hasChanged = true;
+
+    return RIcn3;
+  }
+
+  setNodeLabelOffset(
+    _RNde: RenderNodeBabylon,
+    RLbl: RenderLabelBabylon,
+    offset: RenderPoint
+  ): RenderLabelBabylon {
+    RLbl.mesh.position = renderPointToVector3(offset);
+    this._hasChanged = true;
+    return RLbl;
+  }
+
+  setNodePosition(_RNde3: RenderNodeBabylon, _position: RenderPoint): void {
+    this._hasChanged = true;
+    _RNde3.transform.position = renderPointToVector3(_position);
+  }
+
+  toWorld(_mouse: RenderPoint): RenderPoint {
+    return { x: 0, y: 0, z: 0 };
+  }
+
+  zoomToFit(_x: number, _y: number, _zoom: number): void {}
+
+  private _addLabel(
+    _rotation: number,
+    text: string,
+    size: number,
+    width: number,
+    visible: boolean,
+    _id: string[]
+  ): RenderLabelBabylon {
+    const _t2c = new TextToCanvas(
+      text,
+      size,
+      this._colorCSS.text_primary_color
+    );
+    _t2c._wordWrap = width;
+    _t2c.backgroundColor = this._colorCSS.background_primary_color;
+    _t2c.borderColor = this._colorCSS.background_secondary_color;
+    _t2c.fontFace = this._fontCSS.family;
+    // this._canvas.parentElement?.appendChild(_t2c.canvas);
+    const _dt = new DynamicTexture(`lbl`, _t2c.canvas, this._scene, false);
+    // Important that this call to _t2c is made  AFTER creating the dynamic texture as the DT wipes the canvas.
+    _t2c.genCanvas();
+
+    const _mat = new StandardMaterial(`lblMaterial`, this._scene);
+    _mat.ambientTexture = _dt;
+    _mat.diffuseTexture = _dt;
+    _mat.emissiveTexture = _dt;
+    _mat.specularTexture = _dt;
+
+    _dt.update();
+
+    const RLbl: RenderLabelBabylon = {
+      mesh: PlaneBuilder.CreatePlane(
+        `lblPlane`,
+        { width: _t2c.canvas.width / 8, height: _t2c.canvas.height / 8 },
+        this._scene
+      ),
+      t2c: _t2c,
+    };
+
+    RLbl.mesh.isPickable = false;
+    RLbl.mesh.material = _mat;
+    RLbl.mesh.isVisible = visible;
+    return RLbl;
+  }
+
+  private _createSharedResources() {
+    // Colours
+    this._sharedColor.success_color = Color3.FromHexString(
+      this._colorCSS.success_color
+    );
+    this._sharedColor.warning_color = Color3.FromHexString(
+      this._colorCSS.warning_color
+    );
+    this._sharedColor.error_color = Color3.FromHexString(
+      this._colorCSS.error_color
+    );
+    this._sharedColor.state_icon_color = Color3.FromHexString(
+      this._colorCSS.state_icon_color
+    );
+    this._sharedColor.background_primary_color = Color3.FromHexString(
+      this._colorCSS.background_primary_color
+    );
+    this._sharedColor.background_secondary_color = Color3.FromHexString(
+      this._colorCSS.background_secondary_color
+    );
+
+    // Materials
+    this._sharedMaterial.success_color = new StandardMaterial(
+      `successMaterial`,
+      this._scene
+    );
+    this._sharedMaterial.success_color.diffuseColor = this._sharedMaterial.success_color.emissiveColor = this._sharedColor.success_color;
+
+    this._sharedMaterial.warning_color = new StandardMaterial(
+      `warningMaterial`,
+      this._scene
+    );
+    this._sharedMaterial.warning_color.diffuseColor = this._sharedMaterial.warning_color.emissiveColor = this._sharedColor.warning_color;
+
+    this._sharedMaterial.error_color = new StandardMaterial(
+      `errorMaterial`,
+      this._scene
+    );
+    this._sharedMaterial.error_color.diffuseColor = this._sharedMaterial.error_color.emissiveColor = this._sharedColor.error_color;
+
+    this._sharedMaterial.state_icon_color = new StandardMaterial(
+      `iconMaterial`,
+      this._scene
+    );
+    this._sharedMaterial.state_icon_color.diffuseColor = this._sharedMaterial.state_icon_color.emissiveColor = this._sharedColor.state_icon_color;
+
+    this._sharedMaterial.background_primary_color = new StandardMaterial(
+      `primaryBackgroundMaterial`,
+      this._scene
+    );
+    this._sharedMaterial.background_primary_color.diffuseColor = this._sharedMaterial.background_primary_color.emissiveColor = this._sharedColor.background_primary_color;
+
+    this._sharedMaterial.background_secondary_color = new StandardMaterial(
+      `secondaryBackgroundMaterial`,
+      this._scene
+    );
+    this._sharedMaterial.background_secondary_color.diffuseColor = this._sharedMaterial.background_secondary_color.emissiveColor = this._sharedColor.background_secondary_color;
+
+    this._sharedMaterial.white = new StandardMaterial(
+      `whiteMaterial`,
+      this._scene
+    );
+    this._sharedMaterial.white.diffuseColor = this._sharedMaterial.white.emissiveColor = Color3.White();
+
+    // Create the root mesh for link instancing.
+    this._linkRoot = CylinderBuilder.CreateCylinder(
+      `link`,
+      { height: 1, diameter: 1 },
+      this._scene
+    );
+    this._linkRoot.rotation.x = Math.PI / 2;
+    this._linkRoot.bakeCurrentTransformIntoVertices();
+    this._linkRoot.isVisible = false;
+    this._linkRoot.isPickable = false;
+    this._linkRoot.material = this._sharedMaterial.white;
+    this._linkRoot.registerInstancedBuffer(`color`, 4);
+    this._linkRoot.instancedBuffers.color = Color3.White();
+
+    // Create the root mesh for node instancing.
+    this._nodeRoot = CylinderBuilder.CreateCylinder(
+      `link`,
+      { height: 1, diameter: 1 },
+      this._scene
+    );
+    this._nodeRoot.rotation.y = Math.PI / 2;
+    this._nodeRoot.bakeCurrentTransformIntoVertices();
+    this._nodeRoot.isVisible = false;
+    this._nodeRoot.isPickable = false;
+    this._nodeRoot.material = this._sharedMaterial.white;
+    this._nodeRoot.registerInstancedBuffer(`color`, 4);
+    this._nodeRoot.instancedBuffers.color = Color3.White();
+  }
+
+  private _pointerDownOnMesh(_pointerInfo: PointerInfo): void {
+    this._meshOfInterest = _pointerInfo.pickInfo?.pickedMesh;
+    // Try to get the position over the ground.
+    this._startPosition = this._pointerGroundPosition();
+    if (this._startPosition) {
+      this._camera.detachControl(this._canvas);
+      this._pointerState = PointerState.DRAGGING;
+      this._canvas.style.cursor = `grabbed`;
+    }
+  }
+
+  private _pointerDrag(_pointerInfo: PointerInfo): void {
+    const _groundPosition = this._pointerGroundPosition();
+    if (!_groundPosition) {
+      return;
+    }
+    if (this._startPosition) {
+      this._meshOfInterest?.metadata.emit(
+        `moved`,
+        this._meshOfInterest?.metadata,
+        vector3ToRenderPoint(
+          this._meshOfInterest.position.add(
+            _groundPosition.subtract(this._startPosition)
+          )
+        )
+      );
+    }
+    this._startPosition = _groundPosition;
+  }
+
+  private _pointerGroundPosition(): Nullable<Vector3> {
+    const pickinfo = this._scene.pick(
+      this._scene.pointerX,
+      this._scene.pointerY,
+      (mesh) => mesh === this._ground
+    );
+    if (pickinfo?.hit) {
+      return pickinfo.pickedPoint;
+    }
+    return null;
+  }
+
+  private _pointerMove(_pointerInfo: PointerInfo): void {
+    // See if we are over a pickable mesh.
+    const _picked = this._scene.pick(
+      this._scene.pointerX,
+      this._scene.pointerY,
+      (mesh) => mesh !== this._ground && mesh.isPickable && mesh.isVisible
+    );
+    // Are we over a pickable mesh?
+    if (_picked?.hit) {
+      // Are we still over the previous mesh of interest, if so do nothing.
+      if (this._meshOfInterest === _picked.pickedMesh) {
+        return;
+      }
+      // We are over a new mesh of interest.
+      if (this._meshOfInterest) {
+        this._meshOfInterest.metadata.emit(
+          `hoverOff`,
+          this._meshOfInterest.metadata
+        );
+      }
+      this._pointerState = PointerState.HOVERED;
+      this._canvas.style.cursor = `grab`;
+
+      _picked.pickedMesh?.metadata.emit(
+        `hoverOn`,
+        _picked.pickedMesh?.metadata
+      );
+      this._meshOfInterest = _picked.pickedMesh;
+      return;
+    }
+    // We are over nothing of interest, if we were before we need to hoveroff.
+    if (this._meshOfInterest) {
+      this._pointerState = PointerState.IDLE;
+      this._canvas.style.cursor = `default`;
+      this._meshOfInterest.metadata.emit(
+        `hoverOff`,
+        this._meshOfInterest.metadata
+      );
+      this._meshOfInterest = undefined;
+    }
+  }
+
+  private _pointerUp(): void {
+    if (this._pointerState === PointerState.DRAGGING) {
+      this._camera.attachControl(this._canvas, false);
+      this._pointerState = PointerState.HOVERED;
+      this._canvas.style.cursor = `grab`;
+      this._meshOfInterest?.metadata.emit(
+        `hoverOn`,
+        this._meshOfInterest?.metadata
+      );
+    }
+  }
+}

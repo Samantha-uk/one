@@ -1,0 +1,36 @@
+{
+  "author": "Samantha-uk <samantha.uk.github@gmail.com>",
+  "dependencies": {
+    "@mdi/js": "^5.8.55",
+    "@samantha-uk/utils-plugin": "workspace:*",
+    "svg-path-bbox": "^0.2.0",
+    "svgpath": "^2.3.0",
+    "tslib": "^2.0.3"
+  },
+  "devDependencies": {
+    "@samantha-uk/tools-builder": "workspace:*",
+    "@types/gl-matrix": "^3.2.0"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "license": "MIT",
+  "main": "dist/zigzag-render.cjs.js",
+  "module": "dist/zigzag-render.esm.js",
+  "name": "@samantha-uk/zigzag-render",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "http://github.com/Samantha-uk/one",
+  "scripts": {
+    "build": "builder",
+    "lint": "builder --lint",
+    "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json",
+    "test": "builder --test",
+    "watch": "builder --watch"
+  },
+  "source": "src/zigzag-render.ts",
+  "types": "dist/zigzag-render.d.ts",
+  "version": "0.1.0"
+}
