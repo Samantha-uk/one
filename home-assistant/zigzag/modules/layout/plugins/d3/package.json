@@ -1,0 +1,34 @@
+{
+  "author": "Samantha-uk <samantha.uk.github@gmail.com>",
+  "dependencies": {
+    "@samantha-uk/zigzag-layout": "workspace:*",
+    "@types/d3-force": "^2.1.0",
+    "d3-force": "^2.1.1"
+  },
+  "description": "Zigzag D3 layout plugin",
+  "devDependencies": {
+    "@samantha-uk/tools-builder": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "license": "MIT",
+  "main": "dist/plugin-layout-d3.cjs.js",
+  "module": "dist/plugin-layout-d3.esm.js",
+  "name": "@samantha-uk/zigzag-plugin-layout-d3",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "http://github.com/Samantha-uk/one",
+  "scripts": {
+    "build": "builder",
+    "lint": "builder --lint",
+    "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json",
+    "test": "builder --test",
+    "watch": "builder --watch"
+  },
+  "source": "src/plugin-layout-d3.ts",
+  "types": "dist/plugin-layout-d3.d.ts",
+  "version": "0.1.0"
+}
