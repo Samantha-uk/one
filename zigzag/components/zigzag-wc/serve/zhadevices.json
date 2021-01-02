@@ -1,0 +1,900 @@
+{
+  "id": 85,
+  "type": "result",
+  "success": true,
+  "result": [
+    {
+      "ieee": "00:15:8d:00:02:c3:95:8a",
+      "nwk": 42452,
+      "manufacturer": "LUMI",
+      "model": "lumi.sensor_magnet.aq2",
+      "name": "LUMI lumi.sensor_magnet.aq2",
+      "quirk_applied": true,
+      "quirk_class": "zhaquirks.xiaomi.aqara.magnet_aq2.MagnetAQ2",
+      "manufacturer_code": 4151,
+      "power_source": "Battery or Unknown",
+      "lqi": null,
+      "rssi": null,
+      "last_seen": "2020-10-01T20:58:14",
+      "available": false,
+      "device_type": "EndDevice",
+      "signature": {
+        "node_descriptor": "NodeDescriptor(byte1=2, byte2=64, mac_capability_flags=128, manufacturer_code=4151, maximum_buffer_size=127, maximum_incoming_transfer_size=100, server_mask=0, maximum_outgoing_transfer_size=100, descriptor_capability_field=0)",
+        "endpoints": {
+          "1": {
+            "profile_id": 260,
+            "device_type": "0x5f01",
+            "in_clusters": ["0x0000", "0x0001", "0x0003", "0xffff"],
+            "out_clusters": ["0x0000", "0x0004", "0x0006", "0xffff"]
+          }
+        }
+      },
+      "entities": [
+        {
+          "entity_id": "binary_sensor.lumi_lumi_sensor_magnet_aq2_02c3958a_1_6",
+          "name": "LUMI lumi.sensor_magnet.aq2"
+        },
+        {
+          "entity_id": "sensor.lumi_lumi_sensor_magnet_aq2_02c3958a_1_1",
+          "name": "LUMI lumi.sensor_magnet.aq2"
+        }
+      ],
+      "neighbors": [],
+      "endpoint_names": [
+        {
+          "name": "undefined_0x5f01"
+        }
+      ],
+      "user_given_name": "Norah's Right Window Sensor",
+      "device_reg_id": "a1deae5ed979484f9447d40bc3c936ab",
+      "area_id": "70734ef6e71a4a52ad90d83de79c2a9e"
+    },
+    {
+      "ieee": "28:6d:97:00:01:04:36:03",
+      "nwk": 62161,
+      "manufacturer": "Samjin",
+      "model": "button",
+      "name": "Samjin button",
+      "quirk_applied": true,
+      "quirk_class": "zhaquirks.samjin.button.SamjinButton",
+      "manufacturer_code": 4673,
+      "power_source": "Battery or Unknown",
+      "lqi": 255,
+      "rssi": -50,
+      "last_seen": "2020-10-01T20:52:05",
+      "available": true,
+      "device_type": "EndDevice",
+      "signature": {
+        "node_descriptor": "NodeDescriptor(byte1=2, byte2=64, mac_capability_flags=128, manufacturer_code=4673, maximum_buffer_size=82, maximum_incoming_transfer_size=82, server_mask=11264, maximum_outgoing_transfer_size=82, descriptor_capability_field=0)",
+        "endpoints": {
+          "1": {
+            "profile_id": 260,
+            "device_type": "0x0402",
+            "in_clusters": [
+              "0x0000",
+              "0x0001",
+              "0x0003",
+              "0x0020",
+              "0x0402",
+              "0x0500",
+              "0x0b05"
+            ],
+            "out_clusters": ["0x0003", "0x0019"]
+          }
+        }
+      },
+      "entities": [
+        {
+          "entity_id": "binary_sensor.samjin_button_01043603_1_1280",
+          "name": "Samjin button"
+        },
+        {
+          "entity_id": "sensor.samjin_button_01043603_1_1",
+          "name": "Samjin button"
+        },
+        {
+          "entity_id": "sensor.samjin_button_01043603_1_1026",
+          "name": "Samjin button"
+        }
+      ],
+      "neighbors": [],
+      "endpoint_names": [
+        {
+          "name": "IAS_ZONE"
+        }
+      ],
+      "user_given_name": "Norah's Desk Light Button",
+      "device_reg_id": "63c13d172ba941fba8c2948eddc1c120",
+      "area_id": "70734ef6e71a4a52ad90d83de79c2a9e"
+    },
+    {
+      "ieee": "00:22:a3:00:00:09:ad:41",
+      "nwk": 57130,
+      "manufacturer": "King Of Fans,  Inc.",
+      "model": "HBUniversalCFRemote",
+      "name": "King Of Fans,  Inc. HBUniversalCFRemote",
+      "quirk_applied": true,
+      "quirk_class": "zhaquirks.kof.kof_mr101z.CeilingFan",
+      "manufacturer_code": 4098,
+      "power_source": "Mains",
+      "lqi": 255,
+      "rssi": -50,
+      "last_seen": "2020-10-01T20:56:46",
+      "available": true,
+      "device_type": "EndDevice",
+      "signature": {
+        "node_descriptor": "NodeDescriptor(byte1=2, byte2=64, mac_capability_flags=140, manufacturer_code=4098, maximum_buffer_size=82, maximum_incoming_transfer_size=82, server_mask=0, maximum_outgoing_transfer_size=82, descriptor_capability_field=0)",
+        "endpoints": {
+          "1": {
+            "profile_id": 260,
+            "device_type": "0x0101",
+            "in_clusters": [
+              "0x0000",
+              "0x0003",
+              "0x0004",
+              "0x0005",
+              "0x0006",
+              "0x0008",
+              "0x0202"
+            ],
+            "out_clusters": ["0x0003", "0x0019"]
+          }
+        }
+      },
+      "entities": [
+        {
+          "entity_id": "fan.king_of_fans_inc_hbuniversalcfremote_0009ad41_1_514",
+          "name": "King Of Fans,  Inc. HBUniversalCFRemote"
+        },
+        {
+          "entity_id": "light.king_of_fans_inc_hbuniversalcfremote_41ad0900_level_on_off",
+          "name": "King Of Fans,  Inc. HBUniversalCFRemote"
+        }
+      ],
+      "neighbors": [],
+      "endpoint_names": [
+        {
+          "name": "DIMMABLE_LIGHT"
+        }
+      ],
+      "user_given_name": null,
+      "device_reg_id": "bddd8922af5a41a18bef0e52c1faec7b",
+      "area_id": "2a79ce35b706412297c78753e4534794"
+    },
+    {
+      "ieee": "00:15:8d:00:02:3d:b3:c6",
+      "nwk": 47691,
+      "manufacturer": "LUMI",
+      "model": "lumi.sensor_switch.aq2",
+      "name": "LUMI lumi.sensor_switch.aq2",
+      "quirk_applied": true,
+      "quirk_class": "zhaquirks.xiaomi.aqara.switch_aq2.SwitchAQ2",
+      "manufacturer_code": 4151,
+      "power_source": "Battery or Unknown",
+      "lqi": null,
+      "rssi": null,
+      "last_seen": "2020-10-01T20:58:14",
+      "available": false,
+      "device_type": "EndDevice",
+      "signature": {
+        "node_descriptor": "NodeDescriptor(byte1=2, byte2=64, mac_capability_flags=128, manufacturer_code=4151, maximum_buffer_size=127, maximum_incoming_transfer_size=100, server_mask=0, maximum_outgoing_transfer_size=100, descriptor_capability_field=0)",
+        "endpoints": {
+          "1": {
+            "profile_id": 260,
+            "device_type": "0x0006",
+            "in_clusters": ["0x0000", "0x0001", "0xffff"],
+            "out_clusters": ["0x0000", "0x0004", "0x0006", "0xffff"]
+          }
+        }
+      },
+      "entities": [
+        {
+          "entity_id": "sensor.lumi_lumi_sensor_switch_aq2_023db3c6_1_1",
+          "name": "LUMI lumi.sensor_switch.aq2"
+        }
+      ],
+      "neighbors": [],
+      "endpoint_names": [
+        {
+          "name": "REMOTE_CONTROL"
+        }
+      ],
+      "user_given_name": null,
+      "device_reg_id": "dd4b16ae0f6b42748a3efac0684bb699",
+      "area_id": null
+    },
+    {
+      "ieee": "00:0d:6f:00:0a:ff:73:23",
+      "nwk": 0,
+      "manufacturer": "Silicon Labs",
+      "model": "EZSP",
+      "name": "Silicon Labs EZSP",
+      "quirk_applied": true,
+      "quirk_class": "bellows.zigbee.application.EZSPCoordinator",
+      "manufacturer_code": 43981,
+      "power_source": "Mains",
+      "lqi": 255,
+      "rssi": 0,
+      "last_seen": "2020-10-01T20:50:18",
+      "available": true,
+      "device_type": "Coordinator",
+      "signature": {
+        "node_descriptor": "NodeDescriptor(byte1=0, byte2=64, mac_capability_flags=143, manufacturer_code=43981, maximum_buffer_size=82, maximum_incoming_transfer_size=128, server_mask=0, maximum_outgoing_transfer_size=128, descriptor_capability_field=0)",
+        "endpoints": {
+          "1": {
+            "profile_id": 260,
+            "device_type": "0xbeef",
+            "in_clusters": [],
+            "out_clusters": []
+          }
+        }
+      },
+      "entities": [],
+      "neighbors": [
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:0d:6f:ff:fe:8e:94:b9",
+          "nwk": "0x14F7",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "252"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "68:0a:e2:ff:fe:8f:fa:33",
+          "nwk": "0x3135",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "250"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:0d:6f:ff:fe:7c:12:59",
+          "nwk": "0x32EE",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "255"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "f0:d1:b8:00:00:11:4a:33",
+          "nwk": "0x50BB",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "251"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:13:a2:00:41:84:54:43",
+          "nwk": "0x66C2",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "254"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "f0:d1:b8:00:00:06:2f:8b",
+          "nwk": "0x8751",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "254"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "90:fd:9f:ff:fe:66:6c:59",
+          "nwk": "0x9269",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "255"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:0d:6f:ff:fe:2a:d7:57",
+          "nwk": "0xA235",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "254"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "14:b4:57:ff:fe:4c:43:2f",
+          "nwk": "0xC848",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "254"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "f0:d1:b8:00:00:0e:02:55",
+          "nwk": "0xDD54",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "255"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "f0:d1:b8:00:00:0e:01:2a",
+          "nwk": "0xF4C7",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "254"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "f0:d1:b8:00:00:06:68:55",
+          "nwk": "0xF501",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "252"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "cc:cc:cc:ff:fe:da:b1:e0",
+          "nwk": "0xF63C",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "253"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "cc:cc:cc:ff:fe:d9:a8:88",
+          "nwk": "0xFB9C",
+          "permit_joining": "Unknown",
+          "depth": "15",
+          "lqi": "254"
+        },
+        {
+          "device_type": "EndDevice",
+          "rx_on_when_idle": "Off",
+          "relationship": "Child",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:15:8d:00:02:b5:2d:b5",
+          "nwk": "0x998E",
+          "permit_joining": "NotAccepting",
+          "depth": "1",
+          "lqi": "255"
+        },
+        {
+          "device_type": "EndDevice",
+          "rx_on_when_idle": "Off",
+          "relationship": "Child",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:15:8d:00:02:04:54:40",
+          "nwk": "0xE876",
+          "permit_joining": "NotAccepting",
+          "depth": "1",
+          "lqi": "255"
+        },
+        {
+          "device_type": "EndDevice",
+          "rx_on_when_idle": "Off",
+          "relationship": "Child",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:15:8d:00:02:36:91:2f",
+          "nwk": "0x6824",
+          "permit_joining": "NotAccepting",
+          "depth": "1",
+          "lqi": "255"
+        },
+        {
+          "device_type": "EndDevice",
+          "rx_on_when_idle": "Off",
+          "relationship": "Child",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:15:8d:00:02:04:a0:62",
+          "nwk": "0xA5E4",
+          "permit_joining": "NotAccepting",
+          "depth": "1",
+          "lqi": "255"
+        },
+        {
+          "device_type": "EndDevice",
+          "rx_on_when_idle": "Off",
+          "relationship": "Child",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "ec:1b:bd:ff:fe:93:1c:d5",
+          "nwk": "0x4FBB",
+          "permit_joining": "NotAccepting",
+          "depth": "1",
+          "lqi": "255"
+        },
+        {
+          "device_type": "EndDevice",
+          "rx_on_when_idle": "Off",
+          "relationship": "Child",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:15:8d:00:02:c8:c2:71",
+          "nwk": "0xD9D8",
+          "permit_joining": "NotAccepting",
+          "depth": "1",
+          "lqi": "255"
+        },
+        {
+          "device_type": "EndDevice",
+          "rx_on_when_idle": "Off",
+          "relationship": "Child",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:0d:6f:00:0b:12:4b:62",
+          "nwk": "0x31F1",
+          "permit_joining": "NotAccepting",
+          "depth": "1",
+          "lqi": "255"
+        },
+        {
+          "device_type": "EndDevice",
+          "rx_on_when_idle": "Off",
+          "relationship": "Child",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "14:b4:57:ff:fe:3b:04:ec",
+          "nwk": "0xF773",
+          "permit_joining": "NotAccepting",
+          "depth": "1",
+          "lqi": "255"
+        }
+      ],
+      "endpoint_names": [
+        {
+          "name": "undefined_0xbeef"
+        }
+      ],
+      "user_given_name": null,
+      "device_reg_id": "6fe94c60b6294ee5bd6c9d1f3119f101",
+      "area_id": "433b84b37c0c4556812951a279995b85"
+    },
+    {
+      "ieee": "00:15:8d:00:01:eb:71:ec",
+      "nwk": 52857,
+      "manufacturer": "LUMI",
+      "model": "lumi.sensor_switch.aq3",
+      "name": "LUMI lumi.sensor_switch.aq3",
+      "quirk_applied": true,
+      "quirk_class": "zhaquirks.xiaomi.aqara.sensor_switch_aq3.SwitchAQ3",
+      "manufacturer_code": 4151,
+      "power_source": "Battery or Unknown",
+      "lqi": null,
+      "rssi": null,
+      "last_seen": "2020-10-01T20:58:14",
+      "available": false,
+      "device_type": "EndDevice",
+      "signature": {
+        "node_descriptor": "NodeDescriptor(byte1=2, byte2=64, mac_capability_flags=128, manufacturer_code=4151, maximum_buffer_size=127, maximum_incoming_transfer_size=100, server_mask=0, maximum_outgoing_transfer_size=100, descriptor_capability_field=0)",
+        "endpoints": {
+          "1": {
+            "profile_id": 260,
+            "device_type": "0x0006",
+            "in_clusters": ["0x0000", "0x0001", "0x0012"],
+            "out_clusters": ["0x0000", "0x0006"]
+          }
+        }
+      },
+      "entities": [
+        {
+          "entity_id": "sensor.lumi_lumi_sensor_switch_aq3_01eb71ec_1_1",
+          "name": "LUMI lumi.sensor_switch.aq3"
+        }
+      ],
+      "neighbors": [],
+      "endpoint_names": [
+        {
+          "name": "REMOTE_CONTROL"
+        }
+      ],
+      "user_given_name": "Norah's Lumi Switch",
+      "device_reg_id": "690e4d9025fd4fa88f952e27b1de46fa",
+      "area_id": "70734ef6e71a4a52ad90d83de79c2a9e"
+    },
+    {
+      "ieee": "00:15:8d:00:02:04:54:40",
+      "nwk": 59510,
+      "manufacturer": "LUMI",
+      "model": "lumi.sensor_magnet.aq2",
+      "name": "LUMI lumi.sensor_magnet.aq2",
+      "quirk_applied": true,
+      "quirk_class": "zhaquirks.xiaomi.aqara.magnet_aq2.MagnetAQ2",
+      "manufacturer_code": 4151,
+      "power_source": "Battery or Unknown",
+      "lqi": null,
+      "rssi": null,
+      "last_seen": "2020-10-01T20:16:28",
+      "available": true,
+      "device_type": "EndDevice",
+      "signature": {
+        "node_descriptor": "NodeDescriptor(byte1=2, byte2=64, mac_capability_flags=128, manufacturer_code=4151, maximum_buffer_size=127, maximum_incoming_transfer_size=100, server_mask=0, maximum_outgoing_transfer_size=100, descriptor_capability_field=0)",
+        "endpoints": {
+          "1": {
+            "profile_id": 260,
+            "device_type": "0x5f01",
+            "in_clusters": ["0x0000", "0x0001", "0x0003", "0xffff"],
+            "out_clusters": ["0x0000", "0x0004", "0x0006", "0xffff"]
+          }
+        }
+      },
+      "entities": [
+        {
+          "entity_id": "binary_sensor.lumi_lumi_sensor_magnet_aq2_02045440_1_6",
+          "name": "LUMI lumi.sensor_magnet.aq2"
+        },
+        {
+          "entity_id": "sensor.lumi_lumi_sensor_magnet_aq2_02045440_1_1",
+          "name": "LUMI lumi.sensor_magnet.aq2"
+        }
+      ],
+      "neighbors": [],
+      "endpoint_names": [
+        {
+          "name": "undefined_0x5f01"
+        }
+      ],
+      "user_given_name": "Boy's Door Contact Sensor",
+      "device_reg_id": "51c7bf0af53e4bdeaed87c14c0a736a2",
+      "area_id": "a414e0d8cdc640ef93e0a8b61aba77de"
+    },
+    {
+      "ieee": "00:17:88:01:02:70:8c:5b",
+      "nwk": 5152,
+      "manufacturer": "Philips",
+      "model": "LCT014",
+      "name": "Philips LCT014",
+      "quirk_applied": true,
+      "quirk_class": "zhaquirks.philips.zllextendedcolorlight.ZLLExtendedColorLight",
+      "manufacturer_code": 4107,
+      "power_source": "Mains",
+      "lqi": 255,
+      "rssi": -61,
+      "last_seen": "2020-10-01T20:56:28",
+      "available": true,
+      "device_type": "Router",
+      "signature": {
+        "node_descriptor": "NodeDescriptor(byte1=1, byte2=64, mac_capability_flags=142, manufacturer_code=4107, maximum_buffer_size=71, maximum_incoming_transfer_size=45, server_mask=0, maximum_outgoing_transfer_size=45, descriptor_capability_field=0)",
+        "endpoints": {
+          "11": {
+            "profile_id": 49246,
+            "device_type": "0x0210",
+            "in_clusters": [
+              "0x0000",
+              "0x0003",
+              "0x0004",
+              "0x0005",
+              "0x0006",
+              "0x0008",
+              "0x0300",
+              "0x1000",
+              "0xfc01"
+            ],
+            "out_clusters": ["0x0019"]
+          },
+          "242": {
+            "profile_id": 41440,
+            "device_type": "0x0061",
+            "in_clusters": ["0x0021"],
+            "out_clusters": ["0x0021"]
+          }
+        }
+      },
+      "entities": [
+        {
+          "entity_id": "light.philips_lct014_02708c5b_11",
+          "name": "Philips LCT014"
+        }
+      ],
+      "neighbors": [
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "f0:d1:b8:00:00:0f:64:e9",
+          "nwk": "0x3CC7",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "15"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:15:8d:00:01:c9:63:3c",
+          "nwk": "0x5480",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "248"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "cc:cc:cc:ff:fe:d7:83:c2",
+          "nwk": "0x9AB6",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "116"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "cc:cc:cc:ff:fe:57:6d:e3",
+          "nwk": "0x6862",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "141"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "68:0a:e2:ff:fe:8f:fa:33",
+          "nwk": "0x3135",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "245"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:15:8d:00:01:c9:12:a5",
+          "nwk": "0xAF66",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "225"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "cc:cc:cc:ff:fe:d9:a8:88",
+          "nwk": "0xFB9C",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "81"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:15:8d:00:02:fe:63:eb",
+          "nwk": "0x4536",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "170"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "f0:d1:b8:00:00:05:ee:62",
+          "nwk": "0x54F0",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "23"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:15:8d:00:03:00:01:62",
+          "nwk": "0x811B",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "165"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:0d:6f:ff:fe:7a:d3:7a",
+          "nwk": "0x7E2A",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "77"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "cc:cc:cc:ff:fe:9d:e7:97",
+          "nwk": "0x409B",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "58"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "f0:d1:b8:00:00:11:4a:33",
+          "nwk": "0x50BB",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "223"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:17:88:01:02:4f:ea:5c",
+          "nwk": "0x7BF1",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "57"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "90:fd:9f:ff:fe:66:6c:59",
+          "nwk": "0x9269",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "148"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:0d:6f:ff:fe:7c:12:59",
+          "nwk": "0x32EE",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "191"
+        },
+        {
+          "device_type": "Coordinator",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:0d:6f:00:0a:ff:73:23",
+          "nwk": "0x0000",
+          "permit_joining": "Accepting",
+          "depth": "0",
+          "lqi": "252"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "00:0d:6f:ff:fe:2c:90:f2",
+          "nwk": "0xBDCD",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "174"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "ec:1b:bd:ff:fe:66:b6:70",
+          "nwk": "0x0165",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "39"
+        },
+        {
+          "device_type": "Router",
+          "rx_on_when_idle": "On",
+          "relationship": "NoneOfTheAbove",
+          "extended_pan_id": "8d:b4:1f:73:e7:35:93:1b",
+          "ieee": "14:b4:57:ff:fe:4c:43:2f",
+          "nwk": "0xC848",
+          "permit_joining": "Accepting",
+          "depth": "1",
+          "lqi": "127"
+        }
+      ],
+      "endpoint_names": [
+        {
+          "name": "EXTENDED_COLOR_LIGHT"
+        }
+      ],
+      "user_given_name": "Front Porch Philips Hue Bulb",
+      "device_reg_id": "385e5f2875dd4832a5ba92dfb9c30d97",
+      "area_id": "06f4047033f94ff18c70f2d36dfe3810"
+    },
+    {
+      "ieee": "00:15:8d:00:03:12:e1:81",
+      "nwk": 65142,
+      "manufacturer": "LUMI",
+      "model": "lumi.sensor_magnet.aq2",
+      "name": "LUMI lumi.sensor_magnet.aq2",
+      "quirk_applied": true,
+      "quirk_class": "zhaquirks.xiaomi.aqara.magnet_aq2.MagnetAQ2",
+      "manufacturer_code": 4151,
+      "power_source": "Battery or Unknown",
+      "lqi": 255,
+      "rssi": -50,
+      "last_seen": "2020-10-01T20:50:45",
+      "available": true,
+      "device_type": "EndDevice",
+      "signature": {
+        "node_descriptor": "NodeDescriptor(byte1=2, byte2=64, mac_capability_flags=128, manufacturer_code=4151, maximum_buffer_size=127, maximum_incoming_transfer_size=100, server_mask=0, maximum_outgoing_transfer_size=100, descriptor_capability_field=0)",
+        "endpoints": {
+          "1": {
+            "profile_id": 260,
+            "device_type": "0x5f01",
+            "in_clusters": ["0x0000", "0x0001", "0x0003", "0xffff"],
+            "out_clusters": ["0x0000", "0x0004", "0x0006", "0xffff"]
+          }
+        }
+      },
+      "entities": [
+        {
+          "entity_id": "binary_sensor.lumi_lumi_sensor_magnet_aq2_0312e181_1_6",
+          "name": "LUMI lumi.sensor_magnet.aq2"
+        },
+        {
+          "entity_id": "sensor.lumi_lumi_sensor_magnet_aq2_0312e181_1_1",
+          "name": "LUMI lumi.sensor_magnet.aq2"
+        }
+      ],
+      "neighbors": [],
+      "endpoint_names": [
+        {
+          "name": "undefined_0x5f01"
+        }
+      ],
+      "user_given_name": "Boys Left Window Sensor - Oliver",
+      "device_reg_id": "53a04c43523746d5821ae6d21fc9f5ef",
+      "area_id": "a414e0d8cdc640ef93e0a8b61aba77de"
+    }
+  ]
+}

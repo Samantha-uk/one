@@ -1,13 +1,18 @@
 {
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "dependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@manypkg/cli": "^0.17.0",
-    "@typescript-eslint/eslint-plugin": "^4.11.0",
-    "@typescript-eslint/parser": "^4.11.0",
+    "@typescript-eslint/eslint-plugin": "^4.11.1",
+    "@typescript-eslint/parser": "^4.11.1",
     "@yarnpkg/doctor": "^2.1.3",
     "@yarnpkg/pnpify": "^2.4.0",
-    "eslint": "^7.16.0",
+    "eslint": "^7.17.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-import-resolver-node": "^0.3.4",
@@ -18,9 +23,9 @@
     "eslint-plugin-lit": "^1.3.0",
     "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-unicorn": "^24.0.0",
+    "eslint-plugin-unicorn": "^25.0.1",
     "eslint-plugin-wc": "^1.2.0",
     "gulp": "^4.0.2",
     "node-dir": "^0.1.17",
@@ -31,13 +36,18 @@
   },
   "devDependencies": {
     "@appnest/readme": "^1.2.7",
-    "@rushstack/eslint-patch": "*",
+    "@rushstack/eslint-patch": "^1.0.6",
     "commitizen": "^4.2.2",
     "cz-conventional-changelog": "^3.3.0",
-    "husky": "next",
+    "husky": "^4.3.6",
     "lint-staged": "^10.5.3",
-    "pinst": "^2.1.1"
+    "pinst": "^2.1.1",
+    "standard-version": "^9.1.0"
   },
+  "engines": {
+    "node": ">=10.19.0"
+  },
+  "license": "MIT",
   "name": "@samantha-uk/one",
   "private": true,
   "resolutions": {
@@ -78,11 +88,7 @@
   "workspaces": [
     "home-assistant",
     "tools",
-    "utils"
-  ],
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  }
+    "utils",
+    "zigzag"
+  ]
 }

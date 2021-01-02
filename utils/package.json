@@ -1,0 +1,8 @@
+{
+  "name": "@samantha-uk/utils",
+  "private": true,
+  "workspaces": [
+    "logger",
+    "plugin"
+  ]
+}

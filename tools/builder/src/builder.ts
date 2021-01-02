@@ -117,6 +117,7 @@ const plugins = [
     declarationDir: `dist`,
     declarationMap: true,
     esModuleInterop: true,
+    experimentalDecorators: true,
     forceConsistentCasingInFileNames: true,
     lib: [`dom`, `DOM.Iterable`, `WebWorker`, `ESNext`],
     moduleResolution: `node`,

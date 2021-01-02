@@ -1,0 +1,45 @@
+{
+  "author": "Samantha-uk <samantha.uk.github@gmail.com>",
+  "dependencies": {
+    "@pixi/constants": "^5.3.7",
+    "@pixi/core": "^5.3.7",
+    "@pixi/math": "^5.3.7",
+    "@pixi/settings": "^5.3.7",
+    "@pixi/utils": "^5.3.7",
+    "@samantha-uk/utils-plugin": "workspace:*",
+    "@samantha-uk/zigzag-render": "workspace:*",
+    "gl-matrix": "^3.3.0",
+    "pixi-viewport": "^4.18.1",
+    "pixi.js": "^5.3.7",
+    "resize-observer-polyfill": "^1.5.1",
+    "tslib": "^2.0.3",
+    "zod": "^2.0.0-beta.29"
+  },
+  "description": "Zigzag PixiJS render plugin",
+  "devDependencies": {
+    "@samantha-uk/tools-builder": "workspace:*",
+    "@types/gl-matrix": "^3.2.0"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "license": "MIT",
+  "main": "dist/plugin-render-pixi.cjs.js",
+  "module": "dist/plugin-render-pixi.esm.js",
+  "name": "@samantha-uk/zigzag-plugin-render-pixi",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "http://github.com/Samantha-uk/one",
+  "scripts": {
+    "build": "builder",
+    "lint": "builder --lint",
+    "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json",
+    "test": "builder --test",
+    "watch": "builder --watch"
+  },
+  "source": "src/plugin-render-pixi.ts",
+  "types": "dist/plugin-render-pixi.d.ts",
+  "version": "0.1.0"
+}

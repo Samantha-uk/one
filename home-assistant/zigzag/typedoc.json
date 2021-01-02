@@ -1,8 +1,0 @@
-{
-  "excludeExternals": true,
-  "includeDeclarations": true,
-  "includeVersion": true,
-  "inputFiles": ["./packages/**/src/**/*.ts"],
-  "mode": "modules",
-  "out": "doc"
-}

@@ -1,10 +1,19 @@
-export interface PluginConfigBase {
-  apiVersionRequired: string;
-  id: string;
-}
+import * as z from "zod";
 
-export abstract class PluginBase {
+const PluginConfigBaseSchema = z
+  .object({
+    apiVersionRequired: z.string(),
+    pluginPath: z.string(),
+    id: z.string(),
+  })
+  .catchall(z.unknown());
+
+type PluginConfigBase = z.infer<typeof PluginConfigBaseSchema>;
+
+abstract class PluginBase {
   public id = `plugin`;
 
   constructor(readonly apiVersionProvided?: string) {}
 }
+
+export { PluginConfigBase, PluginConfigBaseSchema, PluginBase };

@@ -1,0 +1,36 @@
+{
+  "author": "Samantha-uk <samantha.uk.github@gmail.com>",
+  "dependencies": {
+    "@samantha-uk/utils-plugin": "workspace:*",
+    "@samantha-uk/zigzag-data": "workspace:*",
+    "deep-copy-ts": "^0.5.0",
+    "tslib": "^2.0.3",
+    "zod": "^2.0.0-beta.29"
+  },
+  "description": "Zigzag file data plugin",
+  "devDependencies": {
+    "@samantha-uk/tools-builder": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "license": "MIT",
+  "main": "dist/plugin-data-file.cjs.js",
+  "module": "dist/plugin-data-file.esm.js",
+  "name": "@samantha-uk/zigzag-plugin-data-file",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "http://github.com/Samantha-uk/one",
+  "scripts": {
+    "build": "builder",
+    "lint": "builder --lint",
+    "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json",
+    "test": "builder --test",
+    "watch": "builder --watch"
+  },
+  "source": "src/plugin-data-file.ts",
+  "types": "dist/plugin-data-file.d.ts",
+  "version": "0.1.0"
+}

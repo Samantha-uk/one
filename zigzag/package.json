@@ -1,0 +1,12 @@
+{
+  "name": "@samantha-uk/zigzag",
+  "private": true,
+  "workspaces": [
+    "components/*",
+    "modules/*"
+  ],
+  "scripts": {
+    "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json"
+  },
+  "version": "0.2.0-alpha"
+}

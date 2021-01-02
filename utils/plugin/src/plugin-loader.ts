@@ -1,18 +1,28 @@
 import { Logger } from "@samantha-uk/utils-logger";
 import { red, green, bold } from "kleur/colors";
 import * as SemVer from "semver";
-import { PluginBase, PluginConfigBase } from "./plugin-base";
+import * as z from "zod";
+import {
+  PluginBase,
+  PluginConfigBase,
+  PluginConfigBaseSchema,
+} from "./plugin-base";
 
 const log = new Logger(`plugin`);
 
-export function PluginLoader<
-  PluginClassType extends PluginBase,
-  PluginConfigType extends PluginConfigBase
->(pluginPath: string, config: PluginConfigType): Promise<PluginClassType> {
-  // Construct a fully qualified plugin path.
-  const fqpp = `${pluginPath}/${config.id}.esm.js`;
+export function PluginLoader<PluginClassType extends PluginBase>(
+  config: PluginConfigBase
+): Promise<PluginClassType> {
+  let fqpp = `undefined`;
+
   return new Promise<PluginClassType>((resolve, reject) => {
     try {
+      // Check the config has the basic fields in it.
+      PluginConfigBaseSchema.check(config);
+
+      // Construct a fully qualified plugin path.
+      fqpp = `${config.pluginPath}/${config.id}.esm.js`;
+
       log.info(`Looking for ${fqpp}.`);
 
       // Try to load the specified plugin

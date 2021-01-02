@@ -1,0 +1,43 @@
+{
+  "author": "Samantha-uk <samantha.uk.github@gmail.com>",
+  "dependencies": {
+    "@samantha-uk/utils-logger": "workspace:*",
+    "@samantha-uk/zigzag-wc": "workspace:*",
+    "cpy-cli": "^3.1.1",
+    "custom-card-helpers": "^1.6.6",
+    "lit-element": "^2.4.0",
+    "rimraf": "^3.0.2",
+    "tslib": "^2.0.3"
+  },
+  "description": "Zigzag custom panel for Home Assistant",
+  "devDependencies": {
+    "@samantha-uk/tools-builder": "workspace:*",
+    "@types/rimraf": "^3.0.0"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "license": "MIT",
+  "main": "dist/zigzag-panel.cjs.js",
+  "module": "dist/zigzag-panel.esm.js",
+  "name": "@samantha-uk/zigzag-panel",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "yarn clear-plugins && yarn copy-plugins && builder",
+    "bundle": "rimraf zigzag/ && cpy plugins zigzag/plugins && cpy dist/zigzag-panel.esm.js zigzag && cpy configuration/* zigzag",
+    "clear-plugins": "rimraf ./plugins/*",
+    "copy-plugins": "cpy /home/samantha/github/one/zigzag/**/dist/plugin-*.esm.js plugins",
+    "lint": "builder --lint",
+    "push": "scp -r zigzag samantha@10.1.16.130://usr/share/hassio/homeassistant/www",
+    "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json",
+    "serve": "builder --serve",
+    "test": "builder --test",
+    "watch": "builder --watch"
+  },
+  "source": "src/zigzag-panel.ts",
+  "types": "dist/zigzag-panel.d.ts",
+  "version": "0.2.0-alpha-0.3"
+}

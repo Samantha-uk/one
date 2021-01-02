@@ -1,0 +1,9 @@
+zigzag:
+  plugin-path: "/plugins"
+  plugin-data:
+    type: "file"
+    file-path: "zhadevices.json"
+  plugin-layout:
+    type: "d3"
+  plugin-render:
+    type: "pixi"

@@ -2,6 +2,6 @@
   "name": "@samantha-uk/home-assistant",
   "private": true,
   "workspaces": [
-    "zigzag"
+    "zigzag-panel"
   ]
 }

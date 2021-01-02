@@ -12,7 +12,7 @@
     "@rollup/plugin-node-resolve": "^11.0.1",
     "@rollup/plugin-typescript": "portal:/home/samantha/github/plugins/packages/typescript",
     "@samantha-uk/utils-logger": "workspace:*",
-    "@types/node": "~14.14.16",
+    "@types/node": "~14.14.19",
     "@types/rollup-plugin-progress": "^1.1.0",
     "@types/signale": "^1.4.1",
     "chalk": "^4.1.0",

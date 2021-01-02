@@ -5,6 +5,10 @@
       "path": "."
     },
     {
+      "name": "✨ @samantha-uk/zigzag",
+      "path": "zigzag/"
+    },
+    {
       "name": "⚙️ @samantha-uk/tools-builder",
       "path": "tools/builder"
     },
@@ -17,24 +21,28 @@
       "path": "utils/plugin"
     },
     {
+      "name": "爵 @samantha-uk/zigzag-panel",
+      "path": "home-assistant/zigzag-panel"
+    },
+    {
       "name": "爵 @samantha-uk/zigzag-wc",
-      "path": "home-assistant/zigzag/components/zigzag-wc"
+      "path": "zigzag/components/zigzag-wc"
     },
     {
       "name": "全 @samantha-uk/zigzag-data",
-      "path": "home-assistant/zigzag/modules/data"
+      "path": "zigzag/modules/data"
     },
     {
       "name": "全 @samantha-uk/zigzag-grapher",
-      "path": "home-assistant/zigzag/modules/grapher"
+      "path": "zigzag/modules/grapher"
     },
     {
       "name": "全 @samantha-uk/zigzag-layout",
-      "path": "home-assistant/zigzag/modules/layout"
+      "path": "zigzag/modules/layout"
     },
     {
       "name": "全 @samantha-uk/zigzag-render",
-      "path": "home-assistant/zigzag/modules/render"
+      "path": "zigzag/modules/render"
     }
   ],
   "settings": {
@@ -61,7 +69,7 @@
       "/home/samantha/github/one"
     ],
     "files.associations": {
-      "**/*.json": "jsonc",
+      "**/*.json": "jsonc"
     },
     "files.autoSave": "onFocusChange",
     "files.exclude": {
