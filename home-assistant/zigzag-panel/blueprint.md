@@ -25,7 +25,7 @@ At present the installation of Zigzag is a manual process.
 
 You will need to:
 
-- Copy the [`zigzag`](/zigzag/) directory (_and its contents_) to a `zigzag` directory in the `www` folder of your Home Assistant server.
+- Copy the [zigzag](zigzag/) directory (_and its contents_) to a `zigzag` directory in the `www` folder of your Home Assistant server.
 It should then look something like this:
 ```
 └── www
@@ -46,7 +46,7 @@ _If not, check in the console of your web browser for any error messages._
 
 
 ## Configuration
-At present configuring Zigzag-panel is carried out using entries in the Home Assistant `configuration.yaml` file.
+At present configuring Zigzag-panel is carried out using entries in the Home Assistant `configuration.yaml` file and the only configuration is specifying the plugins.
 
 ## Know Issues/Limitations
 There are several known issues that will be addressed soon, including:

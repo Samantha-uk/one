@@ -1,5 +1,5 @@
 <!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️--><h1 align="center">@samantha-uk/zigzag-panel</h1>
-![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.3&color=orange)![Issues](https://img.shields.io/github/issues/Samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![GitHub](https://img.shields.io/github/license/Samantha-uk/one) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![David](https://img.shields.io/david/Samantha-uk/one) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)![Maintained](https://img.shields.io/maintenance/yes/2021)
+![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.3&color=orange)![Issues](https://img.shields.io/github/issues/Samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![GitHub](https://img.shields.io/badge/license-MIT-brightgreen) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![David](https://img.shields.io/david/Samantha-uk/one) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)![Maintained](https://img.shields.io/maintenance/yes/2021)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#table-of-contents)
@@ -66,7 +66,7 @@ _If not, check in the console of your web browser for any error messages._
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#configuration)
 
 ## Configuration
-At present configuring Zigzag-panel is carried out using entries in the Home Assistant `configuration.yaml` file.
+At present configuring Zigzag-panel is carried out using entries in the Home Assistant `configuration.yaml` file and the only configuration is specifying the plugins.
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#know-issueslimitations)

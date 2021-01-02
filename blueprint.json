@@ -38,7 +38,7 @@
     },
     {
       "name": "licence",
-      "template": "![GitHub](https://img.shields.io/github/license/Samantha-uk/one)"
+      "template": "![GitHub](https://img.shields.io/badge/license-MIT-brightgreen)"
     },
     {
       "name": "issues",
