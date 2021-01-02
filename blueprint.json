@@ -22,7 +22,7 @@
   "templates": [
     {
       "name": "dependencies",
-      "template": "![Libraries.io dependency status for latest release, scoped npm package](https://img.shields.io/librariesio/release/npm/{{ pkg.name }})"
+      "template": "![David](https://img.shields.io/david/Samantha-uk/one)"
     },
     {
       "name": "version",
@@ -34,15 +34,15 @@
     },
     {
       "name": "vulnerabilities",
-      "template": "![Snyk Vulnerabilities for npm scoped package](https://img.shields.io/snyk/vulnerabilities/npm/{{ pkg.name }})"
+      "template": "![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)"
     },
     {
       "name": "licence",
-      "template": "![NPM](https://img.shields.io/npm/l/{{ pkg.name }})"
+      "template": "![GitHub](https://img.shields.io/github/license/Samantha-uk/one)"
     },
     {
       "name": "issues",
-      "template": "![Issues](https://img.shields.io/github/issues/samantha-uk/one)"
+      "template": "![Issues](https://img.shields.io/github/issues/Samantha-uk/one)"
     },
     {
       "name": "semver",

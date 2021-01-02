@@ -1,5 +1,5 @@
 <!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️--><h1 align="center">@samantha-uk/zigzag-panel</h1>
-![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.3&color=orange)![Issues](https://img.shields.io/github/issues/samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![NPM](https://img.shields.io/npm/l/@samantha-uk/zigzag-panel) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![Libraries.io dependency status for latest release, scoped npm package](https://img.shields.io/librariesio/release/npm/@samantha-uk/zigzag-panel) ![Snyk Vulnerabilities for npm scoped package](https://img.shields.io/snyk/vulnerabilities/npm/@samantha-uk/zigzag-panel)![Maintained](https://img.shields.io/maintenance/yes/2021)
+![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.3&color=orange)![Issues](https://img.shields.io/github/issues/Samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![GitHub](https://img.shields.io/github/license/Samantha-uk/one) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![David](https://img.shields.io/david/Samantha-uk/one) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)![Maintained](https://img.shields.io/maintenance/yes/2021)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#table-of-contents)
@@ -42,7 +42,20 @@ At present the installation of Zigzag is a manual process.
 
 You will need to:
 
-- Copy the `zigzag` directory (_and its contents_) to a `zigzag` directory in the **www** folder of your Home Assistant server.
+- Copy the [`zigzag`](/zigzag/) directory (_and its contents_) to a `zigzag` directory in the `www` folder of your Home Assistant server.
+It should then look something like this:
+```
+└── www
+    └── zigzag
+        ├── plugins
+        │   ├── plugin-data-file.esm.js
+        │   ├── plugin-data-gen.esm.js
+        │   ├── plugin-data-zha.esm.js
+        │   ├── plugin-layout-d3.esm.js
+        │   └── plugin-render-pixi.esm.js
+        ├── zigzag-panel-config.yaml
+        └── zigzag-panel.esm.js
+```
 - Copy the contents of `zigzag/zigzag-panel-config.yaml` into your Home Assistant `configuration.yaml` file.
 - Restart Home Assistant.
 - Zigzag should appear as an entry on the left of the display, which if you select should display your Zigbee network.
