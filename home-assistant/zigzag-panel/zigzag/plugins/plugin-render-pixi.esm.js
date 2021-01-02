@@ -7368,8 +7368,8 @@ var objectAssign = shouldUseNative() ? Object.assign : function (target, source)
 };
 
 /*!
- * @pixi/polyfill - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/polyfill - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/polyfill is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -7604,8 +7604,8 @@ function isMobile(param) {
 }
 
 /*!
- * @pixi/settings - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/settings - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/settings is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -10264,8 +10264,8 @@ var url = {
 };
 
 /*!
- * @pixi/constants - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/constants - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/constants is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -10704,8 +10704,8 @@ var MSAA_QUALITY;
 })(MSAA_QUALITY || (MSAA_QUALITY = {}));
 
 /*!
- * @pixi/utils - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/utils - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/utils is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -10736,7 +10736,7 @@ settings.RETINA_PREFIX = /@([0-9\.]+)x/;
 settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
 
 var saidHello = false;
-var VERSION = '5.3.6';
+var VERSION = '5.3.7';
 /**
  * Skips the hello message of renderers that are created after this is run.
  *
@@ -11606,8 +11606,8 @@ var utils_es = /*#__PURE__*/Object.freeze({
 });
 
 /*!
- * @pixi/math - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/math - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/math is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -13515,8 +13515,8 @@ var Transform = /** @class */ (function () {
 }());
 
 /*!
- * @pixi/display - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/display - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/display is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -15182,8 +15182,8 @@ var Container = /** @class */ (function (_super) {
 Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
 
 /*!
- * @pixi/accessibility - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/accessibility - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/accessibility is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -15766,8 +15766,8 @@ var AccessibilityManager = /** @class */ (function () {
 }());
 
 /*!
- * @pixi/ticker - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/ticker - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/ticker is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -16609,8 +16609,8 @@ var TickerPlugin = /** @class */ (function () {
 }());
 
 /*!
- * @pixi/interaction - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/interaction - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/interaction is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -18805,8 +18805,8 @@ var InteractionManager = /** @class */ (function (_super) {
 }(eventemitter3));
 
 /*!
- * @pixi/runner - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/runner - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/runner is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -19001,8 +19001,8 @@ Object.defineProperties(Runner.prototype, {
 });
 
 /*!
- * @pixi/core - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/core - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/core is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -24706,12 +24706,14 @@ var GeometrySystem = /** @class */ (function (_super) {
         // Still mulling over the best way to solve this one..
         // will likely need to modify the shader attribute locations at run time!
         var vaos = geometry.glVertexArrayObjects[this.CONTEXT_UID];
+        var incRefCount = false;
         if (!vaos) {
             this.managedGeometries[geometry.id] = geometry;
             geometry.disposeRunner.add(this);
             geometry.glVertexArrayObjects[this.CONTEXT_UID] = vaos = {};
+            incRefCount = true;
         }
-        var vao = vaos[shader.program.id] || this.initGeometryVao(geometry, shader.program);
+        var vao = vaos[shader.program.id] || this.initGeometryVao(geometry, shader.program, incRefCount);
         this._activeGeometry = geometry;
         if (this._activeVao !== vao) {
             this._activeVao = vao;
@@ -24809,8 +24811,10 @@ var GeometrySystem = /** @class */ (function (_super) {
      * @protected
      * @param {PIXI.Geometry} geometry - Instance of geometry to to generate Vao for
      * @param {PIXI.Program} program - Instance of program
+     * @param {boolean} [incRefCount=false] - Increment refCount of all geometry buffers
      */
-    GeometrySystem.prototype.initGeometryVao = function (geometry, program) {
+    GeometrySystem.prototype.initGeometryVao = function (geometry, program, incRefCount) {
+        if (incRefCount === void 0) { incRefCount = true; }
         this.checkCompatibility(geometry, program);
         var gl = this.gl;
         var CONTEXT_UID = this.CONTEXT_UID;
@@ -24866,7 +24870,9 @@ var GeometrySystem = /** @class */ (function (_super) {
                 this.managedBuffers[buffer.id] = buffer;
                 buffer.disposeRunner.add(this);
             }
-            buffer._glBuffers[CONTEXT_UID].refCount++;
+            if (incRefCount) {
+                buffer._glBuffers[CONTEXT_UID].refCount++;
+            }
         }
         // TODO - maybe make this a data object?
         // lets wait to see if we need to first!
@@ -29954,8 +29960,8 @@ var BatchPluginFactory = /** @class */ (function () {
 var BatchRenderer = BatchPluginFactory.create();
 
 /*!
- * @pixi/app - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/app - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/app is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -30225,8 +30231,8 @@ var ResizePlugin = /** @class */ (function () {
 Application.registerPlugin(ResizePlugin);
 
 /*!
- * @pixi/extract - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/extract - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/extract is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -32986,8 +32992,8 @@ Loader.use = function LoaderUseStatic(fn) {
 };
 
 /*!
- * @pixi/loaders - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/loaders - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/loaders is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -33303,8 +33309,8 @@ var AppLoaderPlugin = /** @class */ (function () {
 }());
 
 /*!
- * @pixi/particles - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/particles - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/particles is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -34106,8 +34112,8 @@ var ParticleRenderer = /** @class */ (function (_super) {
 }(ObjectRenderer));
 
 /*!
- * @pixi/graphics - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/graphics - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/graphics is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -37360,8 +37366,8 @@ var Graphics = /** @class */ (function (_super) {
 }(Container));
 
 /*!
- * @pixi/sprite - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/sprite - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/sprite is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -37941,8 +37947,8 @@ var Sprite = /** @class */ (function (_super) {
 }(Container));
 
 /*!
- * @pixi/text - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/text - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/text is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -39988,8 +39994,8 @@ var Text = /** @class */ (function (_super) {
 }(Sprite));
 
 /*!
- * @pixi/prepare - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/prepare - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/prepare is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -40614,8 +40620,8 @@ var TimeLimiter = /** @class */ (function () {
 }());
 
 /*!
- * @pixi/spritesheet - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/spritesheet - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/spritesheet is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -40945,8 +40951,8 @@ var SpritesheetLoader = /** @class */ (function () {
 }());
 
 /*!
- * @pixi/sprite-tiling - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/sprite-tiling - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/sprite-tiling is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -41346,8 +41352,8 @@ var TilingSpriteRenderer = /** @class */ (function (_super) {
 }(ObjectRenderer));
 
 /*!
- * @pixi/mesh - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/mesh - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/mesh is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -42051,8 +42057,8 @@ var MeshGeometry = /** @class */ (function (_super) {
 }(Geometry));
 
 /*!
- * @pixi/text-bitmap - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/text-bitmap - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/text-bitmap is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -43837,8 +43843,8 @@ var BitmapFontLoader = /** @class */ (function () {
 }());
 
 /*!
- * @pixi/filter-alpha - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/filter-alpha - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/filter-alpha is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -43923,8 +43929,8 @@ var AlphaFilter = /** @class */ (function (_super) {
 }(Filter));
 
 /*!
- * @pixi/filter-blur - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/filter-blur - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/filter-blur is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -44747,8 +44753,8 @@ var BlurFilter = /** @class */ (function (_super) {
 }(Filter));
 
 /*!
- * @pixi/filter-color-matrix - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/filter-color-matrix - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/filter-color-matrix is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -45276,8 +45282,8 @@ var ColorMatrixFilter = /** @class */ (function (_super) {
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
 /*!
- * @pixi/filter-displacement - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/filter-displacement - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/filter-displacement is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -45407,8 +45413,8 @@ var DisplacementFilter = /** @class */ (function (_super) {
 }(Filter));
 
 /*!
- * @pixi/filter-fxaa - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/filter-fxaa - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/filter-fxaa is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -45468,8 +45474,8 @@ var FXAAFilter = /** @class */ (function (_super) {
 }(Filter));
 
 /*!
- * @pixi/filter-noise - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/filter-noise - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/filter-noise is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -45569,8 +45575,8 @@ var NoiseFilter = /** @class */ (function (_super) {
 }(Filter));
 
 /*!
- * @pixi/mixin-cache-as-bitmap - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/mixin-cache-as-bitmap - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -45885,8 +45891,8 @@ DisplayObject.prototype._cacheAsBitmapDestroy = function _cacheAsBitmapDestroy(o
 };
 
 /*!
- * @pixi/mixin-get-child-by-name - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/mixin-get-child-by-name - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/mixin-get-child-by-name is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -45932,8 +45938,8 @@ Container.prototype.getChildByName = function getChildByName(name, deep) {
 };
 
 /*!
- * @pixi/mixin-get-global-position - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/mixin-get-global-position - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/mixin-get-global-position is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -45964,8 +45970,8 @@ DisplayObject.prototype.getGlobalPosition = function getGlobalPosition(point, sk
 };
 
 /*!
- * @pixi/mesh-extras - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/mesh-extras - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/mesh-extras is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -46688,8 +46694,8 @@ var NineSlicePlane = /** @class */ (function (_super) {
 }(SimplePlane));
 
 /*!
- * @pixi/sprite-animated - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * @pixi/sprite-animated - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * @pixi/sprite-animated is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -47144,8 +47150,8 @@ var AnimatedSprite = /** @class */ (function (_super) {
 }(Sprite));
 
 /*!
- * pixi.js - v5.3.6
- * Compiled Mon, 21 Dec 2020 20:35:06 UTC
+ * pixi.js - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -48439,7 +48445,7 @@ Application.registerPlugin(AppLoaderPlugin);
  * @name VERSION
  * @type {string}
  */
-var VERSION$1 = '5.3.6';
+var VERSION$1 = '5.3.7';
 /**
  * @namespace PIXI
  */

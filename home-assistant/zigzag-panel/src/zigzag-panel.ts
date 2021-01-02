@@ -23,7 +23,7 @@ export class ZigzagPanel extends ZigzagWC {
       },
       {
         apiVersionRequired: `1.0.0`,
-        id: `plugin-render-pixi`,
+        id: `plugin-render-three`,
         pluginPath: `/local/zigzag/plugins`,
       }
     );
