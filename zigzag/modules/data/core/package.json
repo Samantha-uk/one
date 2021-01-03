@@ -33,5 +33,5 @@
   },
   "source": "src/zigzag-data.ts",
   "types": "dist/zigzag-data.d.ts",
-  "version": "0.1.1"
+  "version": "0.1.2"
 }

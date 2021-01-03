@@ -156,8 +156,8 @@ export class Grapher {
           this.zigLockOn(_zigToLock);
         }
       }
-      this._renderPlugin.viewPosition = this._viewState.position;
-      this._renderPlugin.viewZoom = this._viewState.zoom;
+      /*       this._renderPlugin.viewPosition = this._viewState.position;
+      this._renderPlugin.viewZoom = this._viewState.zoom; */
     }
   }
 
@@ -191,7 +191,7 @@ export class Grapher {
     this._parentDivElement = parentDivElement;
     this._getCSSValues(parentDivElement);
 
-    if (!this._initRenderEngine()) {
+    if (!this._initGrapher()) {
       return false;
     }
     // Fetch the zig & zag data.
@@ -205,6 +205,8 @@ export class Grapher {
     if (this._viewState) {
       this._applyViewState();
     }
+    this._layoutPlugin.step(1);
+    this.zoomToFit();
 
     // Start the render loop.
     this._renderLoop();
@@ -471,7 +473,7 @@ export class Grapher {
     zigD.zagDs.forEach((zagD: ZagDatum) => this._setPositionZag(zagD));
   }
 
-  private _initRenderEngine(): boolean {
+  private _initGrapher(): boolean {
     // Find the div that holds zigzag.
     if (this._parentDivElement) {
       // Store the dimensions of the div.
@@ -521,6 +523,7 @@ export class Grapher {
     }
   }
 
+  // TODO (feature) reactivate highlighting.
   /*   private _zigHighlightOff(zigD: ZigDatum) {
 
   }

@@ -12,6 +12,7 @@ export class ZigzagPanel extends ZigzagWC {
   ): Promise<void> {
     this.viewState = await this.restoreViewstate();
 
+    // Read the configuration we set in Home Assistant.
     const zzc = this.panel.config?.zigzag;
 
     // Set the plugin configuration we will use.
@@ -43,7 +44,7 @@ export class ZigzagPanel extends ZigzagWC {
   }
 
   protected async restoreViewstate(): Promise<string> {
-    // Request a saved viewState
+    // Request a stored viewState from Home Assistant.
     const _result = await this.hass!.callWS<{
       value: string;
     }>({
@@ -55,7 +56,7 @@ export class ZigzagPanel extends ZigzagWC {
   }
 
   protected async storeViewstate(viewState: string): Promise<void> {
-    // Store Zigzag data
+    // Store the viewState in Home Assistant.
     await this.hass!.callWS({
       type: `frontend/set_user_data`,
       key: `zigzag-panel-viewstate`,

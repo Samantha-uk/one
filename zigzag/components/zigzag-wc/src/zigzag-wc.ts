@@ -55,10 +55,7 @@ export class ZigzagWC extends LitElement {
 
   protected render(): TemplateResult | void {
     return html`
-      <div
-        class="zigzag"
-        @zigClicked=${(event: CustomEvent) => this._onZigClicked(event)}
-      ></div>
+      <div class="zigzag"></div>
       <div class="buttonBox">
         <wl-button flat inverted @click=${() => this._grapher?.zoomToFit()}
           >Zoom to fit</wl-button
@@ -70,46 +67,11 @@ export class ZigzagWC extends LitElement {
           >Unlock All</wl-button
         >
       </div>
-      <div id="zigViewer">
-        <wl-button
-          flat
-          inverted
-          @click=${() => {
-            const _zigViewer:
-              | HTMLDivElement
-              | undefined
-              | null = this.shadowRoot?.querySelector(`#zigViewer`);
-            if (_zigViewer) {
-              _zigViewer.hidden = true;
-            }
-          }}
-          >Close</wl-button
-        >
-      </div>
     `;
   }
 
-  private _onZigClicked(event: CustomEvent<ZigEvent>): void {
-    const _zigViewer:
-      | HTMLDivElement
-      | undefined
-      | null = this.shadowRoot?.querySelector(`#zigViewer`);
-
-    this._jsonViewer = new JSONFormatter(event.detail.zig, 1, {
-      hoverPreviewEnabled: true,
-      hoverPreviewArrayCount: 100,
-      hoverPreviewFieldCount: 5,
-      theme: `dark`,
-      animateOpen: true,
-      animateClose: true,
-      useToJSON: true,
-    });
-
-    if (_zigViewer) {
-      _zigViewer.hidden = true;
-      _zigViewer.append(this._jsonViewer.render());
-    }
-  }
+  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+  protected _onZigClicked(_event: CustomEvent<ZigEvent>): void {}
 
   public setConfiguration(
     dataConfig: PluginConfigBase,

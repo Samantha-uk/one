@@ -3,7 +3,7 @@
 
 <h1 align="center">@samantha-uk/zigzag-panel</h1>
 
-![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.4&color=orange)![Issues](https://img.shields.io/github/issues/Samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![GitHub](https://img.shields.io/badge/license-MIT-brightgreen) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![David](https://img.shields.io/david/Samantha-uk/one) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)![Maintained](https://img.shields.io/maintenance/yes/2021)
+![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.6&color=orange)![Issues](https://img.shields.io/github/issues/Samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![GitHub](https://img.shields.io/badge/license-MIT-brightgreen) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![David](https://img.shields.io/david/Samantha-uk/one) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)![Maintained](https://img.shields.io/maintenance/yes/2021)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#table-of-contents)
@@ -19,7 +19,9 @@
 	* [layout](#layout)
 	* [render](#render)
 * [Configuration](#configuration)
-* [Know Issues/Limitations](#know-issueslimitations)
+* [Usage](#usage)
+* [Key to display icons & legends](#key-to-display-icons--legends)
+* [Know Issues](#know-issues)
 * [Contributing](#contributing)
 	* [License](#license)
 
@@ -58,7 +60,7 @@ At present the installation of Zigzag is a manual process.
 You will need to:
 
 - Copy the [zigzag](zigzag/) directory (_and its contents_) to a `zigzag` directory in the `www` folder of your Home Assistant server.
-It should then look something like this:
+It should then look something like this (_There may be a number of .map files also._):
 ```
 └── www
     └── zigzag
@@ -156,21 +158,28 @@ panel_custom:
 Plugin specific configuration items are documented in their respective readme files (_Links to these are in the tables above_).
 
 
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#know-issueslimitations)
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#usage)
 
-# Know Issues/Limitations
-There are several known issues that will be addressed soon, including:
-- Not saving the layout when you leave the page.
-- Not allowing unlocking of Zigs without using the unlock all button.
-- Zoom to fit ... doesn't!
+# Usage
+You can zoom in/out and pan around to examine the graph.
+You can change the location of a Zag by dragging it.  Once this is done it will remain `locked` in that position (_Displaying a small lock icon_). To unlock a Zig, click/press for about half a second and when you release it will unlock.
 
 
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#key-to-display-icons--legends)
+
+# Key to display icons & legends
+TBD
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#know-issues)
+
+# Know Issues
+- It doesn't correctly Zoom to Fit on initial display.  Clicking the `ZOOM TO FIT` button will work.
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#contributing)
 
 # Contributing
 Contributions, issues and feature requests are welcome.
-Feel free to check issues page if you want to contribute.
+Feel free to check the issues page if you would like to contribute.
 [Check the contributing guide](/CONTRIBUTING.md).
 
 

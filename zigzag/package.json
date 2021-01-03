@@ -8,5 +8,5 @@
   "scripts": {
     "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json"
   },
-  "version": "0.2.0-alpha"
+  "version": "0.2.0-alpha.0"
 }

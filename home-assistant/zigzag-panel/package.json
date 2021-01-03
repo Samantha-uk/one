@@ -41,5 +41,5 @@
   },
   "source": "src/zigzag-panel.ts",
   "types": "dist/zigzag-panel.d.ts",
-  "version": "0.2.0-alpha-0.5"
+  "version": "0.2.0-alpha-0.6"
 }

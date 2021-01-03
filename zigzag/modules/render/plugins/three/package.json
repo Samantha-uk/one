@@ -35,5 +35,5 @@
   },
   "source": "src/plugin-render-three.ts",
   "types": "dist/plugin-render-three.d.ts",
-  "version": "0.1.1"
+  "version": "0.1.2"
 }
