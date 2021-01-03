@@ -52,7 +52,7 @@ Configuration of Zigzag panel allows you to specify which `plugins` it will use.
 Plugins allow Zigzag behaviour to be configured.  A plugin based approach was selected to facilitate:
 - **Performance** - Only the code for the behaviour you want needs to be downloaded to your browser when it is required (_lazy-loading_).
 - **Extensibility** - To add (_for instance_) a new source of Zigbee data (_zigbee2mqtt for example_).
-- 
+
 Plugins may be authored as part of the Zigzag project or by third parties.
 
 ### data
@@ -67,10 +67,50 @@ The `data` plugin is used to specify where Zigzag will read the details of Zigs 
 
 
 ### layout
-The `layout` plugin contains the logic Zigzag uses to arrange Zigs.
+The `layout` plugin contains the logic Zigzag uses to arrange the layout of Zigs.
+| Plugin Type | Description                                                         | More Info                               |
+| ----------- | ------------------------------------------------------------------- | --------------------------------------- |
+| d3          | Uses [D3](https://d3js.org/) forces module to layout the Zigs. file | [d3](/zigzag/modules/layout/plugins/d3) |
 
 ### render
 The `render` plugin is what displays the Zigzag network on the screen.
+
+| Plugin Type | Description                                                       | More Info                                     |
+| ----------- | ----------------------------------------------------------------- | --------------------------------------------- |
+| pixi        | Uses [PixiJS](https://www.pixijs.com/) to display a 2d view. file | [pixi](/zigzag/modules/render/plugins/pixijs) |
+| three       | Uses [three.js](https://threejs.org)  to display a 3d view.       | [three](/zigzag/modules/render/plugins/three) |
+
+
+## Configuration
+Configuration of Zigzag panel allows you to specify which `plugins` it will use.  Configuration is carried out by editing entries in the Home Assistant `configuration.yaml` file.
+
+So if you wanted to use `file` based data, with `d3` layout and being rendered using `three` you would edit the `zigzag-panel` section configuration.yaml as follows.
+
+```yaml
+panel_custom:
+  - name: custom-panel-zigzag
+    sidebar_title: Zigzag
+    sidebar_icon: mdi:zigbee
+    url_path: zigzag
+    module_url: /local/zigzag/zigzag-panel.esm.js
+    trust_external_script: true
+    config:
+      who: world
+
+      zigzag:
+        plugin-path: "/local/zigzag/plugins"
+        plugin-data:
+          type: "file"
+          filepath: "/local/zigzag/devices.json"
+
+        plugin-layout:
+          type: "d3"
+
+        plugin-render:
+          type: "three"
+```
+
+Plugin specific configuration items are documented in their respective readme files (_Links to these are in the tables above_).
 
 ## Know Issues/Limitations
 There are several known issues that will be addressed soon, including:
