@@ -10,12 +10,11 @@
 	* [Installation](#installation)
 		* [Prerequisites](#prerequisites)
 		* [Installation Steps](#installation-steps)
-	* [Configuration](#configuration)
 	* [Plugins](#plugins)
 		* [data](#data)
 		* [layout](#layout)
 		* [render](#render)
-	* [Configuration](#configuration-1)
+	* [Configuration](#configuration)
 	* [Know Issues/Limitations](#know-issueslimitations)
 * [Contributing](#contributing)
 	* [License](#license)
@@ -66,13 +65,6 @@ It should then look something like this:
 - Restart Home Assistant.
 - Zigzag should appear as an entry on the left of the display, which if you select should display your Zigbee network.
 _If not, check in the console of your web browser for any error messages._
-
-
-
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#configuration)
-
-## Configuration
-Configuration of Zigzag panel allows you to specify which `plugins` it will use.  Configuration is carried out by editing entries in the Home Assistant `configuration.yaml` file.
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#plugins)

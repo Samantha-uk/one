@@ -44,10 +44,6 @@ It should then look something like this:
 - Zigzag should appear as an entry on the left of the display, which if you select should display your Zigbee network.
 _If not, check in the console of your web browser for any error messages._
 
-
-## Configuration
-Configuration of Zigzag panel allows you to specify which `plugins` it will use.  Configuration is carried out by editing entries in the Home Assistant `configuration.yaml` file.
-
 ## Plugins
 Plugins allow Zigzag behaviour to be configured.  A plugin based approach was selected to facilitate:
 - **Performance** - Only the code for the behaviour you want needs to be downloaded to your browser when it is required (_lazy-loading_).
