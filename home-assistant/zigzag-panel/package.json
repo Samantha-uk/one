@@ -26,19 +26,20 @@
     "access": "public"
   },
   "scripts": {
-    "build": "yarn clear-plugins && yarn copy-plugins && builder",
-    "bundle": "rimraf zigzag/ && cpy plugins zigzag/plugins && cpy dist/zigzag-panel.esm.js zigzag && cpy configuration/* zigzag",
+    "build": "builder",
+    "l-bundle": "rimraf zigzag/ && cpy plugins zigzag/plugins && cpy dist/zigzag-panel.esm.* zigzag && cpy configuration/* zigzag",
+    "l-publish": "run update-plugins && run l-bundle && run scp",
     "clear-plugins": "rimraf ./plugins/*",
-    "copy-plugins": "cpy /home/samantha/github/one/zigzag/**/dist/plugin-*.esm.js plugins",
+    "copy-plugins": "cpy /home/samantha/github/one/zigzag/**/dist/plugin-*.esm.* plugins",
     "lint": "builder --lint",
-    "push": "scp -r zigzag samantha@10.1.16.130://usr/share/hassio/homeassistant/www",
-    "projectz": "yarn run -T projectz ",
-    "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json",
+    "readme": "run -T readme generate --config=/home/samantha/github/one/blueprint.json",
+    "scp": "scp -r zigzag samantha@10.1.16.130://usr/share/hassio/homeassistant/www",
     "serve": "builder --serve",
     "test": "builder --test",
+    "update-plugins": "run clear-plugins && run copy-plugins",
     "watch": "builder --watch"
   },
   "source": "src/zigzag-panel.ts",
   "types": "dist/zigzag-panel.d.ts",
-  "version": "0.2.0-alpha-0.3"
+  "version": "0.2.0-alpha-0.5"
 }

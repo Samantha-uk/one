@@ -4087,7 +4087,7 @@ function init(x, y) {
 const grey = init(90, 39);
 
 /* eslint-disable no-console */
-const bee = `\u{1F41D}`;
+// const bee = `\u{1F41D}`;
 const debug = `\u{1F3F7}`;
 const tick = `\u{2705}`;
 const error = `\u{2757}`;
@@ -4097,7 +4097,7 @@ const fatal = `\u{203C}`;
 const play = `\u{1F41D}`;
 class Logger {
     constructor(module) {
-        this._prefix = `${grey(`Zig${bee}Zag`)} ${grey(`[${module}]`)}`;
+        this._prefix = `${grey(`Zigzag`)} ${grey(`[${module}]`)}`;
     }
     debug(message) {
         console.log(`${this._prefix} ${debug} ${message}`);
@@ -11897,7 +11897,7 @@ function init$1(x, y) {
 const grey$1 = init$1(90, 39);
 
 /* eslint-disable no-console */
-const bee$1 = `\u{1F41D}`;
+// const bee = `\u{1F41D}`;
 const debug$2 = `\u{1F3F7}`;
 const tick$1 = `\u{2705}`;
 const error$1 = `\u{2757}`;
@@ -11907,7 +11907,7 @@ const fatal$1 = `\u{203C}`;
 const play$1 = `\u{1F41D}`;
 class Logger$1 {
     constructor(module) {
-        this._prefix = `${grey$1(`Zig${bee$1}Zag`)} ${grey$1(`[${module}]`)}`;
+        this._prefix = `${grey$1(`Zigzag`)} ${grey$1(`[${module}]`)}`;
     }
     debug(message) {
         console.log(`${this._prefix} ${debug$2} ${message}`);
@@ -14605,7 +14605,7 @@ class PluginLayoutBase extends PluginBase {
     }
 }
 
-const D3_ALPHA_RESTART = 0.1;
+const D3_ALPHA_RESTART = 0.3;
 const D3_ALPHA_MIN = 0.01;
 const D3_ALPHA_DECAY = 0.02;
 const D3_REPEL_RADIUS = 300;
@@ -14637,16 +14637,9 @@ class LayoutPlugin extends PluginLayoutBase {
             .force(`repel`, collide().radius(D3_REPEL_RADIUS).strength(1));
     }
     lockNode(node) {
-        this._nodes[node.index].fx = node.x;
-        this._nodes[node.index].fy = node.y;
+        this._nodes[node.index].fx = node.position.x;
+        this._nodes[node.index].fy = node.position.y;
         this._engine.tick();
-    }
-    reset() {
-        this._nodes.forEach((node) => {
-            node.x = 0;
-            node.y = 0;
-        });
-        this._engine.alpha(D3_ALPHA_RESTART).restart();
     }
     restart() {
         this._engine.alpha(D3_ALPHA_RESTART).restart();
@@ -14655,11 +14648,10 @@ class LayoutPlugin extends PluginLayoutBase {
         this._engine.tick(count);
         const _nodesChanged = [];
         if (!this.isStable) {
+            // TODO (performance) Only return nodes that have been moved.
             this._nodes.forEach((node) => _nodesChanged.push({
                 index: node.index ?? 0,
-                x: node.x ?? 0,
-                y: node.y ?? 0,
-                z: 0,
+                position: { x: node.x ?? 0, y: node.y ?? 0, z: 0 },
             }));
         }
         return _nodesChanged;
@@ -14670,8 +14662,8 @@ class LayoutPlugin extends PluginLayoutBase {
         this._nodes = [];
     }
     unlockNode(index) {
-        this._nodes[index].fx = undefined;
-        this._nodes[index].fy = undefined;
+        this._nodes[index].fx = null;
+        this._nodes[index].fy = null;
     }
 }
 function createPlugin(config) {

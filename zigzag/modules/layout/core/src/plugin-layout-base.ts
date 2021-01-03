@@ -6,9 +6,11 @@ export enum LayoutPluginID {
 
 export interface LayoutNodeBase {
   index: number;
-  x?: number;
-  y?: number;
-  z?: number;
+  position: {
+    x?: number;
+    y?: number;
+    z?: number;
+  };
 }
 export interface LayoutLinkBase {
   source: number;
@@ -30,8 +32,6 @@ export abstract class PluginLayoutBase extends PluginBase {
   abstract injectNodes(nodes: LayoutNodeBase[]): void;
 
   abstract lockNode(node: LayoutNodeBase): void;
-
-  abstract reset(): void;
 
   abstract restart(): void;
 

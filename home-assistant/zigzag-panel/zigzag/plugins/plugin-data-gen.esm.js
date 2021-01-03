@@ -4087,7 +4087,7 @@ function init(x, y) {
 const grey = init(90, 39);
 
 /* eslint-disable no-console */
-const bee = `\u{1F41D}`;
+// const bee = `\u{1F41D}`;
 const debug = `\u{1F3F7}`;
 const tick = `\u{2705}`;
 const error = `\u{2757}`;
@@ -4097,7 +4097,7 @@ const fatal = `\u{203C}`;
 const play = `\u{1F41D}`;
 class Logger {
     constructor(module) {
-        this._prefix = `${grey(`Zig${bee}Zag`)} ${grey(`[${module}]`)}`;
+        this._prefix = `${grey(`Zigzag`)} ${grey(`[${module}]`)}`;
     }
     debug(message) {
         console.log(`${this._prefix} ${debug} ${message}`);
@@ -10878,7 +10878,7 @@ function init$1(x, y) {
 const grey$1 = init$1(90, 39);
 
 /* eslint-disable no-console */
-const bee$1 = `\u{1F41D}`;
+// const bee = `\u{1F41D}`;
 const debug$2 = `\u{1F3F7}`;
 const tick$1 = `\u{2705}`;
 const error$1 = `\u{2757}`;
@@ -10888,7 +10888,7 @@ const fatal$1 = `\u{203C}`;
 const play$1 = `\u{1F41D}`;
 class Logger$1 {
     constructor(module) {
-        this._prefix = `${grey$1(`Zig${bee$1}Zag`)} ${grey$1(`[${module}]`)}`;
+        this._prefix = `${grey$1(`Zigzag`)} ${grey$1(`[${module}]`)}`;
     }
     debug(message) {
         console.log(`${this._prefix} ${debug$2} ${message}`);

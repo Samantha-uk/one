@@ -100,11 +100,8 @@ export class ZigWidget implements RenderWidget {
 
   public set isLocked(lock: boolean) {
     this._isLocked = lock;
-    if (this._isLocked) {
-      this._renderPlugin.setIconVisibility(this._miniIcons[9]!, true);
-    } else {
-      this._renderPlugin.setIconVisibility(this._miniIcons[9]!, true);
-    }
+    this._zigD.isLocked = lock;
+    this._renderPlugin.setIconVisibility(this._miniIcons[9]!, lock);
   }
 
   public position(position: RenderPoint): this {
@@ -125,6 +122,10 @@ export class ZigWidget implements RenderWidget {
     this._grapher?.zigClicked(this._zigD.zig);
   }
 
+  public onHold(): void {
+    this._grapher?.zigLockOff(this._zigD);
+  }
+
   public onHoverOff(): void {
     this._showInfo(false);
   }
@@ -135,7 +136,7 @@ export class ZigWidget implements RenderWidget {
 
   public onMoved(position: RenderPoint): void {
     this._grapher?.setPositionZigWithZags(this._zigD, position);
-    this.isLocked = true;
+    this._grapher?.zigLockOn(this._zigD);
   }
 
   private _setIcon(iconName: string, color = `state_icon_color`): this {

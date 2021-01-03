@@ -15,7 +15,7 @@ import JSONFormatter from "json-formatter-js";
 import "weightless/button";
 
 export class ZigzagWC extends LitElement {
-  protected _grapher?: Grapher;
+  private _grapher?: Grapher;
 
   protected _jsonViewer?: JSONFormatter;
 
@@ -24,6 +24,16 @@ export class ZigzagWC extends LitElement {
   private _pluginConfigLayout?: PluginConfigBase;
 
   private _pluginConfigRender?: PluginConfigBase;
+
+  private _viewState?: string;
+
+  public get viewState(): string {
+    return this._grapher?.viewState ?? ``;
+  }
+
+  public set viewState(viewState: string) {
+    this._viewState = viewState;
+  }
 
   public async connectedCallback(): Promise<void> {
     super.connectedCallback();
@@ -53,7 +63,7 @@ export class ZigzagWC extends LitElement {
         <wl-button flat inverted @click=${() => this._grapher?.zoomToFit()}
           >Zoom to fit</wl-button
         >
-        <wl-button flat inverted @click=${() => this._grapher?.agitate()}
+        <wl-button flat inverted @click=${() => this._grapher?.autoLayout()}
           >Auto Layout</wl-button
         >
         <wl-button flat inverted @click=${() => this._grapher?.unlockAll()}
@@ -137,6 +147,8 @@ export class ZigzagWC extends LitElement {
 
       // Once all the plugins are loaded, create the grapher.
       this._grapher = new Grapher(_dataPlugin, _layoutPlugin, _renderPlugin);
+      this._grapher.viewState = this._viewState;
+
       return !!this._grapher;
     }
     return false;
@@ -150,7 +162,7 @@ export class ZigzagWC extends LitElement {
     return css`
       div.zigzag {
         width: 100%;
-        height: 95%;
+        height: 100%;
         position: absolute;
       }
 

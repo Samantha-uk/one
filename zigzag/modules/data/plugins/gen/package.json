@@ -34,5 +34,5 @@
   },
   "source": "src/plugin-data-gen.ts",
   "types": "dist/plugin-data-gen.d.ts",
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

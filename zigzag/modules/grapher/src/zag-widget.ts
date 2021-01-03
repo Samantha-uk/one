@@ -41,6 +41,7 @@ export class ZagWidget implements RenderWidget {
 
     this.labelOne(`${zagD.zags[0].relationship} LQI:${zagD.zags[0].lqi}`)
       .color(
+        // eslint-disable-next-line no-nested-ternary
         zagD.zags[0].lqi < LQIThresholdLower
           ? `error_color`
           : zagD.zags[0].lqi > LQIThresholdUpper
@@ -138,6 +139,9 @@ export class ZagWidget implements RenderWidget {
 
   // eslint-disable-next-line class-methods-use-this
   public onClicked(): void {}
+
+  // eslint-disable-next-line class-methods-use-this
+  public onHold(): void {}
 
   // eslint-disable-next-line class-methods-use-this
   public onHoverOff(): void {}

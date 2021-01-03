@@ -1,3 +1,4 @@
+import { Logger } from "@samantha-uk/utils-logger";
 import {
   RenderDictionary,
   PluginRenderBase,
@@ -20,9 +21,16 @@ import { ZagWidget } from "./zag-widget";
 // eslint-disable-next-line import/no-cycle
 import { ZigWidget, ZIG_RADIUS } from "./zig-widget";
 
+const log = new Logger(`grapher`);
+
+interface ZigPosition {
+  ieee: string;
+  position: RenderPoint;
+}
+
 export interface GrapherViewState {
-  pan: { x: number; y: number };
-  scale: number;
+  position: RenderPoint;
+  zoom: number;
   zigs: ZigPosition[];
 }
 
@@ -50,13 +58,6 @@ export interface ZigEvent {
 interface ZigDatumPair {
   source: ZigDatum | undefined;
   target: ZigDatum | undefined;
-}
-
-interface ZigPosition {
-  ieee: string;
-  x: number;
-  y: number;
-  z: number;
 }
 
 const PERFMON = false;
@@ -90,6 +91,8 @@ export class Grapher {
 
   private _renderPlugin: PluginRenderBase;
 
+  private _viewState?: GrapherViewState;
+
   private _width = 0;
 
   private _zagDatums: ZagDatum[] = [];
@@ -107,72 +110,60 @@ export class Grapher {
   }
 
   // Provide the layout data, to be used to persist the layout externally.
-  get viewState(): GrapherViewState {
+  get viewState(): string | undefined {
     // Return the coordinates of all locked zigs.
     const _viewState: GrapherViewState = {
-      pan: { x: 0, y: 0 },
-      scale: 0,
+      position: this._renderPlugin.viewPosition,
+      zoom: this._renderPlugin.viewZoom,
       zigs: [],
     };
     this._zigDatums.forEach((zigD: ZigDatum) => {
-      // if fx & fy then the zig is locked and we will include it in the returned layout data.
+      // if fx & fy then the zig is locked and we will include it.
       if (zigD.isLocked) {
         _viewState.zigs.push({
           ieee: zigD.zig.ieee,
-          x: zigD.position.x,
-          y: zigD.position.y,
-          z: zigD.position.z,
+          position: zigD.position,
         } as ZigPosition);
       }
     });
 
-    // The transform allows us to restore pan/zoom state.
-    // At this stage the dom elements have gone, so we use the cached value.
-    /*     _viewState.pan = { x: this._transform!.x, y: this._transform!.y };
-    _viewState.scale = this._transform!.k; */
-    return _viewState;
+    return JSON.stringify(_viewState);
   }
 
   // Inject the layout data and update zigs.
-  set viewState(viewState: GrapherViewState) {
+  set viewState(viewState: string | undefined) {
     try {
-      for (const _zigPosition of viewState.zigs) {
-        const _zigToLock: ZigDatum | undefined = this._zigDatums.find(
-          (zigD) => zigD.zig.ieee === _zigPosition.ieee
-        );
-        // If we have found the zig.
-        if (_zigToLock !== undefined) {
-          _zigToLock.position.x = _zigPosition.x;
-          _zigToLock.position.y = _zigPosition.y;
-          _zigToLock.position.z = _zigPosition.z;
-          this._zigLockOn(_zigToLock);
-        }
+      if (viewState) {
+        this._viewState = JSON.parse(viewState) as GrapherViewState;
       }
-
-      /* 
-      const _restoreTranslate = d3z.zoomIdentity
-        .translate(viewState.pan.x, viewState.pan.y)
-        .scale(viewState.scale);
-
-      this._zigzagContainer!.call(this._zoom!.transform, _restoreTranslate);
-
-      this._renderEngine!.translate({
-        x: this._transform.x,
-        y: this._transform.y,
-        z: 500,
-      });
-      this._renderEngine!.scale(this._transform.k); */
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(
-        `Zigzag encountered a problem [${error}] restoring the viewState [${viewState}].`
+      log.error(
+        `Zigzag encountered a problem [${error}] setting the viewState [${viewState}].`
       );
     }
   }
 
-  public agitate(): void {
-    this.unlockAll();
-    this._layoutPlugin?.reset();
+  // Apply the viewState data and update zigs.
+  private _applyViewState() {
+    if (this._viewState) {
+      for (const _zigPosition of this._viewState.zigs) {
+        const _zigToLock: ZigDatum | undefined = this._zigDatums.find(
+          (zigD) => zigD.zig.ieee === _zigPosition.ieee
+        );
+        // If we have found the zig, we lock it.
+        if (_zigToLock !== undefined) {
+          _zigToLock.position = _zigPosition.position;
+          this.zigLockOn(_zigToLock);
+        }
+      }
+      this._renderPlugin.viewPosition = this._viewState.position;
+      this._renderPlugin.viewZoom = this._viewState.zoom;
+    }
+  }
+
+  public autoLayout(): void {
+    // this.unlockAll();
+    this._layoutPlugin?.restart();
   }
 
   // If the container has been resized we need to modify some of the simulation settings and restart.
@@ -211,6 +202,10 @@ export class Grapher {
     this._zigCreateWidgets();
     this._zagCreateWidgets();
 
+    if (this._viewState) {
+      this._applyViewState();
+    }
+
     // Start the render loop.
     this._renderLoop();
     return true;
@@ -224,7 +219,7 @@ export class Grapher {
   }
 
   public unlockAll(): void {
-    this._zigDatums.forEach((zigD) => this._zigLockOff(zigD));
+    this._zigDatums.forEach((zigD) => this.zigLockOff(zigD));
     // this._requestUpdate();
   }
 
@@ -273,7 +268,6 @@ export class Grapher {
 
     zags.forEach((zagToAdd: Zag) => {
       // Find the source and target Zigs.
-      // eslint-disable-next-line unicorn/no-reduce
       const _zigDPair: ZigDatumPair = this._zigDatums.reduce(
         (zigDPair: ZigDatumPair, zigD: ZigDatum) => {
           zigDPair.source =
@@ -322,9 +316,7 @@ export class Grapher {
       this._zigDatums.map(
         (zigD: ZigDatum): LayoutNodeBase => ({
           index: zigD.index,
-          x: zigD.position.x,
-          y: zigD.position.y,
-          z: zigD.position.z,
+          position: zigD.position,
         })
       )
     );
@@ -441,9 +433,9 @@ export class Grapher {
     const _zagsToUpdate = new Set<ZagDatum>();
     zigs.forEach((zig: LayoutNodeBase) => {
       const _zigW = this._setPositionZigByIndex(zig.index, {
-        x: zig.x ?? 0,
-        y: zig.y ?? 0,
-        z: zig.z ?? 0,
+        x: zig.position.x ?? 0,
+        y: zig.position.y ?? 0,
+        z: zig.position.z ?? 0,
       });
       _zigW.zagDs.forEach((zagD: ZagDatum) => _zagsToUpdate.add(zagD));
     });
@@ -537,7 +529,7 @@ export class Grapher {
 
   } */
 
-  private _zigLockOff(zigD: ZigDatum) {
+  public zigLockOff(zigD: ZigDatum): void {
     if (zigD.widget) {
       zigD.widget.isLocked = false;
     }
@@ -547,14 +539,14 @@ export class Grapher {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private _zigLockOn(zigD: ZigDatum) {
-    if (!zigD.isLocked) {
-      if (zigD.widget) {
-        zigD.widget.isLocked = true;
-      }
-      zigD.isLocked = true;
+  public zigLockOn(zigD: ZigDatum): void {
+    if (zigD.widget) {
+      zigD.widget.isLocked = true;
     }
-    // This call is outside the if block as we always want to update the node position in the layout engine as we drag.
-    zigD.grapher?._layoutPlugin.lockNode({ index: zigD.index });
+    zigD.grapher?._layoutPlugin.lockNode({
+      index: zigD.index,
+      position: zigD.position,
+    });
+    zigD.isLocked = true;
   }
 }

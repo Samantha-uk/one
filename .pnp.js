@@ -1506,6 +1506,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@samantha-uk/zigzag-grapher", "workspace:zigzag/modules/grapher"],
             ["@samantha-uk/tools-builder", "workspace:tools/builder"],
+            ["@samantha-uk/utils-logger", "workspace:utils/logger"],
             ["@samantha-uk/zigzag-data", "workspace:zigzag/modules/data/core"],
             ["@samantha-uk/zigzag-layout", "workspace:zigzag/modules/layout/core"],
             ["@samantha-uk/zigzag-render", "workspace:zigzag/modules/render/core"],

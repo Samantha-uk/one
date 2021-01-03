@@ -1149,6 +1149,7 @@ __metadata:
   resolution: "@samantha-uk/zigzag-grapher@workspace:zigzag/modules/grapher"
   dependencies:
     "@samantha-uk/tools-builder": "workspace:*"
+    "@samantha-uk/utils-logger": "workspace:*"
     "@samantha-uk/zigzag-data": "workspace:*"
     "@samantha-uk/zigzag-layout": "workspace:*"
     "@samantha-uk/zigzag-render": "workspace:*"

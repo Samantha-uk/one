@@ -32,5 +32,5 @@
   },
   "source": "src/plugin-data-file.ts",
   "types": "dist/plugin-data-file.d.ts",
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

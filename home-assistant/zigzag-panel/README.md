@@ -1,49 +1,59 @@
-<!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️--><h1 align="center">@samantha-uk/zigzag-panel</h1>
-![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.3&color=orange)![Issues](https://img.shields.io/github/issues/Samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![GitHub](https://img.shields.io/badge/license-MIT-brightgreen) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![David](https://img.shields.io/david/Samantha-uk/one) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)![Maintained](https://img.shields.io/maintenance/yes/2021)
+<!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
+![zigzag logo](zigzag-logo-HA.png)
+
+<h1 align="center">@samantha-uk/zigzag-panel</h1>
+
+![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.4&color=orange)![Issues](https://img.shields.io/github/issues/Samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![GitHub](https://img.shields.io/badge/license-MIT-brightgreen) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![David](https://img.shields.io/david/Samantha-uk/one) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)![Maintained](https://img.shields.io/maintenance/yes/2021)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#table-of-contents)
 
 ## Table of Contents
 
-	* [Description](#description)
-	* [Installation](#installation)
-		* [Prerequisites](#prerequisites)
-		* [Installation Steps](#installation-steps)
-	* [Plugins](#plugins)
-		* [data](#data)
-		* [layout](#layout)
-		* [render](#render)
-	* [Configuration](#configuration)
-	* [Know Issues/Limitations](#know-issueslimitations)
+* [Description](#description)
+* [Installation](#installation)
+	* [Prerequisites](#prerequisites)
+	* [Installation Steps](#installation-steps)
+* [Plugins](#plugins)
+	* [data](#data)
+	* [layout](#layout)
+	* [render](#render)
+* [Configuration](#configuration)
+* [Know Issues/Limitations](#know-issueslimitations)
 * [Contributing](#contributing)
 	* [License](#license)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#description)
 
-## Description
+# Description
 Zigzag-panel is a custom panel for [Home Assistant](https://www.home-assistant.io/) that displays a graphical layout of Zigbee devices and the connections between them.
 
 In Zigzag, Zigbee devices are known as Zigs and the connections between them as Zags.
 
-Zigzag-panel is built using Zigzag-wc.
+Zigzag-panel is built using the [Zigzag web component](/zigzag).
 
 _Zigzag is currently an alpha release. There are likely to be a number of issues and new releases may be frequent._
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#installation)
 
-## Installation
+# Installation
 At present the installation of Zigzag is a manual process.
 
-### Prerequisites
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#prerequisites)
+
+## Prerequisites
 
 - [Home Assistant](https://www.home-assistant.io/) - version `2020.12.0` or more recent. 
 - [ZHA](https://www.home-assistant.io/integrations/zha/) - A Home Assistant Zigbee Integration.
  _The plugin architecture of Zigzag means new sources of Zigbee information can be easily added.  Support for zigbee2mqtt is under investigation._
 
-### Installation Steps
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#installation-steps)
+
+## Installation Steps
 
 You will need to:
 
@@ -69,14 +79,17 @@ _If not, check in the console of your web browser for any error messages._
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#plugins)
 
-## Plugins
+# Plugins
 Plugins allow Zigzag behaviour to be configured.  A plugin based approach was selected to facilitate:
 - **Performance** - Only the code for the behaviour you want needs to be downloaded to your browser when it is required (_lazy-loading_).
 - **Extensibility** - To add (_for instance_) a new source of Zigbee data (_zigbee2mqtt for example_).
 
 Plugins may be authored as part of the Zigzag project or by third parties.
 
-### data
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#data)
+
+## data
 The `data` plugin is used to specify where Zigzag will read the details of Zigs and Zags.
 
 
@@ -87,13 +100,19 @@ The `data` plugin is used to specify where Zigzag will read the details of Zigs 
 | zha         | Gets Zigzag information from the Home Asssistant ZHA integration                                         | [zha](/zigzag/modules/data/plugins/zha)   |
 
 
-### layout
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#layout)
+
+## layout
 The `layout` plugin contains the logic Zigzag uses to arrange the layout of Zigs.
 | Plugin Type | Description                                                         | More Info                               |
 | ----------- | ------------------------------------------------------------------- | --------------------------------------- |
 | d3          | Uses [D3](https://d3js.org/) forces module to layout the Zigs. file | [d3](/zigzag/modules/layout/plugins/d3) |
 
-### render
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#render)
+
+## render
 The `render` plugin is what displays the Zigzag network on the screen.
 
 | Plugin Type | Description                                                       | More Info                                     |
@@ -105,7 +124,7 @@ The `render` plugin is what displays the Zigzag network on the screen.
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#configuration)
 
-## Configuration
+# Configuration
 Configuration of Zigzag panel allows you to specify which `plugins` it will use.  Configuration is carried out by editing entries in the Home Assistant `configuration.yaml` file.
 
 So if you wanted to use `file` based data, with `d3` layout and being rendered using `three` you would edit the `zigzag-panel` section configuration.yaml as follows.
@@ -139,7 +158,7 @@ Plugin specific configuration items are documented in their respective readme fi
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#know-issueslimitations)
 
-## Know Issues/Limitations
+# Know Issues/Limitations
 There are several known issues that will be addressed soon, including:
 - Not saving the layout when you leave the page.
 - Not allowing unlocking of Zigs without using the unlock all button.

@@ -25,10 +25,21 @@ export abstract class PluginRenderBase extends PluginBase {
     this.id = `${this.id}-render`;
   }
 
+  /**
+   * Indicates rendering has changed and a call to render needs to be made.
+   * @returns boolean
+   */
   public abstract get hasChanged(): boolean;
 
+  /**
+   * Returns the dimensions (in world co-ordinates) of the render view.
+   * @returns RenderPoint
+   */
   public abstract get viewSize(): RenderPoint;
 
+  /**
+   * Indicates rendering has changed and a call to render needs to be made.
+   */
   public abstract set viewSize(newDimensions: RenderPoint);
 
   public abstract get viewPosition(): RenderPoint;

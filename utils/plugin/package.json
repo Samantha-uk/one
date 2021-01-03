@@ -29,5 +29,5 @@
   "source": "src/plugin.ts",
   "type": "module",
   "types": "dist/types/plugin.d.ts",
-  "version": "0.1.2"
+  "version": "0.1.3"
 }

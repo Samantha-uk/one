@@ -44,5 +44,5 @@
   },
   "source": "src/zigzag-wc.ts",
   "types": "dist/zigzag-wc.d.ts",
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

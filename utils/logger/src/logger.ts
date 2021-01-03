@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { grey } from "kleur/colors";
 
-const bee = `\u{1F41D}`;
+// const bee = `\u{1F41D}`;
 const debug = `\u{1F3F7}`;
 const tick = `\u{2705}`;
 const error = `\u{2757}`;
@@ -14,7 +14,7 @@ export class Logger {
   private _prefix: string;
 
   constructor(module: string) {
-    this._prefix = `${grey(`Zig${bee}Zag`)} ${grey(`[${module}]`)}`;
+    this._prefix = `${grey(`Zigzag`)} ${grey(`[${module}]`)}`;
   }
 
   public debug(message: string): void {

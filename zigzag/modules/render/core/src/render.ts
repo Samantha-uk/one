@@ -37,6 +37,7 @@ export interface RenderEvents {
 export interface RenderWidget {
   isVisible: boolean;
   onClicked(): void;
+  onHold(): void;
   onHoverOff(): void;
   onHoverOn(): void;
   onMoved(position: RenderPoint): void;

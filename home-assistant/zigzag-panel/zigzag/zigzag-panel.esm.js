@@ -6866,7 +6866,7 @@ const green = init(32, 39);
 const grey = init(90, 39);
 
 /* eslint-disable no-console */
-const bee = `\u{1F41D}`;
+// const bee = `\u{1F41D}`;
 const debug = `\u{1F3F7}`;
 const tick = `\u{2705}`;
 const error = `\u{2757}`;
@@ -6876,7 +6876,7 @@ const fatal = `\u{203C}`;
 const play = `\u{1F41D}`;
 class Logger {
     constructor(module) {
-        this._prefix = `${grey(`Zig${bee}Zag`)} ${grey(`[${module}]`)}`;
+        this._prefix = `${grey(`Zigzag`)} ${grey(`[${module}]`)}`;
     }
     debug(message) {
         console.log(`${this._prefix} ${debug} ${message}`);
@@ -9600,6 +9600,66 @@ function PluginLoader(config) {
     });
 }
 
+let FORCE_COLOR$1, NODE_DISABLE_COLORS$1, NO_COLOR$1, TERM$1, isTTY$1=true;
+if (typeof process !== 'undefined') {
+	({ FORCE_COLOR: FORCE_COLOR$1, NODE_DISABLE_COLORS: NODE_DISABLE_COLORS$1, NO_COLOR: NO_COLOR$1, TERM: TERM$1 } = process.env);
+	isTTY$1 = process.stdout && process.stdout.isTTY;
+}
+
+const $$1 = {
+	enabled: !NODE_DISABLE_COLORS$1 && NO_COLOR$1 == null && TERM$1 !== 'dumb' && (
+		FORCE_COLOR$1 != null && FORCE_COLOR$1 !== '0' || isTTY$1
+	)
+};
+
+function init$1(x, y) {
+	let rgx = new RegExp(`\\x1b\\[${y}m`, 'g');
+	let open = `\x1b[${x}m`, close = `\x1b[${y}m`;
+
+	return function (txt) {
+		if (!$$1.enabled || txt == null) return txt;
+		return open + ((''+txt).includes(close) ? txt.replace(rgx, close + open) : txt) + close;
+	};
+}
+const grey$1 = init$1(90, 39);
+
+/* eslint-disable no-console */
+// const bee = `\u{1F41D}`;
+const debug$2 = `\u{1F3F7}`;
+const tick$1 = `\u{2705}`;
+const error$1 = `\u{2757}`;
+const warning$1 = `\u{26A0}`;
+const info$1 = `\u{2139}`;
+const fatal$1 = `\u{203C}`;
+const play$1 = `\u{1F41D}`;
+class Logger$1 {
+    constructor(module) {
+        this._prefix = `${grey$1(`Zigzag`)} ${grey$1(`[${module}]`)}`;
+    }
+    debug(message) {
+        console.log(`${this._prefix} ${debug$2} ${message}`);
+    }
+    error(message) {
+        console.log(`${this._prefix} ${error$1} ${message}`);
+    }
+    fatal(message) {
+        console.log(`${this._prefix} ${fatal$1} ${message}`);
+    }
+    info(message) {
+        console.log(`${this._prefix} ${info$1} ${message}`);
+    }
+    success(message) {
+        console.log(`${this._prefix} ${tick$1} ${message}`);
+    }
+    start(message) {
+        console.log(`${this._prefix} ${play$1} ${message}`);
+    }
+    warn(message) {
+        console.log(`${this._prefix} ${warning$1} ${message}`);
+    }
+}
+/* eslint-enable no-console */
+
 var MonitorMaxSamples = 100;
 
 var frameTasks = [];
@@ -9793,7 +9853,9 @@ class ZagWidget {
         this._zagD = zagD;
         this._link = this._renderPlugin.addLink(this._zagD.source.position, this._zagD.target.position, ZAG_RADIUS, `background_secondary_color`, this);
         this.labelOne(`${zagD.zags[0].relationship} LQI:${zagD.zags[0].lqi}`)
-            .color(zagD.zags[0].lqi < LQIThresholdLower
+            .color(
+        // eslint-disable-next-line no-nested-ternary
+        zagD.zags[0].lqi < LQIThresholdLower
             ? `error_color`
             : zagD.zags[0].lqi > LQIThresholdUpper
                 ? `success_color`
@@ -9857,6 +9919,8 @@ class ZagWidget {
     // eslint-disable-next-line class-methods-use-this
     onClicked() { }
     // eslint-disable-next-line class-methods-use-this
+    onHold() { }
+    // eslint-disable-next-line class-methods-use-this
     onHoverOff() { }
     // eslint-disable-next-line class-methods-use-this
     onHoverOn() { }
@@ -9909,12 +9973,8 @@ class ZigWidget {
     }
     set isLocked(lock) {
         this._isLocked = lock;
-        if (this._isLocked) {
-            this._renderPlugin.setIconVisibility(this._miniIcons[9], true);
-        }
-        else {
-            this._renderPlugin.setIconVisibility(this._miniIcons[9], true);
-        }
+        this._zigD.isLocked = lock;
+        this._renderPlugin.setIconVisibility(this._miniIcons[9], lock);
     }
     position(position) {
         this._renderPlugin.setNodePosition(this._node, position);
@@ -9931,6 +9991,9 @@ class ZigWidget {
     onClicked() {
         this._grapher?.zigClicked(this._zigD.zig);
     }
+    onHold() {
+        this._grapher?.zigLockOff(this._zigD);
+    }
     onHoverOff() {
         this._showInfo(false);
     }
@@ -9939,7 +10002,7 @@ class ZigWidget {
     }
     onMoved(position) {
         this._grapher?.setPositionZigWithZags(this._zigD, position);
-        this.isLocked = true;
+        this._grapher?.zigLockOn(this._zigD);
     }
     _setIcon(iconName, color = `state_icon_color`) {
         this._renderPlugin.addNodeIcon(this._node, {
@@ -9989,7 +10052,7 @@ class ZigWidget {
     }
 }
 
-// https://github.com/localvoid/perf-monitor
+const log$1 = new Logger$1(`grapher`);
 class Grapher {
     constructor(dataPlugin, layoutPlugin, renderPlugin) {
         this._colorCSS = {};
@@ -10007,62 +10070,50 @@ class Grapher {
     get viewState() {
         // Return the coordinates of all locked zigs.
         const _viewState = {
-            pan: { x: 0, y: 0 },
-            scale: 0,
+            position: this._renderPlugin.viewPosition,
+            zoom: this._renderPlugin.viewZoom,
             zigs: [],
         };
         this._zigDatums.forEach((zigD) => {
-            // if fx & fy then the zig is locked and we will include it in the returned layout data.
+            // if fx & fy then the zig is locked and we will include it.
             if (zigD.isLocked) {
                 _viewState.zigs.push({
                     ieee: zigD.zig.ieee,
-                    x: zigD.position.x,
-                    y: zigD.position.y,
-                    z: zigD.position.z,
+                    position: zigD.position,
                 });
             }
         });
-        // The transform allows us to restore pan/zoom state.
-        // At this stage the dom elements have gone, so we use the cached value.
-        /*     _viewState.pan = { x: this._transform!.x, y: this._transform!.y };
-        _viewState.scale = this._transform!.k; */
-        return _viewState;
+        return JSON.stringify(_viewState);
     }
     // Inject the layout data and update zigs.
     set viewState(viewState) {
         try {
-            for (const _zigPosition of viewState.zigs) {
-                const _zigToLock = this._zigDatums.find((zigD) => zigD.zig.ieee === _zigPosition.ieee);
-                // If we have found the zig.
-                if (_zigToLock !== undefined) {
-                    _zigToLock.position.x = _zigPosition.x;
-                    _zigToLock.position.y = _zigPosition.y;
-                    _zigToLock.position.z = _zigPosition.z;
-                    this._zigLockOn(_zigToLock);
-                }
+            if (viewState) {
+                this._viewState = JSON.parse(viewState);
             }
-            /*
-            const _restoreTranslate = d3z.zoomIdentity
-              .translate(viewState.pan.x, viewState.pan.y)
-              .scale(viewState.scale);
-      
-            this._zigzagContainer!.call(this._zoom!.transform, _restoreTranslate);
-      
-            this._renderEngine!.translate({
-              x: this._transform.x,
-              y: this._transform.y,
-              z: 500,
-            });
-            this._renderEngine!.scale(this._transform.k); */
         }
         catch (error) {
-            // eslint-disable-next-line no-console
-            console.log(`Zigzag encountered a problem [${error}] restoring the viewState [${viewState}].`);
+            log$1.error(`Zigzag encountered a problem [${error}] setting the viewState [${viewState}].`);
         }
     }
-    agitate() {
-        this.unlockAll();
-        this._layoutPlugin?.reset();
+    // Apply the viewState data and update zigs.
+    _applyViewState() {
+        if (this._viewState) {
+            for (const _zigPosition of this._viewState.zigs) {
+                const _zigToLock = this._zigDatums.find((zigD) => zigD.zig.ieee === _zigPosition.ieee);
+                // If we have found the zig, we lock it.
+                if (_zigToLock !== undefined) {
+                    _zigToLock.position = _zigPosition.position;
+                    this.zigLockOn(_zigToLock);
+                }
+            }
+            this._renderPlugin.viewPosition = this._viewState.position;
+            this._renderPlugin.viewZoom = this._viewState.zoom;
+        }
+    }
+    autoLayout() {
+        // this.unlockAll();
+        this._layoutPlugin?.restart();
     }
     // If the container has been resized we need to modify some of the simulation settings and restart.
     resize() {
@@ -10094,6 +10145,9 @@ class Grapher {
         // Create the display widgets.
         this._zigCreateWidgets();
         this._zagCreateWidgets();
+        if (this._viewState) {
+            this._applyViewState();
+        }
         // Start the render loop.
         this._renderLoop();
         return true;
@@ -10105,7 +10159,7 @@ class Grapher {
         this._zagDatums = [];
     }
     unlockAll() {
-        this._zigDatums.forEach((zigD) => this._zigLockOff(zigD));
+        this._zigDatums.forEach((zigD) => this.zigLockOff(zigD));
         // this._requestUpdate();
     }
     zoomToFit() {
@@ -10142,7 +10196,6 @@ class Grapher {
         }));
         zags.forEach((zagToAdd) => {
             // Find the source and target Zigs.
-            // eslint-disable-next-line unicorn/no-reduce
             const _zigDPair = this._zigDatums.reduce((zigDPair, zigD) => {
                 zigDPair.source =
                     zigD.zig.ieee === zagToAdd.ieee ? zigD : zigDPair.source;
@@ -10175,9 +10228,7 @@ class Grapher {
         });
         this._layoutPlugin.injectNodes(this._zigDatums.map((zigD) => ({
             index: zigD.index,
-            x: zigD.position.x,
-            y: zigD.position.y,
-            z: zigD.position.z,
+            position: zigD.position,
         })));
         this._layoutPlugin.injectLinks(this._zagDatums.map((zagD) => ({
             source: zagD.source.index,
@@ -10251,9 +10302,9 @@ class Grapher {
         const _zagsToUpdate = new Set();
         zigs.forEach((zig) => {
             const _zigW = this._setPositionZigByIndex(zig.index, {
-                x: zig.x ?? 0,
-                y: zig.y ?? 0,
-                z: zig.z ?? 0,
+                x: zig.position.x ?? 0,
+                y: zig.position.y ?? 0,
+                z: zig.position.z ?? 0,
             });
             _zigW.zagDs.forEach((zagD) => _zagsToUpdate.add(zagD));
         });
@@ -10315,7 +10366,7 @@ class Grapher {
     private _zigHighlightOn(zigD: ZigDatum) {
   
     } */
-    _zigLockOff(zigD) {
+    zigLockOff(zigD) {
         if (zigD.widget) {
             zigD.widget.isLocked = false;
         }
@@ -10323,15 +10374,15 @@ class Grapher {
         zigD.isLocked = false;
     }
     // eslint-disable-next-line class-methods-use-this
-    _zigLockOn(zigD) {
-        if (!zigD.isLocked) {
-            if (zigD.widget) {
-                zigD.widget.isLocked = true;
-            }
-            zigD.isLocked = true;
+    zigLockOn(zigD) {
+        if (zigD.widget) {
+            zigD.widget.isLocked = true;
         }
-        // This call is outside the if block as we always want to update the node position in the layout engine as we drag.
-        zigD.grapher?._layoutPlugin.lockNode({ index: zigD.index });
+        zigD.grapher?._layoutPlugin.lockNode({
+            index: zigD.index,
+            position: zigD.position,
+        });
+        zigD.isLocked = true;
     }
 }
 
@@ -11020,6 +11071,12 @@ __decorate$1([
 Button = __decorate$1([customElement('wl-button')], Button);
 
 class ZigzagWC extends LitElement {
+    get viewState() {
+        return this._grapher?.viewState ?? ``;
+    }
+    set viewState(viewState) {
+        this._viewState = viewState;
+    }
     async connectedCallback() {
         super.connectedCallback();
     }
@@ -11043,7 +11100,7 @@ class ZigzagWC extends LitElement {
         <wl-button flat inverted @click=${() => this._grapher?.zoomToFit()}
           >Zoom to fit</wl-button
         >
-        <wl-button flat inverted @click=${() => this._grapher?.agitate()}
+        <wl-button flat inverted @click=${() => this._grapher?.autoLayout()}
           >Auto Layout</wl-button
         >
         <wl-button flat inverted @click=${() => this._grapher?.unlockAll()}
@@ -11099,6 +11156,7 @@ class ZigzagWC extends LitElement {
             const _renderPlugin = await PluginLoader(this._pluginConfigRender);
             // Once all the plugins are loaded, create the grapher.
             this._grapher = new Grapher(_dataPlugin, _layoutPlugin, _renderPlugin);
+            this._grapher.viewState = this._viewState;
             return !!this._grapher;
         }
         return false;
@@ -11110,7 +11168,7 @@ class ZigzagWC extends LitElement {
         return css `
       div.zigzag {
         width: 100%;
-        height: 95%;
+        height: 100%;
         position: absolute;
       }
 
@@ -11390,8 +11448,9 @@ const supportsAdoptingStyleSheets$1 = (window.ShadowRoot) &&
 
 class ZigzagPanel extends ZigzagWC {
     async firstUpdated(changedProperties) {
+        this.viewState = await this.restoreViewstate();
         const zzc = this.panel.config?.zigzag;
-        // Set the configuration in this web component.
+        // Set the plugin configuration we will use.
         this.setConfiguration({
             apiVersionRequired: `1.0.0`,
             id: `plugin-data-${zzc[`plugin-data`].type}`,
@@ -11408,6 +11467,26 @@ class ZigzagPanel extends ZigzagWC {
             pluginPath: zzc[`plugin-path`],
         });
         super.firstUpdated(changedProperties);
+    }
+    async disconnectedCallback() {
+        await this.storeViewstate(this.viewState);
+        super.disconnectedCallback();
+    }
+    async restoreViewstate() {
+        // Request a saved viewState
+        const _result = await this.hass.callWS({
+            type: `frontend/get_user_data`,
+            key: `zigzag-panel-viewstate`,
+        });
+        return _result.value;
+    }
+    async storeViewstate(viewState) {
+        // Store Zigzag data
+        await this.hass.callWS({
+            type: `frontend/set_user_data`,
+            key: `zigzag-panel-viewstate`,
+            value: viewState,
+        });
     }
 }
 __decorate([

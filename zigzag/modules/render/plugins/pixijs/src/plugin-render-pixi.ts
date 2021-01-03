@@ -20,6 +20,7 @@ import * as z from "zod";
 
 const LINK_WIDTH = 5;
 const ICON_SCALE = 14;
+const HOLD_TIME_THRESHOLD_MS = 400;
 const NS = `http://www.w3.org/2000/svg`;
 
 interface RenderIconPIXI extends RenderIcon {
@@ -68,6 +69,8 @@ export class RenderPlugin extends PluginRenderBase {
   private _colorCSS: RenderDictionary<string> = {};
 
   private _dragStartPosition = new PIXI.Point();
+
+  private _dragStartTime = 0;
 
   private _dragWidget?: RenderWidget;
 
@@ -297,6 +300,7 @@ export class RenderPlugin extends PluginRenderBase {
     this._dragWidget = widget;
     this._gfxViewport.pause = true;
     this._dragStartPosition.copyFrom(event.data.global);
+    this._dragStartTime = Date.now();
   }
 
   private _onDrag(event: PIXI.InteractionEvent): void {
@@ -310,9 +314,13 @@ export class RenderPlugin extends PluginRenderBase {
   }
 
   private _onDragEnd(event: PIXI.InteractionEvent): void {
-    // If the cursor has not moved, then we actually clicked.
+    // If the cursor has not moved, then it is a click or hold.
     if (this._dragStartPosition.equals(event.data.global)) {
-      this._dragWidget?.onClicked();
+      if (Date.now() - this._dragStartTime < HOLD_TIME_THRESHOLD_MS) {
+        this._dragWidget?.onClicked();
+      } else {
+        this._dragWidget?.onHold();
+      }
     }
     this._dragWidget = undefined;
     this._gfxViewport.pause = false;

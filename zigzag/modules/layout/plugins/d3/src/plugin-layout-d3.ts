@@ -7,7 +7,7 @@ import {
 } from "@samantha-uk/zigzag-layout";
 import * as z from "zod";
 
-const D3_ALPHA_RESTART = 0.1;
+const D3_ALPHA_RESTART = 0.3;
 const D3_ALPHA_MIN = 0.01;
 const D3_ALPHA_DECAY = 0.02;
 const D3_REPEL_RADIUS = 300;
@@ -60,17 +60,9 @@ export class LayoutPlugin extends PluginLayoutBase {
   }
 
   public lockNode(node: LayoutNodeBase): void {
-    this._nodes[node.index].fx = node.x;
-    this._nodes[node.index].fy = node.y;
+    this._nodes[node.index].fx = node.position.x;
+    this._nodes[node.index].fy = node.position.y;
     this._engine.tick();
-  }
-
-  public reset(): void {
-    this._nodes.forEach((node) => {
-      node.x = 0;
-      node.y = 0;
-    });
-    this._engine.alpha(D3_ALPHA_RESTART).restart();
   }
 
   public restart(): void {
@@ -81,12 +73,11 @@ export class LayoutPlugin extends PluginLayoutBase {
     this._engine.tick(count);
     const _nodesChanged: LayoutNodeBase[] = [];
     if (!this.isStable) {
+      // TODO (performance) Only return nodes that have been moved.
       this._nodes.forEach((node) =>
         _nodesChanged.push({
           index: node.index ?? 0,
-          x: node.x ?? 0,
-          y: node.y ?? 0,
-          z: 0,
+          position: { x: node.x ?? 0, y: node.y ?? 0, z: 0 },
         })
       );
     }
@@ -100,8 +91,8 @@ export class LayoutPlugin extends PluginLayoutBase {
   }
 
   public unlockNode(index: number): void {
-    this._nodes[index].fx = undefined;
-    this._nodes[index].fy = undefined;
+    this._nodes[index].fx = null;
+    this._nodes[index].fy = null;
   }
 }
 

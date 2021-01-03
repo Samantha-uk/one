@@ -14,7 +14,6 @@ module.exports = {
     "plugin:promise/recommended",
     "plugin:wc/recommended",
     "plugin:lit/recommended",
-    "plugin:unicorn/recommended",
     "prettier",
     "prettier/@typescript-eslint"
   ],
@@ -36,9 +35,8 @@ module.exports = {
     "import",
     "lit",
     "prettier",
-    "promise",
-    "unicorn"
-  ],
+    "promise"
+    ],
   root: true,
   rules: {
     "@typescript-eslint/naming-convention": [

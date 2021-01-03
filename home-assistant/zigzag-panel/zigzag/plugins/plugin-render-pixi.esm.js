@@ -4091,7 +4091,7 @@ function init(x, y) {
 const grey = init(90, 39);
 
 /* eslint-disable no-console */
-const bee = `\u{1F41D}`;
+// const bee = `\u{1F41D}`;
 const debug = `\u{1F3F7}`;
 const tick = `\u{2705}`;
 const error = `\u{2757}`;
@@ -4101,7 +4101,7 @@ const fatal = `\u{203C}`;
 const play = `\u{1F41D}`;
 class Logger {
     constructor(module) {
-        this._prefix = `${grey(`Zig${bee}Zag`)} ${grey(`[${module}]`)}`;
+        this._prefix = `${grey(`Zigzag`)} ${grey(`[${module}]`)}`;
     }
     debug(message) {
         console.log(`${this._prefix} ${debug} ${message}`);
@@ -59055,7 +59055,7 @@ function init$2(x, y) {
 const grey$1 = init$2(90, 39);
 
 /* eslint-disable no-console */
-const bee$1 = `\u{1F41D}`;
+// const bee = `\u{1F41D}`;
 const debug$2 = `\u{1F3F7}`;
 const tick$1 = `\u{2705}`;
 const error$1 = `\u{2757}`;
@@ -59065,7 +59065,7 @@ const fatal$1 = `\u{203C}`;
 const play$1 = `\u{1F41D}`;
 class Logger$1 {
     constructor(module) {
-        this._prefix = `${grey$1(`Zig${bee$1}Zag`)} ${grey$1(`[${module}]`)}`;
+        this._prefix = `${grey$1(`Zigzag`)} ${grey$1(`[${module}]`)}`;
     }
     debug(message) {
         console.log(`${this._prefix} ${debug$2} ${message}`);
@@ -61770,6 +61770,7 @@ class PluginRenderBase extends PluginBase {
 
 const LINK_WIDTH = 5;
 const ICON_SCALE = 14;
+const HOLD_TIME_THRESHOLD_MS = 400;
 const NS = `http://www.w3.org/2000/svg`;
 // Add any plugin specific configuration elements.
 const PluginConfigSchema = PluginConfigBaseSchema;
@@ -61782,6 +61783,7 @@ class RenderPlugin extends PluginRenderBase {
         super();
         this._colorCSS = {};
         this._dragStartPosition = new Point();
+        this._dragStartTime = 0;
         this._fontCSS = {};
         this._hasChanged = true;
         this._height = 0;
@@ -61913,6 +61915,7 @@ class RenderPlugin extends PluginRenderBase {
         this._dragWidget = widget;
         this._gfxViewport.pause = true;
         this._dragStartPosition.copyFrom(event.data.global);
+        this._dragStartTime = Date.now();
     }
     _onDrag(event) {
         if (this._dragWidget) {
@@ -61924,9 +61927,14 @@ class RenderPlugin extends PluginRenderBase {
         }
     }
     _onDragEnd(event) {
-        // If the cursor has not moved, then we actually clicked.
+        // If the cursor has not moved, then it is a click or hold.
         if (this._dragStartPosition.equals(event.data.global)) {
-            this._dragWidget?.onClicked();
+            if (Date.now() - this._dragStartTime < HOLD_TIME_THRESHOLD_MS) {
+                this._dragWidget?.onClicked();
+            }
+            else {
+                this._dragWidget?.onHold();
+            }
         }
         this._dragWidget = undefined;
         this._gfxViewport.pause = false;

@@ -10,9 +10,11 @@ export class ZigzagPanel extends ZigzagWC {
   protected async firstUpdated(
     changedProperties: PropertyValues
   ): Promise<void> {
+    this.viewState = await this.restoreViewstate();
+
     const zzc = this.panel.config?.zigzag;
 
-    // Set the configuration in this web component.
+    // Set the plugin configuration we will use.
     this.setConfiguration(
       {
         apiVersionRequired: `1.0.0`,
@@ -33,6 +35,32 @@ export class ZigzagPanel extends ZigzagWC {
       }
     );
     super.firstUpdated(changedProperties);
+  }
+
+  public async disconnectedCallback(): Promise<void> {
+    await this.storeViewstate(this.viewState);
+    super.disconnectedCallback();
+  }
+
+  protected async restoreViewstate(): Promise<string> {
+    // Request a saved viewState
+    const _result = await this.hass!.callWS<{
+      value: string;
+    }>({
+      type: `frontend/get_user_data`,
+      key: `zigzag-panel-viewstate`,
+    });
+
+    return _result.value;
+  }
+
+  protected async storeViewstate(viewState: string): Promise<void> {
+    // Store Zigzag data
+    await this.hass!.callWS({
+      type: `frontend/set_user_data`,
+      key: `zigzag-panel-viewstate`,
+      value: viewState,
+    });
   }
 }
 
