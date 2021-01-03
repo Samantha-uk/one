@@ -1641,6 +1641,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@samantha-uk/zigzag-plugin-render-three", "workspace:zigzag/modules/render/plugins/three"],
             ["@samantha-uk/tools-builder", "workspace:tools/builder"],
+            ["@samantha-uk/utils-plugin", "workspace:utils/plugin"],
             ["@samantha-uk/zigzag-render", "workspace:zigzag/modules/render/core"],
             ["camera-controls", "virtual:fc62e8baaef3252769366875d5a2759c9e0fd836d3a06713c6ad9f7aed6e4868646f5ce0d4aba6e826b01209760bbd1ef6914c88339d384b665df3499eb9f917#npm:1.25.3"],
             ["resize-observer-polyfill", "npm:1.5.1"],

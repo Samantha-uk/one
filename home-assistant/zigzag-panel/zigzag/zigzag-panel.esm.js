@@ -11390,20 +11390,22 @@ const supportsAdoptingStyleSheets$1 = (window.ShadowRoot) &&
 
 class ZigzagPanel extends ZigzagWC {
     async firstUpdated(changedProperties) {
+        const zzc = this.panel.config?.zigzag;
+        // Set the configuration in this web component.
         this.setConfiguration({
             apiVersionRequired: `1.0.0`,
-            id: `plugin-data-zha`,
+            id: `plugin-data-${zzc[`plugin-data`].type}`,
             connection: this.hass.connection,
-            // filePath: `/local/zigzag/zhadevices.json`,
-            pluginPath: `/local/zigzag/plugins`,
+            pluginPath: zzc[`plugin-path`],
+            filePath: zzc[`plugin-data`].filePath ?? undefined,
         }, {
             apiVersionRequired: `1.0.0`,
-            id: `plugin-layout-d3`,
-            pluginPath: `/local/zigzag/plugins`,
+            id: `plugin-layout-${zzc[`plugin-layout`].type}`,
+            pluginPath: zzc[`plugin-path`],
         }, {
             apiVersionRequired: `1.0.0`,
-            id: `plugin-render-three`,
-            pluginPath: `/local/zigzag/plugins`,
+            id: `plugin-render-${zzc[`plugin-render`].type}`,
+            pluginPath: zzc[`plugin-path`],
         });
         super.firstUpdated(changedProperties);
     }
@@ -11411,6 +11413,9 @@ class ZigzagPanel extends ZigzagWC {
 __decorate([
     property$1({ attribute: false })
 ], ZigzagPanel.prototype, "hass", void 0);
+__decorate([
+    property$1({ attribute: false })
+], ZigzagPanel.prototype, "panel", void 0);
 customElements.define(`custom-panel-zigzag`, ZigzagPanel);
 
 export { ZigzagPanel };

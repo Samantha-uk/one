@@ -1,0 +1,3 @@
+releases:
+  "@samantha-uk/zigzag-panel": prerelease
+  "@samantha-uk/zigzag-plugin-render-three": patch

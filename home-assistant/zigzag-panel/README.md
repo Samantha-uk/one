@@ -6,13 +6,18 @@
 
 ## Table of Contents
 
-* [Description](#description)
-* [Installation](#installation)
-	* [Prerequisites](#prerequisites)
-	* [Installation Steps](#installation-steps)
-* [Configuration](#configuration)
-* [Know Issues/Limitations](#know-issueslimitations)
-* [License](#license)
+	* [Description](#description)
+	* [Installation](#installation)
+		* [Prerequisites](#prerequisites)
+		* [Installation Steps](#installation-steps)
+	* [Configuration](#configuration)
+	* [Plugins](#plugins)
+		* [data](#data)
+		* [layout](#layout)
+		* [render](#render)
+	* [Know Issues/Limitations](#know-issueslimitations)
+- [Contributing](#contributing)
+  - [License](#license)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#description)
@@ -66,16 +71,52 @@ _If not, check in the console of your web browser for any error messages._
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#configuration)
 
 ## Configuration
-At present configuring Zigzag-panel is carried out using entries in the Home Assistant `configuration.yaml` file and the only configuration is specifying the plugins.
+Configuration of Zigzag panel allows you to specify which `plugins` it will use.  Configuration is carried out by editing entries in the Home Assistant `configuration.yaml` file.
+
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#plugins)
+
+## Plugins
+Plugins allow Zigzag behaviour to be configured.  A plugin based approach was selected to facilitate:
+- **Performance** - Only the code for the behaviour you want needs to be downloaded to your browser when it is required (_lazy-loading_).
+- **Extensibility** - To add (_for instance_) a new source of Zigbee data (_zigbee2mqtt for example_).
+- 
+Plugins may be authored as part of the Zigzag project or by third parties.
+
+### data
+The `data` plugin is used to specify where Zigzag will read the details of Zigs and Zags.
+
+
+| Plugin Type | Description                                                                                              | More Info                                 |
+| ----------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| file        | Gets Zigzag information from a json file                                                                 | [file](/zigzag/modules/data/plugins/file) |
+| gen         | Gets Zigzag information from a json file and then generates more entires (_Used for performance tuning_) | [gen](/zigzag/modules/data/plugins/gen)   |
+| zha         | Gets Zigzag information from the Home Asssistant ZHA integration                                         | [zha](/zigzag/modules/data/plugins/zha)   |
+
+
+### layout
+The `layout` plugin contains the logic Zigzag uses to arrange Zigs.
+
+### render
+The `render` plugin is what displays the Zigzag network on the screen.
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#know-issueslimitations)
 
 ## Know Issues/Limitations
-There are several known issues that will be addressed soon, including:
+There are several known issues that will be addressed in the near future, including:
 - Not saving the layout when you leave the page.
 - Not allowing unlocking of Zigs without using the unlock all button.
 - Zoom to fit ... doesn't!
+
+If you find other issues, please consider submitting an [issue report]() to help improve Zigzag.
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#contributing)
+
+# Contributing
+Contributions, issues and feature requests are welcome.
+Feel free to check issues page if you want to contribute.
+[Check the contributing guide](/CONTRIBUTING.md).
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#license)

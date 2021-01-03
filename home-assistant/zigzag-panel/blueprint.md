@@ -46,12 +46,42 @@ _If not, check in the console of your web browser for any error messages._
 
 
 ## Configuration
-At present configuring Zigzag-panel is carried out using entries in the Home Assistant `configuration.yaml` file and the only configuration is specifying the plugins.
+Configuration of Zigzag panel allows you to specify which `plugins` it will use.  Configuration is carried out by editing entries in the Home Assistant `configuration.yaml` file.
+
+## Plugins
+Plugins allow Zigzag behaviour to be configured.  A plugin based approach was selected to facilitate:
+- **Performance** - Only the code for the behaviour you want needs to be downloaded to your browser when it is required (_lazy-loading_).
+- **Extensibility** - To add (_for instance_) a new source of Zigbee data (_zigbee2mqtt for example_).
+- 
+Plugins may be authored as part of the Zigzag project or by third parties.
+
+### data
+The `data` plugin is used to specify where Zigzag will read the details of Zigs and Zags.
+
+
+| Plugin Type | Description                                                                                              | More Info                                 |
+| ----------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| file        | Gets Zigzag information from a json file                                                                 | [file](/zigzag/modules/data/plugins/file) |
+| gen         | Gets Zigzag information from a json file and then generates more entires (_Used for performance tuning_) | [gen](/zigzag/modules/data/plugins/gen)   |
+| zha         | Gets Zigzag information from the Home Asssistant ZHA integration                                         | [zha](/zigzag/modules/data/plugins/zha)   |
+
+
+### layout
+The `layout` plugin contains the logic Zigzag uses to arrange Zigs.
+
+### render
+The `render` plugin is what displays the Zigzag network on the screen.
 
 ## Know Issues/Limitations
 There are several known issues that will be addressed soon, including:
 - Not saving the layout when you leave the page.
 - Not allowing unlocking of Zigs without using the unlock all button.
 - Zoom to fit ... doesn't!
+
+
+# Contributing
+Contributions, issues and feature requests are welcome.
+Feel free to check issues page if you want to contribute.
+[Check the contributing guide](/CONTRIBUTING.md).
 
 {{ template:license }}

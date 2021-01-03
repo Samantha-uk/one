@@ -1268,6 +1268,7 @@ __metadata:
   resolution: "@samantha-uk/zigzag-plugin-render-three@workspace:zigzag/modules/render/plugins/three"
   dependencies:
     "@samantha-uk/tools-builder": "workspace:*"
+    "@samantha-uk/utils-plugin": "workspace:*"
     "@samantha-uk/zigzag-render": "workspace:*"
     camera-controls: ^1.25.3
     resize-observer-polyfill: ^1.5.1

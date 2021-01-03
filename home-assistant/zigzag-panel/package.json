@@ -32,6 +32,7 @@
     "copy-plugins": "cpy /home/samantha/github/one/zigzag/**/dist/plugin-*.esm.js plugins",
     "lint": "builder --lint",
     "push": "scp -r zigzag samantha@10.1.16.130://usr/share/hassio/homeassistant/www",
+    "projectz": "yarn run -T projectz ",
     "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json",
     "serve": "builder --serve",
     "test": "builder --test",
