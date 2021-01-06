@@ -825,6 +825,132 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["@pixi/canvas-display", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-display-npm-5.3.7-948c681ff7-3928034742.zip/node_modules/@pixi/canvas-display/",
+          "packageDependencies": [
+            ["@pixi/canvas-display", "npm:5.3.7"],
+            ["@pixi/display", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@pixi/canvas-extract", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-extract-npm-5.3.7-e4fa097d98-d32f87b1df.zip/node_modules/@pixi/canvas-extract/",
+          "packageDependencies": [
+            ["@pixi/canvas-extract", "npm:5.3.7"],
+            ["@pixi/canvas-renderer", "npm:5.3.7"],
+            ["@pixi/core", "npm:5.3.7"],
+            ["@pixi/display", "npm:5.3.7"],
+            ["@pixi/math", "npm:5.3.7"],
+            ["@pixi/utils", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@pixi/canvas-graphics", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-graphics-npm-5.3.7-6528b377a6-410e393951.zip/node_modules/@pixi/canvas-graphics/",
+          "packageDependencies": [
+            ["@pixi/canvas-graphics", "npm:5.3.7"],
+            ["@pixi/canvas-renderer", "npm:5.3.7"],
+            ["@pixi/constants", "npm:5.3.7"],
+            ["@pixi/core", "npm:5.3.7"],
+            ["@pixi/graphics", "npm:5.3.7"],
+            ["@pixi/math", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@pixi/canvas-mesh", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-mesh-npm-5.3.7-a5b7af766a-1ca33b1920.zip/node_modules/@pixi/canvas-mesh/",
+          "packageDependencies": [
+            ["@pixi/canvas-mesh", "npm:5.3.7"],
+            ["@pixi/canvas-renderer", "npm:5.3.7"],
+            ["@pixi/constants", "npm:5.3.7"],
+            ["@pixi/mesh", "npm:5.3.7"],
+            ["@pixi/mesh-extras", "npm:5.3.7"],
+            ["@pixi/settings", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@pixi/canvas-particles", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-particles-npm-5.3.7-f58e4613c5-60c37012d0.zip/node_modules/@pixi/canvas-particles/",
+          "packageDependencies": [
+            ["@pixi/canvas-particles", "npm:5.3.7"],
+            ["@pixi/particles", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@pixi/canvas-prepare", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-prepare-npm-5.3.7-a8cfa9421e-c38ce5652e.zip/node_modules/@pixi/canvas-prepare/",
+          "packageDependencies": [
+            ["@pixi/canvas-prepare", "npm:5.3.7"],
+            ["@pixi/canvas-renderer", "npm:5.3.7"],
+            ["@pixi/core", "npm:5.3.7"],
+            ["@pixi/prepare", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@pixi/canvas-renderer", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-renderer-npm-5.3.7-7eefbf6313-0ca8ecd813.zip/node_modules/@pixi/canvas-renderer/",
+          "packageDependencies": [
+            ["@pixi/canvas-renderer", "npm:5.3.7"],
+            ["@pixi/constants", "npm:5.3.7"],
+            ["@pixi/core", "npm:5.3.7"],
+            ["@pixi/math", "npm:5.3.7"],
+            ["@pixi/settings", "npm:5.3.7"],
+            ["@pixi/utils", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@pixi/canvas-sprite", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-sprite-npm-5.3.7-f8a527c25e-4c46af6969.zip/node_modules/@pixi/canvas-sprite/",
+          "packageDependencies": [
+            ["@pixi/canvas-sprite", "npm:5.3.7"],
+            ["@pixi/canvas-renderer", "npm:5.3.7"],
+            ["@pixi/constants", "npm:5.3.7"],
+            ["@pixi/math", "npm:5.3.7"],
+            ["@pixi/sprite", "npm:5.3.7"],
+            ["@pixi/utils", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@pixi/canvas-sprite-tiling", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-sprite-tiling-npm-5.3.7-2593ee3429-165e73eae7.zip/node_modules/@pixi/canvas-sprite-tiling/",
+          "packageDependencies": [
+            ["@pixi/canvas-sprite-tiling", "npm:5.3.7"],
+            ["@pixi/canvas-renderer", "npm:5.3.7"],
+            ["@pixi/canvas-sprite", "npm:5.3.7"],
+            ["@pixi/sprite-tiling", "npm:5.3.7"],
+            ["@pixi/utils", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@pixi/canvas-text", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/@pixi-canvas-text-npm-5.3.7-a0592284d6-d43459b4b2.zip/node_modules/@pixi/canvas-text/",
+          "packageDependencies": [
+            ["@pixi/canvas-text", "npm:5.3.7"],
+            ["@pixi/sprite", "npm:5.3.7"],
+            ["@pixi/text", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["@pixi/constants", [
         ["npm:5.3.7", {
           "packageLocation": "./.yarn/cache/@pixi-constants-npm-5.3.7-fb751a2c77-50adccf3e7.zip/node_modules/@pixi/constants/",
@@ -1629,6 +1755,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["gl-matrix", "npm:3.3.0"],
             ["pixi-viewport", "virtual:c4ad206be3db77e9884e4bf85a70c716ed5b483e3665989672f7e8c0c06df17533f8944088d2899e22ab97ccd853dfdadc7d35cc459a0832a29d129afe5ae0b8#npm:4.18.1"],
             ["pixi.js", "npm:5.3.7"],
+            ["pixi.js-legacy", "npm:5.3.7"],
             ["resize-observer-polyfill", "npm:1.5.1"],
             ["tslib", "npm:2.0.3"],
             ["zod", "npm:2.0.0-beta.29"]
@@ -11338,6 +11465,26 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@pixi/text-bitmap", "npm:5.3.7"],
             ["@pixi/ticker", "npm:5.3.7"],
             ["@pixi/utils", "npm:5.3.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["pixi.js-legacy", [
+        ["npm:5.3.7", {
+          "packageLocation": "./.yarn/cache/pixi.js-legacy-npm-5.3.7-ae7628b602-a8730e8f7c.zip/node_modules/pixi.js-legacy/",
+          "packageDependencies": [
+            ["pixi.js-legacy", "npm:5.3.7"],
+            ["@pixi/canvas-display", "npm:5.3.7"],
+            ["@pixi/canvas-extract", "npm:5.3.7"],
+            ["@pixi/canvas-graphics", "npm:5.3.7"],
+            ["@pixi/canvas-mesh", "npm:5.3.7"],
+            ["@pixi/canvas-particles", "npm:5.3.7"],
+            ["@pixi/canvas-prepare", "npm:5.3.7"],
+            ["@pixi/canvas-renderer", "npm:5.3.7"],
+            ["@pixi/canvas-sprite", "npm:5.3.7"],
+            ["@pixi/canvas-sprite-tiling", "npm:5.3.7"],
+            ["@pixi/canvas-text", "npm:5.3.7"],
+            ["pixi.js", "npm:5.3.7"]
           ],
           "linkType": "HARD",
         }]

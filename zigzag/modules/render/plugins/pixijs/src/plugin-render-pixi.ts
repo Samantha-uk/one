@@ -1,6 +1,6 @@
 import { PluginConfigBaseSchema } from "@samantha-uk/utils-plugin";
 import * as glm from "gl-matrix"; // http://glmatrix.net/docs/
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js-legacy";
 import { Viewport } from "pixi-viewport";
 import ResizeObserver from "resize-observer-polyfill";
 // eslint-disable-next-line import/no-cycle

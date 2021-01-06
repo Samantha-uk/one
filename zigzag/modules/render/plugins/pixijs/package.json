@@ -11,6 +11,7 @@
     "gl-matrix": "^3.3.0",
     "pixi-viewport": "^4.18.1",
     "pixi.js": "^5.3.7",
+    "pixi.js-legacy": "^5.3.7",
     "resize-observer-polyfill": "^1.5.1",
     "tslib": "^2.0.3",
     "zod": "^2.0.0-beta.29"
