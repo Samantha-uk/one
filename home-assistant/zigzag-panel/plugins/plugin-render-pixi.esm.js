@@ -48631,6 +48631,2258 @@ var PIXI = /*#__PURE__*/Object.freeze({
 	settings: settings
 });
 
+/*!
+ * @pixi/canvas-renderer - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-renderer is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics$l = function(d, b) {
+    extendStatics$l = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
+    return extendStatics$l(d, b);
+};
+
+function __extends$N(d, b) {
+    extendStatics$l(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+/**
+ * A set of functions used to handle masking.
+ *
+ * Sprite masking is not supported on the CanvasRenderer.
+ *
+ * @class
+ * @memberof PIXI
+ */
+var CanvasMaskManager = /** @class */ (function () {
+    /**
+     * @param {PIXI.CanvasRenderer} renderer - The canvas renderer.
+     */
+    function CanvasMaskManager(renderer) {
+        this.renderer = renderer;
+        this._foundShapes = [];
+    }
+    /**
+     * This method adds it to the current stack of masks.
+     *
+     * @param {PIXI.MaskData | PIXI.Graphics} maskData - the maskData that will be pushed
+     */
+    CanvasMaskManager.prototype.pushMask = function (maskData) {
+        var renderer = this.renderer;
+        var maskObject = (maskData.maskObject || maskData);
+        renderer.context.save();
+        // TODO support sprite alpha masks??
+        // lots of effort required. If demand is great enough..
+        var foundShapes = this._foundShapes;
+        this.recursiveFindShapes(maskObject, foundShapes);
+        if (foundShapes.length > 0) {
+            var context = renderer.context;
+            context.beginPath();
+            for (var i = 0; i < foundShapes.length; i++) {
+                var shape = foundShapes[i];
+                var transform = shape.transform.worldTransform;
+                this.renderer.setContextTransform(transform);
+                this.renderGraphicsShape(shape);
+            }
+            foundShapes.length = 0;
+            context.clip();
+        }
+    };
+    /**
+     * Renders all PIXI.Graphics shapes in a subtree.
+     *
+     * @param {PIXI.Container} container - container to scan.
+     * @param {PIXI.Graphics[]} out - where to put found shapes
+     */
+    CanvasMaskManager.prototype.recursiveFindShapes = function (container, out) {
+        if (container.geometry && container.geometry.graphicsData) {
+            out.push(container);
+        }
+        var children = container.children;
+        if (children) {
+            for (var i = 0; i < children.length; i++) {
+                this.recursiveFindShapes(children[i], out);
+            }
+        }
+    };
+    /**
+     * Renders a PIXI.Graphics shape.
+     *
+     * @param {PIXI.Graphics} graphics - The object to render.
+     */
+    CanvasMaskManager.prototype.renderGraphicsShape = function (graphics) {
+        graphics.finishPoly();
+        var context = this.renderer.context;
+        var graphicsData = graphics.geometry.graphicsData;
+        var len = graphicsData.length;
+        if (len === 0) {
+            return;
+        }
+        for (var i = 0; i < len; i++) {
+            var data = graphicsData[i];
+            var shape = data.shape;
+            if (shape.type === SHAPES.POLY) {
+                var points = shape.points;
+                context.moveTo(points[0], points[1]);
+                for (var j = 1; j < points.length / 2; j++) {
+                    context.lineTo(points[j * 2], points[(j * 2) + 1]);
+                }
+                // if the first and last point are the same close the path - much neater :)
+                if (points[0] === points[points.length - 2] && points[1] === points[points.length - 1]) {
+                    context.closePath();
+                }
+            }
+            else if (shape.type === SHAPES.RECT) {
+                context.rect(shape.x, shape.y, shape.width, shape.height);
+                context.closePath();
+            }
+            else if (shape.type === SHAPES.CIRC) {
+                // TODO - need to be Undefined!
+                context.arc(shape.x, shape.y, shape.radius, 0, 2 * Math.PI);
+                context.closePath();
+            }
+            else if (shape.type === SHAPES.ELIP) {
+                // ellipse code taken from: http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
+                var w = shape.width * 2;
+                var h = shape.height * 2;
+                var x = shape.x - (w / 2);
+                var y = shape.y - (h / 2);
+                var kappa = 0.5522848;
+                var ox = (w / 2) * kappa; // control point offset horizontal
+                var oy = (h / 2) * kappa; // control point offset vertical
+                var xe = x + w; // x-end
+                var ye = y + h; // y-end
+                var xm = x + (w / 2); // x-middle
+                var ym = y + (h / 2); // y-middle
+                context.moveTo(x, ym);
+                context.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+                context.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+                context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+                context.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+                context.closePath();
+            }
+            else if (shape.type === SHAPES.RREC) {
+                var rx = shape.x;
+                var ry = shape.y;
+                var width = shape.width;
+                var height = shape.height;
+                var radius = shape.radius;
+                var maxRadius = Math.min(width, height) / 2 | 0;
+                radius = radius > maxRadius ? maxRadius : radius;
+                context.moveTo(rx, ry + radius);
+                context.lineTo(rx, ry + height - radius);
+                context.quadraticCurveTo(rx, ry + height, rx + radius, ry + height);
+                context.lineTo(rx + width - radius, ry + height);
+                context.quadraticCurveTo(rx + width, ry + height, rx + width, ry + height - radius);
+                context.lineTo(rx + width, ry + radius);
+                context.quadraticCurveTo(rx + width, ry, rx + width - radius, ry);
+                context.lineTo(rx + radius, ry);
+                context.quadraticCurveTo(rx, ry, rx, ry + radius);
+                context.closePath();
+            }
+        }
+    };
+    /**
+     * Restores the current drawing context to the state it was before the mask was applied.
+     *
+     * @param {PIXI.CanvasRenderer} renderer - The renderer context to use.
+     */
+    CanvasMaskManager.prototype.popMask = function (renderer) {
+        renderer.context.restore();
+        renderer.invalidateBlendMode();
+    };
+    /**
+     * Destroys this canvas mask manager.
+     *
+     */
+    CanvasMaskManager.prototype.destroy = function () {
+        /* empty */
+    };
+    return CanvasMaskManager;
+}());
+
+/**
+ * Creates a little colored canvas
+ *
+ * @ignore
+ * @param {string} color - The color to make the canvas
+ * @return {canvas} a small canvas element
+ */
+function createColoredCanvas(color) {
+    var canvas = document.createElement('canvas');
+    canvas.width = 6;
+    canvas.height = 1;
+    var context = canvas.getContext('2d');
+    context.fillStyle = color;
+    context.fillRect(0, 0, 6, 1);
+    return canvas;
+}
+/**
+ * Checks whether the Canvas BlendModes are supported by the current browser
+ *
+ * @private
+ * @return {boolean} whether they are supported
+ */
+function canUseNewCanvasBlendModes() {
+    if (typeof document === 'undefined') {
+        return false;
+    }
+    var magenta = createColoredCanvas('#ff00ff');
+    var yellow = createColoredCanvas('#ffff00');
+    var canvas = document.createElement('canvas');
+    canvas.width = 6;
+    canvas.height = 1;
+    var context = canvas.getContext('2d');
+    context.globalCompositeOperation = 'multiply';
+    context.drawImage(magenta, 0, 0);
+    context.drawImage(yellow, 2, 0);
+    var imageData = context.getImageData(2, 0, 1, 1);
+    if (!imageData) {
+        return false;
+    }
+    var data = imageData.data;
+    return (data[0] === 255 && data[1] === 0 && data[2] === 0);
+}
+
+/**
+ * Maps blend combinations to Canvas.
+ *
+ * @memberof PIXI
+ * @function mapCanvasBlendModesToPixi
+ * @private
+ * @param {string[]} [array=[]] - The array to output into.
+ * @return {string[]} Mapped modes.
+ */
+function mapCanvasBlendModesToPixi(array) {
+    if (array === void 0) { array = []; }
+    if (canUseNewCanvasBlendModes()) {
+        array[BLEND_MODES.NORMAL] = 'source-over';
+        array[BLEND_MODES.ADD] = 'lighter'; // IS THIS OK???
+        array[BLEND_MODES.MULTIPLY] = 'multiply';
+        array[BLEND_MODES.SCREEN] = 'screen';
+        array[BLEND_MODES.OVERLAY] = 'overlay';
+        array[BLEND_MODES.DARKEN] = 'darken';
+        array[BLEND_MODES.LIGHTEN] = 'lighten';
+        array[BLEND_MODES.COLOR_DODGE] = 'color-dodge';
+        array[BLEND_MODES.COLOR_BURN] = 'color-burn';
+        array[BLEND_MODES.HARD_LIGHT] = 'hard-light';
+        array[BLEND_MODES.SOFT_LIGHT] = 'soft-light';
+        array[BLEND_MODES.DIFFERENCE] = 'difference';
+        array[BLEND_MODES.EXCLUSION] = 'exclusion';
+        array[BLEND_MODES.HUE] = 'hue';
+        array[BLEND_MODES.SATURATION] = 'saturate';
+        array[BLEND_MODES.COLOR] = 'color';
+        array[BLEND_MODES.LUMINOSITY] = 'luminosity';
+    }
+    else {
+        // this means that the browser does not support the cool new blend modes in canvas 'cough' ie 'cough'
+        array[BLEND_MODES.NORMAL] = 'source-over';
+        array[BLEND_MODES.ADD] = 'lighter'; // IS THIS OK???
+        array[BLEND_MODES.MULTIPLY] = 'source-over';
+        array[BLEND_MODES.SCREEN] = 'source-over';
+        array[BLEND_MODES.OVERLAY] = 'source-over';
+        array[BLEND_MODES.DARKEN] = 'source-over';
+        array[BLEND_MODES.LIGHTEN] = 'source-over';
+        array[BLEND_MODES.COLOR_DODGE] = 'source-over';
+        array[BLEND_MODES.COLOR_BURN] = 'source-over';
+        array[BLEND_MODES.HARD_LIGHT] = 'source-over';
+        array[BLEND_MODES.SOFT_LIGHT] = 'source-over';
+        array[BLEND_MODES.DIFFERENCE] = 'source-over';
+        array[BLEND_MODES.EXCLUSION] = 'source-over';
+        array[BLEND_MODES.HUE] = 'source-over';
+        array[BLEND_MODES.SATURATION] = 'source-over';
+        array[BLEND_MODES.COLOR] = 'source-over';
+        array[BLEND_MODES.LUMINOSITY] = 'source-over';
+    }
+    // not-premultiplied, only for webgl
+    array[BLEND_MODES.NORMAL_NPM] = array[BLEND_MODES.NORMAL];
+    array[BLEND_MODES.ADD_NPM] = array[BLEND_MODES.ADD];
+    array[BLEND_MODES.SCREEN_NPM] = array[BLEND_MODES.SCREEN];
+    // composite operations
+    array[BLEND_MODES.SRC_IN] = 'source-in';
+    array[BLEND_MODES.SRC_OUT] = 'source-out';
+    array[BLEND_MODES.SRC_ATOP] = 'source-atop';
+    array[BLEND_MODES.DST_OVER] = 'destination-over';
+    array[BLEND_MODES.DST_IN] = 'destination-in';
+    array[BLEND_MODES.DST_OUT] = 'destination-out';
+    array[BLEND_MODES.DST_ATOP] = 'destination-atop';
+    array[BLEND_MODES.XOR] = 'xor';
+    // SUBTRACT from flash, does not exist in canvas
+    array[BLEND_MODES.SUBTRACT] = 'source-over';
+    return array;
+}
+
+var tempMatrix$1 = new Matrix();
+/**
+ * The CanvasRenderer draws the scene and all its content onto a 2d canvas.
+ *
+ * This renderer should be used for browsers that do not support WebGL.
+ * Don't forget to add the CanvasRenderer.view to your DOM or you will not see anything!
+ *
+ * @class
+ * @memberof PIXI
+ * @extends PIXI.AbstractRenderer
+ */
+var CanvasRenderer = /** @class */ (function (_super) {
+    __extends$N(CanvasRenderer, _super);
+    /**
+     * @param {object} [options] - The optional renderer parameters
+     * @param {number} [options.width=800] - the width of the screen
+     * @param {number} [options.height=600] - the height of the screen
+     * @param {HTMLCanvasElement} [options.view] - the canvas to use as a view, optional
+     * @param {boolean} [options.transparent=false] - If the render view is transparent, default false
+     * @param {boolean} [options.autoDensity=false] - Resizes renderer view in CSS pixels to allow for
+     *   resolutions other than 1
+     * @param {boolean} [options.antialias=false] - sets antialias
+     * @param {number} [options.resolution=1] - The resolution / device pixel ratio of the renderer. The
+     *  resolution of the renderer retina would be 2.
+     * @param {boolean} [options.preserveDrawingBuffer=false] - enables drawing buffer preservation,
+     *  enable this if you need to call toDataUrl on the webgl context.
+     * @param {boolean} [options.clearBeforeRender=true] - This sets if the renderer will clear the canvas or
+     *      not before the new render pass.
+     * @param {number} [options.backgroundColor=0x000000] - The background color of the rendered area
+     *  (shown if not transparent).
+     */
+    function CanvasRenderer(options) {
+        var _this = _super.call(this, RENDERER_TYPE.CANVAS, options) || this;
+        /**
+         * The root canvas 2d context that everything is drawn with.
+         *
+         * @member {CanvasRenderingContext2D}
+         */
+        _this.rootContext = _this.view.getContext('2d', { alpha: _this.transparent });
+        /**
+         * The currently active canvas 2d context (could change with renderTextures)
+         *
+         * @member {CanvasRenderingContext2D}
+         */
+        _this.context = _this.rootContext;
+        /**
+         * Boolean flag controlling canvas refresh.
+         *
+         * @member {boolean}
+         */
+        _this.refresh = true;
+        /**
+         * Instance of a CanvasMaskManager, handles masking when using the canvas renderer.
+         *
+         * @member {PIXI.CanvasMaskManager}
+         */
+        _this.maskManager = new CanvasMaskManager(_this);
+        /**
+         * The canvas property used to set the canvas smoothing property.
+         *
+         * @member {string}
+         */
+        _this.smoothProperty = 'imageSmoothingEnabled';
+        if (!_this.rootContext.imageSmoothingEnabled) {
+            var rc = _this.rootContext;
+            if (rc.webkitImageSmoothingEnabled) {
+                _this.smoothProperty = 'webkitImageSmoothingEnabled';
+            }
+            else if (rc.mozImageSmoothingEnabled) {
+                _this.smoothProperty = 'mozImageSmoothingEnabled';
+            }
+            else if (rc.oImageSmoothingEnabled) {
+                _this.smoothProperty = 'oImageSmoothingEnabled';
+            }
+            else if (rc.msImageSmoothingEnabled) {
+                _this.smoothProperty = 'msImageSmoothingEnabled';
+            }
+        }
+        _this.initPlugins(CanvasRenderer.__plugins);
+        /**
+         * Tracks the blend modes useful for this renderer.
+         *
+         * @member {object<number, string>}
+         */
+        _this.blendModes = mapCanvasBlendModesToPixi();
+        _this._activeBlendMode = null;
+        _this._outerBlend = false;
+        /**
+         * Projection transform, passed in render() stored here
+         * @type {null}
+         * @private
+         */
+        _this._projTransform = null;
+        _this.renderingToScreen = false;
+        sayHello('Canvas');
+        /**
+         * Fired after rendering finishes.
+         *
+         * @event PIXI.CanvasRenderer#postrender
+         */
+        /**
+         * Fired before rendering starts.
+         *
+         * @event PIXI.CanvasRenderer#prerender
+         */
+        _this.resize(_this.options.width, _this.options.height);
+        return _this;
+    }
+    /**
+     * Renders the object to this canvas view
+     *
+     * @param {PIXI.DisplayObject} displayObject - The object to be rendered
+     * @param {PIXI.RenderTexture} [renderTexture] - A render texture to be rendered to.
+     *  If unset, it will render to the root context.
+     * @param {boolean} [clear=this.clearBeforeRender] - Whether to clear the canvas before drawing
+     * @param {PIXI.Matrix} [transform] - A transformation to be applied
+     * @param {boolean} [skipUpdateTransform=false] - Whether to skip the update transform
+     */
+    CanvasRenderer.prototype.render = function (displayObject, renderTexture, clear, transform, skipUpdateTransform) {
+        if (!this.view) {
+            return;
+        }
+        // can be handy to know!
+        this.renderingToScreen = !renderTexture;
+        this.emit('prerender');
+        var rootResolution = this.resolution;
+        if (renderTexture) {
+            renderTexture = renderTexture.castToBaseTexture();
+            if (!renderTexture._canvasRenderTarget) {
+                renderTexture._canvasRenderTarget = new CanvasRenderTarget(renderTexture.width, renderTexture.height, renderTexture.resolution);
+                renderTexture.resource = new index.CanvasResource(renderTexture._canvasRenderTarget.canvas);
+                renderTexture.valid = true;
+            }
+            this.context = renderTexture._canvasRenderTarget.context;
+            this.resolution = renderTexture._canvasRenderTarget.resolution;
+        }
+        else {
+            this.context = this.rootContext;
+        }
+        var context = this.context;
+        this._projTransform = transform || null;
+        if (!renderTexture) {
+            this._lastObjectRendered = displayObject;
+        }
+        if (!skipUpdateTransform) {
+            // update the scene graph
+            var cacheParent = displayObject.enableTempParent();
+            displayObject.updateTransform();
+            displayObject.disableTempParent(cacheParent);
+        }
+        context.save();
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.globalAlpha = 1;
+        this._activeBlendMode = BLEND_MODES.NORMAL;
+        this._outerBlend = false;
+        context.globalCompositeOperation = this.blendModes[BLEND_MODES.NORMAL];
+        if (clear !== undefined ? clear : this.clearBeforeRender) {
+            if (this.renderingToScreen) {
+                if (this.transparent) {
+                    context.clearRect(0, 0, this.width, this.height);
+                }
+                else {
+                    context.fillStyle = this._backgroundColorString;
+                    context.fillRect(0, 0, this.width, this.height);
+                }
+            }
+            else {
+                renderTexture = renderTexture;
+                renderTexture._canvasRenderTarget.clear();
+                var clearColor = renderTexture.clearColor;
+                if (clearColor[3] > 0) {
+                    context.fillStyle = hex2string(rgb2hex(clearColor));
+                    context.fillRect(0, 0, renderTexture.realWidth, renderTexture.realHeight);
+                }
+            }
+        }
+        // TODO RENDER TARGET STUFF HERE..
+        var tempContext = this.context;
+        this.context = context;
+        displayObject.renderCanvas(this);
+        this.context = tempContext;
+        context.restore();
+        this.resolution = rootResolution;
+        this._projTransform = null;
+        this.emit('postrender');
+    };
+    /**
+     * sets matrix of context
+     * called only from render() methods
+     * takes care about resolution
+     * @param {PIXI.Matrix} transform - world matrix of current element
+     * @param {boolean} [roundPixels] - whether to round (tx,ty) coords
+     * @param {number} [localResolution] - If specified, used instead of `renderer.resolution` for local scaling
+     */
+    CanvasRenderer.prototype.setContextTransform = function (transform, roundPixels, localResolution) {
+        var mat = transform;
+        var proj = this._projTransform;
+        var resolution = this.resolution;
+        localResolution = localResolution || resolution;
+        if (proj) {
+            mat = tempMatrix$1;
+            mat.copyFrom(transform);
+            mat.prepend(proj);
+        }
+        if (roundPixels) {
+            this.context.setTransform(mat.a * localResolution, mat.b * localResolution, mat.c * localResolution, mat.d * localResolution, (mat.tx * resolution) | 0, (mat.ty * resolution) | 0);
+        }
+        else {
+            this.context.setTransform(mat.a * localResolution, mat.b * localResolution, mat.c * localResolution, mat.d * localResolution, mat.tx * resolution, mat.ty * resolution);
+        }
+    };
+    /**
+     * Clear the canvas of renderer.
+     *
+     * @param {string} [clearColor] - Clear the canvas with this color, except the canvas is transparent.
+     */
+    CanvasRenderer.prototype.clear = function (clearColor) {
+        var context = this.context;
+        clearColor = clearColor || this._backgroundColorString;
+        if (!this.transparent && clearColor) {
+            context.fillStyle = clearColor;
+            context.fillRect(0, 0, this.width, this.height);
+        }
+        else {
+            context.clearRect(0, 0, this.width, this.height);
+        }
+    };
+    /**
+     * Sets the blend mode of the renderer.
+     *
+     * @param {number} blendMode - See {@link PIXI.BLEND_MODES} for valid values.
+     * @param {boolean} [readyForOuterBlend=false] - Some blendModes are dangerous, they affect outer space of sprite.
+     * Pass `true` only if you are ready to use them.
+     */
+    CanvasRenderer.prototype.setBlendMode = function (blendMode, readyForOuterBlend) {
+        var outerBlend = blendMode === BLEND_MODES.SRC_IN
+            || blendMode === BLEND_MODES.SRC_OUT
+            || blendMode === BLEND_MODES.DST_IN
+            || blendMode === BLEND_MODES.DST_ATOP;
+        if (!readyForOuterBlend && outerBlend) {
+            blendMode = BLEND_MODES.NORMAL;
+        }
+        if (this._activeBlendMode === blendMode) {
+            return;
+        }
+        this._activeBlendMode = blendMode;
+        this._outerBlend = outerBlend;
+        this.context.globalCompositeOperation = this.blendModes[blendMode];
+    };
+    /**
+     * Removes everything from the renderer and optionally removes the Canvas DOM element.
+     *
+     * @param {boolean} [removeView=false] - Removes the Canvas element from the DOM.
+     */
+    CanvasRenderer.prototype.destroy = function (removeView) {
+        // call the base destroy
+        _super.prototype.destroy.call(this, removeView);
+        this.context = null;
+        this.refresh = true;
+        this.maskManager.destroy();
+        this.maskManager = null;
+        this.smoothProperty = null;
+    };
+    /**
+     * Resizes the canvas view to the specified width and height.
+     *
+     * @extends PIXI.AbstractRenderer#resize
+     *
+     * @param {number} screenWidth - the new width of the screen
+     * @param {number} screenHeight - the new height of the screen
+     */
+    CanvasRenderer.prototype.resize = function (screenWidth, screenHeight) {
+        _super.prototype.resize.call(this, screenWidth, screenHeight);
+        // reset the scale mode.. oddly this seems to be reset when the canvas is resized.
+        // surely a browser bug?? Let PixiJS fix that for you..
+        if (this.smoothProperty) {
+            this.rootContext[this.smoothProperty] = (settings.SCALE_MODE === SCALE_MODES.LINEAR);
+        }
+    };
+    /**
+     * Checks if blend mode has changed.
+     */
+    CanvasRenderer.prototype.invalidateBlendMode = function () {
+        this._activeBlendMode = this.blendModes.indexOf(this.context.globalCompositeOperation);
+    };
+    /**
+     * Collection of installed plugins. These are included by default in PIXI, but can be excluded
+     * by creating a custom build. Consult the README for more information about creating custom
+     * builds and excluding plugins.
+     * @name PIXI.CanvasRenderer#plugins
+     * @type {object}
+     * @readonly
+     * @property {PIXI.AccessibilityManager} accessibility Support tabbing interactive elements.
+     * @property {PIXI.CanvasExtract} extract Extract image data from renderer.
+     * @property {PIXI.InteractionManager} interaction Handles mouse, touch and pointer events.
+     * @property {PIXI.CanvasPrepare} prepare Pre-render display objects.
+     */
+    /**
+     * Adds a plugin to the renderer.
+     *
+     * @method
+     * @param {string} pluginName - The name of the plugin.
+     * @param {Function} ctor - The constructor function or class for the plugin.
+     */
+    CanvasRenderer.registerPlugin = function (pluginName, ctor) {
+        CanvasRenderer.__plugins = CanvasRenderer.__plugins || {};
+        CanvasRenderer.__plugins[pluginName] = ctor;
+    };
+    return CanvasRenderer;
+}(AbstractRenderer));
+
+/**
+ * Utility methods for Sprite/Texture tinting.
+ *
+ * Tinting with the CanvasRenderer involves creating a new canvas to use as a texture,
+ * so be aware of the performance implications.
+ *
+ * @namespace PIXI.canvasUtils
+ * @memberof PIXI
+ */
+var canvasUtils = {
+    canvas: null,
+    /**
+     * Basically this method just needs a sprite and a color and tints the sprite with the given color.
+     *
+     * @memberof PIXI.canvasUtils
+     * @param {PIXI.Sprite} sprite - the sprite to tint
+     * @param {number} color - the color to use to tint the sprite with
+     * @return {HTMLCanvasElement} The tinted canvas
+     */
+    getTintedCanvas: function (sprite, color) {
+        var texture = sprite.texture;
+        color = canvasUtils.roundColor(color);
+        var stringColor = "#" + ("00000" + (color | 0).toString(16)).substr(-6);
+        texture.tintCache = texture.tintCache || {};
+        var cachedCanvas = texture.tintCache[stringColor];
+        var canvas;
+        if (cachedCanvas) {
+            if (cachedCanvas.tintId === texture._updateID) {
+                return texture.tintCache[stringColor];
+            }
+            canvas = texture.tintCache[stringColor];
+        }
+        else {
+            canvas = document.createElement('canvas');
+        }
+        canvasUtils.tintMethod(texture, color, canvas);
+        canvas.tintId = texture._updateID;
+        if (canvasUtils.convertTintToImage) {
+            // is this better?
+            var tintImage = new Image();
+            tintImage.src = canvas.toDataURL();
+            texture.tintCache[stringColor] = tintImage;
+        }
+        else {
+            texture.tintCache[stringColor] = canvas;
+        }
+        return canvas;
+    },
+    /**
+     * Basically this method just needs a sprite and a color and tints the sprite with the given color.
+     *
+     * @memberof PIXI.canvasUtils
+     * @param {PIXI.Texture} texture - the sprite to tint
+     * @param {number} color - the color to use to tint the sprite with
+     * @return {HTMLCanvasElement} The tinted canvas
+     */
+    getTintedPattern: function (texture, color) {
+        color = canvasUtils.roundColor(color);
+        var stringColor = "#" + ("00000" + (color | 0).toString(16)).substr(-6);
+        texture.patternCache = texture.patternCache || {};
+        var pattern = texture.patternCache[stringColor];
+        if (pattern && pattern.tintId === texture._updateID) {
+            return pattern;
+        }
+        if (!canvasUtils.canvas) {
+            canvasUtils.canvas = document.createElement('canvas');
+        }
+        canvasUtils.tintMethod(texture, color, canvasUtils.canvas);
+        pattern = canvasUtils.canvas.getContext('2d').createPattern(canvasUtils.canvas, 'repeat');
+        pattern.tintId = texture._updateID;
+        texture.patternCache[stringColor] = pattern;
+        return pattern;
+    },
+    /**
+     * Tint a texture using the 'multiply' operation.
+     *
+     * @memberof PIXI.canvasUtils
+     * @param {PIXI.Texture} texture - the texture to tint
+     * @param {number} color - the color to use to tint the sprite with
+     * @param {HTMLCanvasElement} canvas - the current canvas
+     */
+    tintWithMultiply: function (texture, color, canvas) {
+        var context = canvas.getContext('2d');
+        var crop = texture._frame.clone();
+        var resolution = texture.baseTexture.resolution;
+        crop.x *= resolution;
+        crop.y *= resolution;
+        crop.width *= resolution;
+        crop.height *= resolution;
+        canvas.width = Math.ceil(crop.width);
+        canvas.height = Math.ceil(crop.height);
+        context.save();
+        context.fillStyle = "#" + ("00000" + (color | 0).toString(16)).substr(-6);
+        context.fillRect(0, 0, crop.width, crop.height);
+        context.globalCompositeOperation = 'multiply';
+        var source = texture.baseTexture.getDrawableSource();
+        context.drawImage(source, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
+        context.globalCompositeOperation = 'destination-atop';
+        context.drawImage(source, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
+        context.restore();
+    },
+    /**
+     * Tint a texture using the 'overlay' operation.
+     *
+     * @memberof PIXI.canvasUtils
+     * @param {PIXI.Texture} texture - the texture to tint
+     * @param {number} color - the color to use to tint the sprite with
+     * @param {HTMLCanvasElement} canvas - the current canvas
+     */
+    tintWithOverlay: function (texture, color, canvas) {
+        var context = canvas.getContext('2d');
+        var crop = texture._frame.clone();
+        var resolution = texture.baseTexture.resolution;
+        crop.x *= resolution;
+        crop.y *= resolution;
+        crop.width *= resolution;
+        crop.height *= resolution;
+        canvas.width = Math.ceil(crop.width);
+        canvas.height = Math.ceil(crop.height);
+        context.save();
+        context.globalCompositeOperation = 'copy';
+        context.fillStyle = "#" + ("00000" + (color | 0).toString(16)).substr(-6);
+        context.fillRect(0, 0, crop.width, crop.height);
+        context.globalCompositeOperation = 'destination-atop';
+        context.drawImage(texture.baseTexture.getDrawableSource(), crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
+        // context.globalCompositeOperation = 'copy';
+        context.restore();
+    },
+    /**
+     * Tint a texture pixel per pixel.
+     *
+     * @memberof PIXI.canvasUtils
+     * @param {PIXI.Texture} texture - the texture to tint
+     * @param {number} color - the color to use to tint the sprite with
+     * @param {HTMLCanvasElement} canvas - the current canvas
+     */
+    tintWithPerPixel: function (texture, color, canvas) {
+        var context = canvas.getContext('2d');
+        var crop = texture._frame.clone();
+        var resolution = texture.baseTexture.resolution;
+        crop.x *= resolution;
+        crop.y *= resolution;
+        crop.width *= resolution;
+        crop.height *= resolution;
+        canvas.width = Math.ceil(crop.width);
+        canvas.height = Math.ceil(crop.height);
+        context.save();
+        context.globalCompositeOperation = 'copy';
+        context.drawImage(texture.baseTexture.getDrawableSource(), crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
+        context.restore();
+        var rgbValues = hex2rgb(color);
+        var r = rgbValues[0];
+        var g = rgbValues[1];
+        var b = rgbValues[2];
+        var pixelData = context.getImageData(0, 0, crop.width, crop.height);
+        var pixels = pixelData.data;
+        for (var i = 0; i < pixels.length; i += 4) {
+            pixels[i + 0] *= r;
+            pixels[i + 1] *= g;
+            pixels[i + 2] *= b;
+        }
+        context.putImageData(pixelData, 0, 0);
+    },
+    /**
+     * Rounds the specified color according to the canvasUtils.cacheStepsPerColorChannel.
+     *
+     * @memberof PIXI.canvasUtils
+     * @param {number} color - the color to round, should be a hex color
+     * @return {number} The rounded color.
+     */
+    roundColor: function (color) {
+        var step = canvasUtils.cacheStepsPerColorChannel;
+        var rgbValues = hex2rgb(color);
+        rgbValues[0] = Math.min(255, (rgbValues[0] / step) * step);
+        rgbValues[1] = Math.min(255, (rgbValues[1] / step) * step);
+        rgbValues[2] = Math.min(255, (rgbValues[2] / step) * step);
+        return rgb2hex(rgbValues);
+    },
+    /**
+     * Number of steps which will be used as a cap when rounding colors.
+     *
+     * @memberof PIXI.canvasUtils
+     * @type {number}
+     */
+    cacheStepsPerColorChannel: 8,
+    /**
+     * Tint cache boolean flag.
+     *
+     * @memberof PIXI.canvasUtils
+     * @type {boolean}
+     */
+    convertTintToImage: false,
+    /**
+     * Whether or not the Canvas BlendModes are supported, consequently the ability to tint using the multiply method.
+     *
+     * @memberof PIXI.canvasUtils
+     * @type {boolean}
+     */
+    canUseMultiply: canUseNewCanvasBlendModes(),
+    /**
+     * The tinting method that will be used.
+     *
+     * @memberof PIXI.canvasUtils
+     * @type {Function}
+     */
+    tintMethod: null,
+};
+canvasUtils.tintMethod = canvasUtils.canUseMultiply ? canvasUtils.tintWithMultiply : canvasUtils.tintWithPerPixel;
+
+// Reference to Renderer.create static function
+var parentCreate = Renderer.create;
+/**
+ * Override the Renderer.create to fallback to use CanvasRenderer.
+ * Also supports forceCanvas option with Application or autoDetectRenderer.
+ * @private
+ */
+Renderer.create = function create(options) {
+    var forceCanvas = options && options.forceCanvas;
+    if (!forceCanvas) {
+        try {
+            return parentCreate(options);
+        }
+        catch (err) {
+            // swallow WebGL-unsupported error
+        }
+    }
+    return new CanvasRenderer(options);
+};
+
+/**
+ * Get the drawable source, such as HTMLCanvasElement or HTMLImageElement suitable
+ * for rendering with CanvasRenderer. Provided by **@pixi/canvas-renderer** package.
+ * @method getDrawableSource
+ * @memberof PIXI.BaseTexture#
+ * @return {PIXI.ICanvasImageSource} Source to render with CanvasRenderer
+ */
+BaseTexture.prototype.getDrawableSource = function getDrawableSource() {
+    var resource = this.resource;
+    return resource ? (resource.bitmap || resource.source) : null;
+};
+/**
+ * A reference to the canvas render target (we only need one as this can be shared across renderers)
+ *
+ * @protected
+ * @member {PIXI.utils.CanvasRenderTarget} _canvasRenderTarget
+ * @memberof PIXI.BaseRenderTexture#
+ */
+BaseRenderTexture.prototype._canvasRenderTarget = null;
+Texture.prototype.patternCache = null;
+Texture.prototype.tintCache = null;
+
+/*!
+ * @pixi/canvas-mesh - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-mesh is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/**
+ * Renderer dedicated to meshes.
+ *
+ * @class
+ * @protected
+ * @memberof PIXI
+ */
+var CanvasMeshRenderer = /** @class */ (function () {
+    /**
+     * @param {PIXI.CanvasRenderer} renderer - The renderer this downport works for
+     */
+    function CanvasMeshRenderer(renderer) {
+        this.renderer = renderer;
+    }
+    /**
+     * Renders the Mesh
+     *
+     * @param {PIXI.Mesh} mesh - the Mesh to render
+     */
+    CanvasMeshRenderer.prototype.render = function (mesh) {
+        var renderer = this.renderer;
+        var transform = mesh.worldTransform;
+        renderer.context.globalAlpha = mesh.worldAlpha;
+        renderer.setBlendMode(mesh.blendMode);
+        renderer.setContextTransform(transform, mesh.roundPixels);
+        if (mesh.drawMode !== DRAW_MODES.TRIANGLES) {
+            this._renderTriangleMesh(mesh);
+        }
+        else {
+            this._renderTriangles(mesh);
+        }
+    };
+    /**
+     * Draws the object in Triangle Mesh mode
+     *
+     * @private
+     * @param {PIXI.Mesh} mesh - the Mesh to render
+     */
+    CanvasMeshRenderer.prototype._renderTriangleMesh = function (mesh) {
+        // draw triangles!!
+        var length = mesh.geometry.buffers[0].data.length;
+        for (var i = 0; i < length - 2; i++) {
+            // draw some triangles!
+            var index = i * 2;
+            this._renderDrawTriangle(mesh, index, (index + 2), (index + 4));
+        }
+    };
+    /**
+     * Draws the object in triangle mode using canvas
+     *
+     * @private
+     * @param {PIXI.Mesh} mesh - the current mesh
+     */
+    CanvasMeshRenderer.prototype._renderTriangles = function (mesh) {
+        // draw triangles!!
+        var indices = mesh.geometry.getIndex().data;
+        var length = indices.length;
+        for (var i = 0; i < length; i += 3) {
+            // draw some triangles!
+            var index0 = indices[i] * 2;
+            var index1 = indices[i + 1] * 2;
+            var index2 = indices[i + 2] * 2;
+            this._renderDrawTriangle(mesh, index0, index1, index2);
+        }
+    };
+    /**
+     * Draws one of the triangles that from the Mesh
+     *
+     * @private
+     * @param {PIXI.Mesh} mesh - the current mesh
+     * @param {number} index0 - the index of the first vertex
+     * @param {number} index1 - the index of the second vertex
+     * @param {number} index2 - the index of the third vertex
+     */
+    CanvasMeshRenderer.prototype._renderDrawTriangle = function (mesh, index0, index1, index2) {
+        var context = this.renderer.context;
+        var vertices = mesh.geometry.buffers[0].data;
+        var uvs = mesh.uvs, texture = mesh.texture;
+        if (!texture.valid) {
+            return;
+        }
+        var isTinted = mesh.tint !== 0xFFFFFF;
+        var base = texture.baseTexture;
+        var textureWidth = base.width;
+        var textureHeight = base.height;
+        if (isTinted) {
+            if (mesh._cachedTint !== mesh.tint) {
+                mesh._cachedTint = mesh.tint;
+                mesh._tintedCanvas = canvasUtils.getTintedCanvas(mesh, mesh.tint);
+            }
+        }
+        var textureSource = isTinted ? mesh._tintedCanvas : base.getDrawableSource();
+        var u0 = uvs[index0] * base.width;
+        var u1 = uvs[index1] * base.width;
+        var u2 = uvs[index2] * base.width;
+        var v0 = uvs[index0 + 1] * base.height;
+        var v1 = uvs[index1 + 1] * base.height;
+        var v2 = uvs[index2 + 1] * base.height;
+        var x0 = vertices[index0];
+        var x1 = vertices[index1];
+        var x2 = vertices[index2];
+        var y0 = vertices[index0 + 1];
+        var y1 = vertices[index1 + 1];
+        var y2 = vertices[index2 + 1];
+        var canvasPadding = mesh.canvasPadding / this.renderer.resolution;
+        if (canvasPadding > 0) {
+            var paddingX = canvasPadding / Math.abs(mesh.worldTransform.a);
+            var paddingY = canvasPadding / Math.abs(mesh.worldTransform.d);
+            var centerX = (x0 + x1 + x2) / 3;
+            var centerY = (y0 + y1 + y2) / 3;
+            var normX = x0 - centerX;
+            var normY = y0 - centerY;
+            var dist = Math.sqrt((normX * normX) + (normY * normY));
+            x0 = centerX + ((normX / dist) * (dist + paddingX));
+            y0 = centerY + ((normY / dist) * (dist + paddingY));
+            //
+            normX = x1 - centerX;
+            normY = y1 - centerY;
+            dist = Math.sqrt((normX * normX) + (normY * normY));
+            x1 = centerX + ((normX / dist) * (dist + paddingX));
+            y1 = centerY + ((normY / dist) * (dist + paddingY));
+            normX = x2 - centerX;
+            normY = y2 - centerY;
+            dist = Math.sqrt((normX * normX) + (normY * normY));
+            x2 = centerX + ((normX / dist) * (dist + paddingX));
+            y2 = centerY + ((normY / dist) * (dist + paddingY));
+        }
+        context.save();
+        context.beginPath();
+        context.moveTo(x0, y0);
+        context.lineTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.closePath();
+        context.clip();
+        // Compute matrix transform
+        var delta = (u0 * v1) + (v0 * u2) + (u1 * v2) - (v1 * u2) - (v0 * u1) - (u0 * v2);
+        var deltaA = (x0 * v1) + (v0 * x2) + (x1 * v2) - (v1 * x2) - (v0 * x1) - (x0 * v2);
+        var deltaB = (u0 * x1) + (x0 * u2) + (u1 * x2) - (x1 * u2) - (x0 * u1) - (u0 * x2);
+        var deltaC = (u0 * v1 * x2) + (v0 * x1 * u2) + (x0 * u1 * v2) - (x0 * v1 * u2) - (v0 * u1 * x2) - (u0 * x1 * v2);
+        var deltaD = (y0 * v1) + (v0 * y2) + (y1 * v2) - (v1 * y2) - (v0 * y1) - (y0 * v2);
+        var deltaE = (u0 * y1) + (y0 * u2) + (u1 * y2) - (y1 * u2) - (y0 * u1) - (u0 * y2);
+        var deltaF = (u0 * v1 * y2) + (v0 * y1 * u2) + (y0 * u1 * v2) - (y0 * v1 * u2) - (v0 * u1 * y2) - (u0 * y1 * v2);
+        context.transform(deltaA / delta, deltaD / delta, deltaB / delta, deltaE / delta, deltaC / delta, deltaF / delta);
+        context.drawImage(textureSource, 0, 0, textureWidth * base.resolution, textureHeight * base.resolution, 0, 0, textureWidth, textureHeight);
+        context.restore();
+        this.renderer.invalidateBlendMode();
+    };
+    /**
+     * Renders a flat Mesh
+     *
+     * @private
+     * @param {PIXI.Mesh} mesh - The Mesh to render
+     */
+    CanvasMeshRenderer.prototype.renderMeshFlat = function (mesh) {
+        var context = this.renderer.context;
+        var vertices = mesh.geometry.getBuffer('aVertexPosition').data;
+        var length = vertices.length / 2;
+        // this.count++;
+        context.beginPath();
+        for (var i = 1; i < length - 2; ++i) {
+            // draw some triangles!
+            var index = i * 2;
+            var x0 = vertices[index];
+            var y0 = vertices[index + 1];
+            var x1 = vertices[index + 2];
+            var y1 = vertices[index + 3];
+            var x2 = vertices[index + 4];
+            var y2 = vertices[index + 5];
+            context.moveTo(x0, y0);
+            context.lineTo(x1, y1);
+            context.lineTo(x2, y2);
+        }
+        context.fillStyle = '#FF0000';
+        context.fill();
+        context.closePath();
+    };
+    /**
+     * destroy the the renderer.
+     *
+     */
+    CanvasMeshRenderer.prototype.destroy = function () {
+        this.renderer = null;
+    };
+    return CanvasMeshRenderer;
+}());
+
+/**
+ * Default `canvasPadding` for canvas-based Mesh rendering.
+ *
+ * @see PIXI.Mesh2d#canvasPadding
+ * @static
+ * @name MESH_CANVAS_PADDING
+ * @memberof PIXI.settings
+ * @type {number}
+ * @default 0
+ */
+settings.MESH_CANVAS_PADDING = 0;
+
+/**
+ * Renders the mesh using the Canvas renderer
+ *
+ * @protected
+ * @method render
+ * @memberof PIXI.MeshMaterial#
+ * @param {PIXI.CanvasRenderer} renderer - The canvas renderer.
+ * @param {PIXI.Mesh} mesh - Mesh to render.
+ */
+MeshMaterial.prototype._renderCanvas = function _renderCanvas(renderer, mesh) {
+    renderer.plugins.mesh.render(mesh);
+};
+
+/**
+ * Cached tint value so we can tell when the tint is changed.
+ * @memberof PIXI.NineSlicePlane#
+ * @member {number} _cachedTint
+ * @protected
+ */
+NineSlicePlane.prototype._cachedTint = 0xFFFFFF;
+/**
+ * Cached tinted texture.
+ * @memberof PIXI.NineSlicePlane#
+ * @member {HTMLCanvasElement} _tintedCanvas
+ * @protected
+ */
+NineSlicePlane.prototype._tintedCanvas = null;
+/**
+ * Temporary storage for canvas source coords
+ * @memberof PIXI.NineSlicePlane#
+ * @member {number[]} _canvasUvs
+ * @private
+ */
+NineSlicePlane.prototype._canvasUvs = null;
+/**
+ * Renders the object using the Canvas renderer
+ *
+ * @private
+ * @method _renderCanvas
+ * @memberof PIXI.NineSlicePlane#
+ * @param {PIXI.CanvasRenderer} renderer - The canvas renderer to render with.
+ */
+NineSlicePlane.prototype._renderCanvas = function _renderCanvas(renderer) {
+    var context = renderer.context;
+    var transform = this.worldTransform;
+    var isTinted = this.tint !== 0xFFFFFF;
+    var texture = this.texture;
+    if (!texture.valid) {
+        return;
+    }
+    // Work out tinting
+    if (isTinted) {
+        if (this._cachedTint !== this.tint) {
+            // Tint has changed, need to update the tinted texture and use that instead
+            this._cachedTint = this.tint;
+            this._tintedCanvas = canvasUtils.getTintedCanvas(this, this.tint);
+        }
+    }
+    var textureSource = !isTinted ? texture.baseTexture.getDrawableSource() : this._tintedCanvas;
+    if (!this._canvasUvs) {
+        this._canvasUvs = [0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    var vertices = this.vertices;
+    var uvs = this._canvasUvs;
+    var u0 = isTinted ? 0 : texture.frame.x;
+    var v0 = isTinted ? 0 : texture.frame.y;
+    var u1 = u0 + texture.frame.width;
+    var v1 = v0 + texture.frame.height;
+    uvs[0] = u0;
+    uvs[1] = u0 + this._leftWidth;
+    uvs[2] = u1 - this._rightWidth;
+    uvs[3] = u1;
+    uvs[4] = v0;
+    uvs[5] = v0 + this._topHeight;
+    uvs[6] = v1 - this._bottomHeight;
+    uvs[7] = v1;
+    for (var i = 0; i < 8; i++) {
+        uvs[i] *= texture.baseTexture.resolution;
+    }
+    context.globalAlpha = this.worldAlpha;
+    renderer.setBlendMode(this.blendMode);
+    renderer.setContextTransform(transform, this.roundPixels);
+    for (var row = 0; row < 3; row++) {
+        for (var col = 0; col < 3; col++) {
+            var ind = (col * 2) + (row * 8);
+            var sw = Math.max(1, uvs[col + 1] - uvs[col]);
+            var sh = Math.max(1, uvs[row + 5] - uvs[row + 4]);
+            var dw = Math.max(1, vertices[ind + 10] - vertices[ind]);
+            var dh = Math.max(1, vertices[ind + 11] - vertices[ind + 1]);
+            context.drawImage(textureSource, uvs[col], uvs[row + 4], sw, sh, vertices[ind], vertices[ind + 1], dw, dh);
+        }
+    }
+};
+
+var warned = false;
+/**
+ * Cached tint value so we can tell when the tint is changed.
+ * @memberof PIXI.Mesh#
+ * @member {number} _cachedTint
+ * @protected
+ */
+Mesh.prototype._cachedTint = 0xFFFFFF;
+/**
+ * Cached tinted texture.
+ * @memberof PIXI.Mesh#
+ * @member {HTMLCanvasElement} _tintedCanvas
+ * @protected
+ */
+Mesh.prototype._tintedCanvas = null;
+/**
+ * Renders the object using the Canvas renderer
+ *
+ * @private
+ * @method _renderCanvas
+ * @memberof PIXI.Mesh#
+ * @param {PIXI.CanvasRenderer} renderer - The canvas renderer.
+ */
+Mesh.prototype._renderCanvas = function _renderCanvas(renderer) {
+    if (this.shader.uvMatrix) {
+        this.shader.uvMatrix.update();
+        this.calculateUvs();
+    }
+    if (this.material._renderCanvas) {
+        this.material._renderCanvas(renderer, this);
+    }
+    else if (!warned) {
+        warned = true;
+        if (window.console) {
+            console.warn('Mesh with custom shaders are not supported in CanvasRenderer.');
+        }
+    }
+};
+// IMPORTANT: Please do NOT use this as a precedent to use `settings` after the object is created
+// this was merely created to completely decouple canvas from the base Mesh class and we are
+// unable to add `canvasPadding` in the constructor anymore, as the case was for PixiJS v4.
+/**
+ * Internal variable for `canvasPadding`.
+ *
+ * @private
+ * @memberof PIXI.Mesh
+ * @member {number}
+ * @default null
+ */
+Mesh.prototype._canvasPadding = null;
+/**
+ * Triangles in canvas mode are automatically antialiased, use this value to force triangles
+ * to overlap a bit with each other. To set the global default, set {@link PIXI.settings.MESH_CANVAS_PADDING}
+ *
+ * @see PIXI.settings.MESH_CANVAS_PADDING
+ * @member {number} canvasPadding
+ * @memberof PIXI.SimpleMesh#
+ * @default 0
+ */
+Object.defineProperty(Mesh.prototype, 'canvasPadding', {
+    get: function () {
+        return this._canvasPadding !== null ? this._canvasPadding : settings.MESH_CANVAS_PADDING;
+    },
+    set: function (value) {
+        this._canvasPadding = value;
+    },
+});
+
+/**
+ * Renders the object using the Canvas renderer
+ *
+ * @private
+ * @method _renderCanvas
+ * @memberof PIXI.Mesh#
+ * @param {PIXI.CanvasRenderer} renderer - The canvas renderer.
+ */
+SimpleMesh.prototype._renderCanvas = function _renderCanvas(renderer) {
+    if (this.autoUpdate) {
+        this.geometry.getBuffer('aVertexPosition').update();
+    }
+    if (this.shader.update) {
+        this.shader.update();
+    }
+    this.calculateUvs();
+    this.material._renderCanvas(renderer, this);
+};
+
+/**
+ * Renders the object using the Canvas renderer
+ *
+ * @protected
+ * @method _renderCanvas
+ * @memberof PIXI.Mesh#
+ * @param {PIXI.CanvasRenderer} renderer - The canvas renderer.
+ */
+SimpleRope.prototype._renderCanvas = function _renderCanvas(renderer) {
+    if (this.autoUpdate
+        || this.geometry._width !== this.shader.texture.height) {
+        this.geometry._width = this.shader.texture.height;
+        this.geometry.update();
+    }
+    if (this.shader.update) {
+        this.shader.update();
+    }
+    this.calculateUvs();
+    this.material._renderCanvas(renderer, this);
+};
+
+/*!
+ * @pixi/canvas-graphics - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-graphics is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/**
+ * @author Mat Groves
+ *
+ * Big thanks to the very clever Matt DesLauriers <mattdesl> https://github.com/mattdesl/
+ * for creating the original PixiJS version!
+ * Also a thanks to https://github.com/bchevalier for tweaking the tint and alpha so that they
+ * now share 4 bytes on the vertex buffer
+ *
+ * Heavily inspired by LibGDX's CanvasGraphicsRenderer:
+ * https://github.com/libgdx/libgdx/blob/1.0.0/gdx/src/com/badlogic/gdx/graphics/glutils/ShapeRenderer.java
+ */
+/**
+ * Renderer dedicated to drawing and batching graphics objects.
+ *
+ * @class
+ * @protected
+ * @memberof PIXI
+ */
+var CanvasGraphicsRenderer = /** @class */ (function () {
+    /**
+     * @param {PIXI.CanvasRenderer} renderer - The current PIXI renderer.
+     */
+    function CanvasGraphicsRenderer(renderer) {
+        this.renderer = renderer;
+        this._svgMatrix = null;
+        this._tempMatrix = new Matrix();
+    }
+    /**
+     * calculates fill/stroke style for canvas
+     *
+     * @private
+     * @param {PIXI.FillStyle} style
+     * @param {number} tint
+     * @returns {string|CanvasPattern}
+     */
+    CanvasGraphicsRenderer.prototype._calcCanvasStyle = function (style, tint) {
+        var res;
+        if (style.texture && style.texture.baseTexture !== Texture.WHITE.baseTexture) {
+            if (style.texture.valid) {
+                res = canvasUtils.getTintedPattern(style.texture, tint);
+                this.setPatternTransform(res, style.matrix || Matrix.IDENTITY);
+            }
+            else {
+                res = '#808080';
+            }
+        }
+        else {
+            res = "#" + ("00000" + (tint | 0).toString(16)).substr(-6);
+        }
+        return res;
+    };
+    /**
+     * Renders a Graphics object to a canvas.
+     *
+     * @param {PIXI.Graphics} graphics - the actual graphics object to render
+     */
+    CanvasGraphicsRenderer.prototype.render = function (graphics) {
+        var renderer = this.renderer;
+        var context = renderer.context;
+        var worldAlpha = graphics.worldAlpha;
+        var transform = graphics.transform.worldTransform;
+        renderer.setContextTransform(transform);
+        renderer.setBlendMode(graphics.blendMode);
+        var graphicsData = graphics.geometry.graphicsData;
+        var contextFillStyle;
+        var contextStrokeStyle;
+        var tintR = ((graphics.tint >> 16) & 0xFF) / 255;
+        var tintG = ((graphics.tint >> 8) & 0xFF) / 255;
+        var tintB = (graphics.tint & 0xFF) / 255;
+        for (var i = 0; i < graphicsData.length; i++) {
+            var data = graphicsData[i];
+            var shape = data.shape;
+            var fillStyle = data.fillStyle;
+            var lineStyle = data.lineStyle;
+            var fillColor = data.fillStyle.color | 0;
+            var lineColor = data.lineStyle.color | 0;
+            if (data.matrix) {
+                renderer.setContextTransform(transform.copyTo(this._tempMatrix).append(data.matrix));
+            }
+            if (fillStyle.visible) {
+                var fillTint = ((((fillColor >> 16) & 0xFF) / 255 * tintR * 255 << 16)
+                    + (((fillColor >> 8) & 0xFF) / 255 * tintG * 255 << 8)
+                    + (((fillColor & 0xFF) / 255) * tintB * 255));
+                contextFillStyle = this._calcCanvasStyle(fillStyle, fillTint);
+            }
+            if (lineStyle.visible) {
+                var lineTint = ((((lineColor >> 16) & 0xFF) / 255 * tintR * 255 << 16)
+                    + (((lineColor >> 8) & 0xFF) / 255 * tintG * 255 << 8)
+                    + (((lineColor & 0xFF) / 255) * tintB * 255));
+                contextStrokeStyle = this._calcCanvasStyle(lineStyle, lineTint);
+            }
+            context.lineWidth = lineStyle.width;
+            context.lineCap = lineStyle.cap;
+            context.lineJoin = lineStyle.join;
+            context.miterLimit = lineStyle.miterLimit;
+            if (data.type === SHAPES.POLY) {
+                context.beginPath();
+                var tempShape = shape;
+                var points = tempShape.points;
+                var holes = data.holes;
+                var outerArea = void 0;
+                var innerArea = void 0;
+                var px = void 0;
+                var py = void 0;
+                context.moveTo(points[0], points[1]);
+                for (var j = 2; j < points.length; j += 2) {
+                    context.lineTo(points[j], points[j + 1]);
+                }
+                if (tempShape.closeStroke) {
+                    context.closePath();
+                }
+                if (holes.length > 0) {
+                    outerArea = 0;
+                    px = points[0];
+                    py = points[1];
+                    for (var j = 2; j + 2 < points.length; j += 2) {
+                        outerArea += ((points[j] - px) * (points[j + 3] - py))
+                            - ((points[j + 2] - px) * (points[j + 1] - py));
+                    }
+                    for (var k = 0; k < holes.length; k++) {
+                        points = holes[k].shape.points;
+                        if (!points) {
+                            continue;
+                        }
+                        innerArea = 0;
+                        px = points[0];
+                        py = points[1];
+                        for (var j = 2; j + 2 < points.length; j += 2) {
+                            innerArea += ((points[j] - px) * (points[j + 3] - py))
+                                - ((points[j + 2] - px) * (points[j + 1] - py));
+                        }
+                        if (innerArea * outerArea < 0) {
+                            context.moveTo(points[0], points[1]);
+                            for (var j = 2; j < points.length; j += 2) {
+                                context.lineTo(points[j], points[j + 1]);
+                            }
+                        }
+                        else {
+                            context.moveTo(points[points.length - 2], points[points.length - 1]);
+                            for (var j = points.length - 4; j >= 0; j -= 2) {
+                                context.lineTo(points[j], points[j + 1]);
+                            }
+                        }
+                        if (holes[k].shape.closeStroke) {
+                            context.closePath();
+                        }
+                    }
+                }
+                if (fillStyle.visible) {
+                    context.globalAlpha = fillStyle.alpha * worldAlpha;
+                    context.fillStyle = contextFillStyle;
+                    context.fill();
+                }
+                if (lineStyle.visible) {
+                    context.globalAlpha = lineStyle.alpha * worldAlpha;
+                    context.strokeStyle = contextStrokeStyle;
+                    context.stroke();
+                }
+            }
+            else if (data.type === SHAPES.RECT) {
+                var tempShape = shape;
+                if (fillStyle.visible) {
+                    context.globalAlpha = fillStyle.alpha * worldAlpha;
+                    context.fillStyle = contextFillStyle;
+                    context.fillRect(tempShape.x, tempShape.y, tempShape.width, tempShape.height);
+                }
+                if (lineStyle.visible) {
+                    context.globalAlpha = lineStyle.alpha * worldAlpha;
+                    context.strokeStyle = contextStrokeStyle;
+                    context.strokeRect(tempShape.x, tempShape.y, tempShape.width, tempShape.height);
+                }
+            }
+            else if (data.type === SHAPES.CIRC) {
+                var tempShape = shape;
+                // TODO - need to be Undefined!
+                context.beginPath();
+                context.arc(tempShape.x, tempShape.y, tempShape.radius, 0, 2 * Math.PI);
+                context.closePath();
+                if (fillStyle.visible) {
+                    context.globalAlpha = fillStyle.alpha * worldAlpha;
+                    context.fillStyle = contextFillStyle;
+                    context.fill();
+                }
+                if (lineStyle.visible) {
+                    context.globalAlpha = lineStyle.alpha * worldAlpha;
+                    context.strokeStyle = contextStrokeStyle;
+                    context.stroke();
+                }
+            }
+            else if (data.type === SHAPES.ELIP) {
+                // ellipse code taken from: http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
+                var tempShape = shape;
+                var w = tempShape.width * 2;
+                var h = tempShape.height * 2;
+                var x = tempShape.x - (w / 2);
+                var y = tempShape.y - (h / 2);
+                context.beginPath();
+                var kappa = 0.5522848;
+                var ox = (w / 2) * kappa; // control point offset horizontal
+                var oy = (h / 2) * kappa; // control point offset vertical
+                var xe = x + w; // x-end
+                var ye = y + h; // y-end
+                var xm = x + (w / 2); // x-middle
+                var ym = y + (h / 2); // y-middle
+                context.moveTo(x, ym);
+                context.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+                context.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+                context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+                context.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+                context.closePath();
+                if (fillStyle.visible) {
+                    context.globalAlpha = fillStyle.alpha * worldAlpha;
+                    context.fillStyle = contextFillStyle;
+                    context.fill();
+                }
+                if (lineStyle.visible) {
+                    context.globalAlpha = lineStyle.alpha * worldAlpha;
+                    context.strokeStyle = contextStrokeStyle;
+                    context.stroke();
+                }
+            }
+            else if (data.type === SHAPES.RREC) {
+                var tempShape = shape;
+                var rx = tempShape.x;
+                var ry = tempShape.y;
+                var width = tempShape.width;
+                var height = tempShape.height;
+                var radius = tempShape.radius;
+                var maxRadius = Math.min(width, height) / 2 | 0;
+                radius = radius > maxRadius ? maxRadius : radius;
+                context.beginPath();
+                context.moveTo(rx, ry + radius);
+                context.lineTo(rx, ry + height - radius);
+                context.quadraticCurveTo(rx, ry + height, rx + radius, ry + height);
+                context.lineTo(rx + width - radius, ry + height);
+                context.quadraticCurveTo(rx + width, ry + height, rx + width, ry + height - radius);
+                context.lineTo(rx + width, ry + radius);
+                context.quadraticCurveTo(rx + width, ry, rx + width - radius, ry);
+                context.lineTo(rx + radius, ry);
+                context.quadraticCurveTo(rx, ry, rx, ry + radius);
+                context.closePath();
+                if (fillStyle.visible) {
+                    context.globalAlpha = fillStyle.alpha * worldAlpha;
+                    context.fillStyle = contextFillStyle;
+                    context.fill();
+                }
+                if (lineStyle.visible) {
+                    context.globalAlpha = lineStyle.alpha * worldAlpha;
+                    context.strokeStyle = contextStrokeStyle;
+                    context.stroke();
+                }
+            }
+        }
+    };
+    CanvasGraphicsRenderer.prototype.setPatternTransform = function (pattern, matrix) {
+        if (this._svgMatrix === false) {
+            return;
+        }
+        if (!this._svgMatrix) {
+            var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            if (svg && svg.createSVGMatrix) {
+                this._svgMatrix = svg.createSVGMatrix();
+            }
+            if (!this._svgMatrix || !pattern.setTransform) {
+                this._svgMatrix = false;
+                return;
+            }
+        }
+        this._svgMatrix.a = matrix.a;
+        this._svgMatrix.b = matrix.b;
+        this._svgMatrix.c = matrix.c;
+        this._svgMatrix.d = matrix.d;
+        this._svgMatrix.e = matrix.tx;
+        this._svgMatrix.f = matrix.ty;
+        pattern.setTransform(this._svgMatrix.inverse());
+    };
+    /**
+     * destroy graphics object
+     *
+     */
+    CanvasGraphicsRenderer.prototype.destroy = function () {
+        this.renderer = null;
+        this._svgMatrix = null;
+        this._tempMatrix = null;
+    };
+    return CanvasGraphicsRenderer;
+}());
+
+var canvasRenderer;
+var tempMatrix$2 = new Matrix();
+/**
+ * Generates a canvas texture. Only available with **pixi.js-legacy** bundle
+ * or the **@pixi/canvas-graphics** package.
+ * @method generateCanvasTexture
+ * @memberof PIXI.Graphics#
+ * @param {PIXI.SCALE_MODES} scaleMode - The scale mode of the texture.
+ * @param {number} resolution - The resolution of the texture.
+ * @return {PIXI.Texture} The new texture.
+ */
+Graphics.prototype.generateCanvasTexture = function generateCanvasTexture(scaleMode, resolution) {
+    if (resolution === void 0) { resolution = 1; }
+    var bounds = this.getLocalBounds();
+    var canvasBuffer = RenderTexture.create({
+        width: bounds.width,
+        height: bounds.height,
+        scaleMode: scaleMode,
+        resolution: resolution,
+    });
+    if (!canvasRenderer) {
+        canvasRenderer = new CanvasRenderer();
+    }
+    this.transform.updateLocalTransform();
+    this.transform.localTransform.copyTo(tempMatrix$2);
+    tempMatrix$2.invert();
+    tempMatrix$2.tx -= bounds.x;
+    tempMatrix$2.ty -= bounds.y;
+    canvasRenderer.render(this, canvasBuffer, true, tempMatrix$2);
+    var texture = Texture.from(canvasBuffer.baseTexture._canvasRenderTarget.canvas, {
+        scaleMode: scaleMode,
+    });
+    texture.baseTexture.setResolution(resolution);
+    return texture;
+};
+Graphics.prototype.cachedGraphicsData = [];
+/**
+ * Renders the object using the Canvas renderer
+ *
+ * @method _renderCanvas
+ * @memberof PIXI.Graphics#
+ * @private
+ * @param {PIXI.CanvasRenderer} renderer - The renderer
+ */
+Graphics.prototype._renderCanvas = function _renderCanvas(renderer) {
+    if (this.isMask === true) {
+        return;
+    }
+    this.finishPoly();
+    renderer.plugins.graphics.render(this);
+};
+
+/*!
+ * @pixi/canvas-sprite - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-sprite is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+var canvasRenderWorldTransform = new Matrix();
+/**
+ * Types that can be passed to drawImage
+ * @typedef {HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap} ICanvasImageSource
+ * @memberof PIXI
+ */
+/**
+ * @author Mat Groves
+ *
+ * Big thanks to the very clever Matt DesLauriers <mattdesl> https://github.com/mattdesl/
+ * for creating the original PixiJS version!
+ * Also a thanks to https://github.com/bchevalier for tweaking the tint and alpha so that they now
+ * share 4 bytes on the vertex buffer
+ *
+ * Heavily inspired by LibGDX's CanvasSpriteRenderer:
+ * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/CanvasSpriteRenderer.java
+ */
+/**
+ * Renderer dedicated to drawing and batching sprites.
+ *
+ * @class
+ * @protected
+ * @memberof PIXI
+ */
+var CanvasSpriteRenderer = /** @class */ (function () {
+    /**
+     * @param {PIXI.Renderer} renderer -The renderer sprite this batch works for.
+     */
+    function CanvasSpriteRenderer(renderer) {
+        this.renderer = renderer;
+    }
+    /**
+     * Renders the sprite object.
+     *
+     * @param {PIXI.Sprite} sprite - the sprite to render when using this spritebatch
+     */
+    CanvasSpriteRenderer.prototype.render = function (sprite) {
+        var texture = sprite._texture;
+        var renderer = this.renderer;
+        var context = renderer.context;
+        var width = texture._frame.width;
+        var height = texture._frame.height;
+        var wt = sprite.transform.worldTransform;
+        var dx = 0;
+        var dy = 0;
+        var source = texture.baseTexture.getDrawableSource();
+        if (texture.orig.width <= 0 || texture.orig.height <= 0 || !texture.valid || !source) {
+            return;
+        }
+        if (!texture.valid) {
+            return;
+        }
+        renderer.setBlendMode(sprite.blendMode, true);
+        renderer.context.globalAlpha = sprite.worldAlpha;
+        // If smoothingEnabled is supported and we need to change the smoothing property for sprite texture
+        var smoothingEnabled = texture.baseTexture.scaleMode === SCALE_MODES.LINEAR;
+        if (renderer.smoothProperty
+            && renderer.context[renderer.smoothProperty] !== smoothingEnabled) {
+            context[renderer.smoothProperty] = smoothingEnabled;
+        }
+        if (texture.trim) {
+            dx = (texture.trim.width / 2) + texture.trim.x - (sprite.anchor.x * texture.orig.width);
+            dy = (texture.trim.height / 2) + texture.trim.y - (sprite.anchor.y * texture.orig.height);
+        }
+        else {
+            dx = (0.5 - sprite.anchor.x) * texture.orig.width;
+            dy = (0.5 - sprite.anchor.y) * texture.orig.height;
+        }
+        if (texture.rotate) {
+            wt.copyTo(canvasRenderWorldTransform);
+            wt = canvasRenderWorldTransform;
+            groupD8.matrixAppendRotationInv(wt, texture.rotate, dx, dy);
+            // the anchor has already been applied above, so lets set it to zero
+            dx = 0;
+            dy = 0;
+        }
+        dx -= width / 2;
+        dy -= height / 2;
+        renderer.setContextTransform(wt, sprite.roundPixels, 1);
+        // Allow for pixel rounding
+        if (sprite.roundPixels) {
+            dx = dx | 0;
+            dy = dy | 0;
+        }
+        var resolution = texture.baseTexture.resolution;
+        var outerBlend = renderer._outerBlend;
+        if (outerBlend) {
+            context.save();
+            context.beginPath();
+            context.rect(dx * renderer.resolution, dy * renderer.resolution, width * renderer.resolution, height * renderer.resolution);
+            context.clip();
+        }
+        if (sprite.tint !== 0xFFFFFF) {
+            if (sprite._cachedTint !== sprite.tint || sprite._tintedCanvas.tintId !== sprite._texture._updateID) {
+                sprite._cachedTint = sprite.tint;
+                // TODO clean up caching - how to clean up the caches?
+                sprite._tintedCanvas = canvasUtils.getTintedCanvas(sprite, sprite.tint);
+            }
+            context.drawImage(sprite._tintedCanvas, 0, 0, Math.floor(width * resolution), Math.floor(height * resolution), Math.floor(dx * renderer.resolution), Math.floor(dy * renderer.resolution), Math.floor(width * renderer.resolution), Math.floor(height * renderer.resolution));
+        }
+        else {
+            context.drawImage(source, texture._frame.x * resolution, texture._frame.y * resolution, Math.floor(width * resolution), Math.floor(height * resolution), Math.floor(dx * renderer.resolution), Math.floor(dy * renderer.resolution), Math.floor(width * renderer.resolution), Math.floor(height * renderer.resolution));
+        }
+        if (outerBlend) {
+            context.restore();
+        }
+        // just in case, leaking outer blend here will be catastrophic!
+        renderer.setBlendMode(BLEND_MODES.NORMAL);
+    };
+    /**
+     * destroy the sprite object.
+     *
+     */
+    CanvasSpriteRenderer.prototype.destroy = function () {
+        this.renderer = null;
+    };
+    return CanvasSpriteRenderer;
+}());
+
+/**
+ * Cached tinted texture.
+ * @memberof PIXI.Sprite#
+ * @member {HTMLCanvasElement} _tintedCanvas
+ * @protected
+ */
+Sprite.prototype._tintedCanvas = null;
+/**
+* Renders the object using the Canvas renderer
+*
+* @private
+* @method _renderCanvas
+* @memberof PIXI.Sprite#
+* @param {PIXI.CanvasRenderer} renderer - The renderer
+*/
+Sprite.prototype._renderCanvas = function _renderCanvas(renderer) {
+    renderer.plugins.sprite.render(this);
+};
+
+/*!
+ * @pixi/canvas-extract - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-extract is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+var TEMP_RECT$1 = new Rectangle();
+/**
+ * The extract manager provides functionality to export content from the renderers.
+ *
+ * An instance of this class is automatically created by default, and can be found at `renderer.plugins.extract`
+ *
+ * @class
+ * @memberof PIXI
+ */
+var CanvasExtract = /** @class */ (function () {
+    /**
+     * @param {PIXI.CanvasRenderer} renderer - A reference to the current renderer
+     */
+    function CanvasExtract(renderer) {
+        this.renderer = renderer;
+    }
+    /**
+     * Will return a HTML Image of the target
+     *
+     * @param {PIXI.DisplayObject|PIXI.RenderTexture} target - A displayObject or renderTexture
+     *  to convert. If left empty will use the main renderer
+     * @param {string} [format] - Image format, e.g. "image/jpeg" or "image/webp".
+     * @param {number} [quality] - JPEG or Webp compression from 0 to 1. Default is 0.92.
+     * @return {HTMLImageElement} HTML Image of the target
+     */
+    CanvasExtract.prototype.image = function (target, format, quality) {
+        var image = new Image();
+        image.src = this.base64(target, format, quality);
+        return image;
+    };
+    /**
+     * Will return a a base64 encoded string of this target. It works by calling
+     *  `CanvasExtract.getCanvas` and then running toDataURL on that.
+     *
+     * @param {PIXI.DisplayObject|PIXI.RenderTexture} target - A displayObject or renderTexture
+     *  to convert. If left empty will use the main renderer
+     * @param {string} [format] - Image format, e.g. "image/jpeg" or "image/webp".
+     * @param {number} [quality] - JPEG or Webp compression from 0 to 1. Default is 0.92.
+     * @return {string} A base64 encoded string of the texture.
+     */
+    CanvasExtract.prototype.base64 = function (target, format, quality) {
+        return this.canvas(target).toDataURL(format, quality);
+    };
+    /**
+     * Creates a Canvas element, renders this target to it and then returns it.
+     *
+     * @param {PIXI.DisplayObject|PIXI.RenderTexture} target - A displayObject or renderTexture
+     *  to convert. If left empty will use the main renderer
+     * @return {HTMLCanvasElement} A Canvas element with the texture rendered on.
+     */
+    CanvasExtract.prototype.canvas = function (target) {
+        var renderer = this.renderer;
+        var context;
+        var resolution;
+        var frame;
+        var renderTexture;
+        if (target) {
+            if (target instanceof RenderTexture) {
+                renderTexture = target;
+            }
+            else {
+                renderTexture = renderer.generateTexture(target);
+            }
+        }
+        if (renderTexture) {
+            context = renderTexture.baseTexture._canvasRenderTarget.context;
+            resolution = renderTexture.baseTexture._canvasRenderTarget.resolution;
+            frame = renderTexture.frame;
+        }
+        else {
+            context = renderer.rootContext;
+            resolution = renderer.resolution;
+            frame = TEMP_RECT$1;
+            frame.width = this.renderer.width;
+            frame.height = this.renderer.height;
+        }
+        var width = Math.floor((frame.width * resolution) + 1e-4);
+        var height = Math.floor((frame.height * resolution) + 1e-4);
+        var canvasBuffer = new CanvasRenderTarget(width, height, 1);
+        var canvasData = context.getImageData(frame.x * resolution, frame.y * resolution, width, height);
+        canvasBuffer.context.putImageData(canvasData, 0, 0);
+        // send the canvas back..
+        return canvasBuffer.canvas;
+    };
+    /**
+     * Will return a one-dimensional array containing the pixel data of the entire texture in RGBA
+     * order, with integer values between 0 and 255 (included).
+     *
+     * @param {PIXI.DisplayObject|PIXI.RenderTexture} target - A displayObject or renderTexture
+     *  to convert. If left empty will use the main renderer
+     * @return {Uint8ClampedArray} One-dimensional array containing the pixel data of the entire texture
+     */
+    CanvasExtract.prototype.pixels = function (target) {
+        var renderer = this.renderer;
+        var context;
+        var resolution;
+        var frame;
+        var renderTexture;
+        if (target) {
+            if (target instanceof RenderTexture) {
+                renderTexture = target;
+            }
+            else {
+                renderTexture = renderer.generateTexture(target);
+            }
+        }
+        if (renderTexture) {
+            context = renderTexture.baseTexture._canvasRenderTarget.context;
+            resolution = renderTexture.baseTexture._canvasRenderTarget.resolution;
+            frame = renderTexture.frame;
+        }
+        else {
+            context = renderer.rootContext;
+            frame = TEMP_RECT$1;
+            frame.width = renderer.width;
+            frame.height = renderer.height;
+        }
+        return context.getImageData(0, 0, frame.width * resolution, frame.height * resolution).data;
+    };
+    /**
+     * Destroys the extract
+     *
+     */
+    CanvasExtract.prototype.destroy = function () {
+        this.renderer = null;
+    };
+    return CanvasExtract;
+}());
+/**
+ * @name PIXI.CanvasRenderer#extract
+ * @type {PIXI.CanvasExtract}
+ * @see PIXI.CanvasRenderer#plugins
+ * @deprecated since 5.3.0
+ */
+Object.defineProperty(CanvasRenderer.prototype, 'extract', {
+    get: function () {
+        deprecation('v5.3.0', 'CanvasRenderer#extract is deprecated, use CanvasRenderer#plugins.extract');
+        return this.plugins.extract;
+    },
+});
+
+/*!
+ * @pixi/canvas-prepare - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-prepare is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics$m = function(d, b) {
+    extendStatics$m = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
+    return extendStatics$m(d, b);
+};
+
+function __extends$O(d, b) {
+    extendStatics$m(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+var CANVAS_START_SIZE = 16;
+/**
+ * Built-in hook to upload PIXI.Texture objects to the GPU.
+ *
+ * @private
+ * @param {*} prepare - Instance of CanvasPrepare
+ * @param {*} item - Item to check
+ * @return {boolean} If item was uploaded.
+ */
+function uploadBaseTextures$1(prepare, item) {
+    var tempPrepare = prepare;
+    if (item instanceof BaseTexture) {
+        var image = item.source;
+        // Sometimes images (like atlas images) report a size of zero, causing errors on windows phone.
+        // So if the width or height is equal to zero then use the canvas size
+        // Otherwise use whatever is smaller, the image dimensions or the canvas dimensions.
+        var imageWidth = image.width === 0 ? tempPrepare.canvas.width : Math.min(tempPrepare.canvas.width, image.width);
+        var imageHeight = image.height === 0 ? tempPrepare.canvas.height
+            : Math.min(tempPrepare.canvas.height, image.height);
+        // Only a small subsections is required to be drawn to have the whole texture uploaded to the GPU
+        // A smaller draw can be faster.
+        tempPrepare.ctx.drawImage(image, 0, 0, imageWidth, imageHeight, 0, 0, tempPrepare.canvas.width, tempPrepare.canvas.height);
+        return true;
+    }
+    return false;
+}
+/**
+ * The prepare manager provides functionality to upload content to the GPU.
+ *
+ * This cannot be done directly for Canvas like in WebGL, but the effect can be achieved by drawing
+ * textures to an offline canvas. This draw call will force the texture to be moved onto the GPU.
+ *
+ * An instance of this class is automatically created by default, and can be found at `renderer.plugins.prepare`
+ *
+ * @class
+ * @extends PIXI.BasePrepare
+ * @memberof PIXI
+ */
+var CanvasPrepare = /** @class */ (function (_super) {
+    __extends$O(CanvasPrepare, _super);
+    /**
+     * @param {PIXI.CanvasRenderer} renderer - A reference to the current renderer
+     */
+    function CanvasPrepare(renderer) {
+        var _this = _super.call(this, renderer) || this;
+        _this.uploadHookHelper = _this;
+        /**
+        * An offline canvas to render textures to
+        * @type {HTMLCanvasElement}
+        * @private
+        */
+        _this.canvas = document.createElement('canvas');
+        _this.canvas.width = CANVAS_START_SIZE;
+        _this.canvas.height = CANVAS_START_SIZE;
+        /**
+         * The context to the canvas
+        * @type {CanvasRenderingContext2D}
+        * @private
+        */
+        _this.ctx = _this.canvas.getContext('2d');
+        // Add textures to upload
+        _this.registerUploadHook(uploadBaseTextures$1);
+        return _this;
+    }
+    /**
+     * Destroys the plugin, don't use after this.
+     *
+     */
+    CanvasPrepare.prototype.destroy = function () {
+        _super.prototype.destroy.call(this);
+        this.ctx = null;
+        this.canvas = null;
+    };
+    return CanvasPrepare;
+}(BasePrepare));
+
+/*!
+ * @pixi/canvas-sprite-tiling - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-sprite-tiling is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/**
+ * Renders the object using the Canvas renderer
+ *
+ * @protected
+ * @function _renderCanvas
+ * @memberof PIXI.TilingSprite#
+ * @param {PIXI.CanvasRenderer} renderer - a reference to the canvas renderer
+ */
+TilingSprite.prototype._renderCanvas = function _renderCanvas(renderer) {
+    var texture = this._texture;
+    if (!texture.baseTexture.valid) {
+        return;
+    }
+    var context = renderer.context;
+    var transform = this.worldTransform;
+    var baseTexture = texture.baseTexture;
+    var source = baseTexture.getDrawableSource();
+    var baseTextureResolution = baseTexture.resolution;
+    var modX = ((this.tilePosition.x / this.tileScale.x) % texture._frame.width) * baseTextureResolution;
+    var modY = ((this.tilePosition.y / this.tileScale.y) % texture._frame.height) * baseTextureResolution;
+    // create a nice shiny pattern!
+    if (this._textureID !== this._texture._updateID || this._cachedTint !== this.tint) {
+        this._textureID = this._texture._updateID;
+        // cut an object from a spritesheet..
+        var tempCanvas = new CanvasRenderTarget(texture._frame.width, texture._frame.height, baseTextureResolution);
+        // Tint the tiling sprite
+        if (this.tint !== 0xFFFFFF) {
+            this._tintedCanvas = canvasUtils.getTintedCanvas(this, this.tint);
+            tempCanvas.context.drawImage(this._tintedCanvas, 0, 0);
+        }
+        else {
+            tempCanvas.context.drawImage(source, -texture._frame.x * baseTextureResolution, -texture._frame.y * baseTextureResolution);
+        }
+        this._cachedTint = this.tint;
+        this._canvasPattern = tempCanvas.context.createPattern(tempCanvas.canvas, 'repeat');
+    }
+    // set context state..
+    context.globalAlpha = this.worldAlpha;
+    renderer.setBlendMode(this.blendMode);
+    renderer.setContextTransform(transform);
+    // fill the pattern!
+    context.fillStyle = this._canvasPattern;
+    // TODO - this should be rolled into the setTransform above..
+    context.scale(this.tileScale.x / baseTextureResolution, this.tileScale.y / baseTextureResolution);
+    var anchorX = this.anchor.x * -this._width;
+    var anchorY = this.anchor.y * -this._height;
+    if (this.uvRespectAnchor) {
+        context.translate(modX, modY);
+        context.fillRect(-modX + anchorX, -modY + anchorY, this._width / this.tileScale.x * baseTextureResolution, this._height / this.tileScale.y * baseTextureResolution);
+    }
+    else {
+        context.translate(modX + anchorX, modY + anchorY);
+        context.fillRect(-modX, -modY, this._width / this.tileScale.x * baseTextureResolution, this._height / this.tileScale.y * baseTextureResolution);
+    }
+};
+
+/*!
+ * @pixi/canvas-particles - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-particles is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/**
+ * Renders the object using the Canvas renderer
+ * @method renderCanvas
+ * @memberof PIXI.ParticleContainer#
+ * @private
+ * @param {PIXI.CanvasRenderer} renderer - a reference to the canvas renderer
+ */
+ParticleContainer.prototype.renderCanvas = function renderCanvas(renderer) {
+    if (!this.visible || this.worldAlpha <= 0 || !this.children.length || !this.renderable) {
+        return;
+    }
+    var context = renderer.context;
+    var transform = this.worldTransform;
+    var isRotated = true;
+    var positionX = 0;
+    var positionY = 0;
+    var finalWidth = 0;
+    var finalHeight = 0;
+    renderer.setBlendMode(this.blendMode);
+    context.globalAlpha = this.worldAlpha;
+    this.displayObjectUpdateTransform();
+    for (var i = 0; i < this.children.length; ++i) {
+        var child = this.children[i];
+        if (!child.visible) {
+            continue;
+        }
+        if (!child._texture.valid) {
+            continue;
+        }
+        var frame = child._texture.frame;
+        context.globalAlpha = this.worldAlpha * child.alpha;
+        if (child.rotation % (Math.PI * 2) === 0) {
+            // this is the fastest  way to optimise! - if rotation is 0 then we can avoid any kind of setTransform call
+            if (isRotated) {
+                renderer.setContextTransform(transform, false, 1);
+                isRotated = false;
+            }
+            positionX = ((child.anchor.x) * (-frame.width * child.scale.x)) + child.position.x + 0.5;
+            positionY = ((child.anchor.y) * (-frame.height * child.scale.y)) + child.position.y + 0.5;
+            finalWidth = frame.width * child.scale.x;
+            finalHeight = frame.height * child.scale.y;
+        }
+        else {
+            if (!isRotated) {
+                isRotated = true;
+            }
+            child.displayObjectUpdateTransform();
+            var childTransform = child.worldTransform;
+            renderer.setContextTransform(childTransform, this.roundPixels, 1);
+            positionX = ((child.anchor.x) * (-frame.width)) + 0.5;
+            positionY = ((child.anchor.y) * (-frame.height)) + 0.5;
+            finalWidth = frame.width;
+            finalHeight = frame.height;
+        }
+        var resolution = child._texture.baseTexture.resolution;
+        context.drawImage(child._texture.baseTexture.getDrawableSource(), frame.x * resolution, frame.y * resolution, frame.width * resolution, frame.height * resolution, positionX * renderer.resolution, positionY * renderer.resolution, finalWidth * renderer.resolution, finalHeight * renderer.resolution);
+    }
+};
+
+/*!
+ * @pixi/canvas-display - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-display is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/**
+ * To be overridden by the subclass
+ * @method _renderCanvas
+ * @memberof PIXI.Container#
+ * @protected
+ * @param {PIXI.CanvasRenderer} renderer - The renderer
+ */
+Container.prototype._renderCanvas = function _renderCanvas(_renderer) {
+    // this is where content itself gets rendered...
+};
+/**
+ * Renders the object using the Canvas renderer
+ * @method renderCanvas
+ * @memberof PIXI.Container#
+ * @param {PIXI.CanvasRenderer} renderer - The renderer
+ */
+Container.prototype.renderCanvas = function renderCanvas(renderer) {
+    // if not visible or the alpha is 0 then no need to render this
+    if (!this.visible || this.worldAlpha <= 0 || !this.renderable) {
+        return;
+    }
+    if (this._mask) {
+        renderer.maskManager.pushMask(this._mask);
+    }
+    this._renderCanvas(renderer);
+    for (var i = 0, j = this.children.length; i < j; ++i) {
+        this.children[i].renderCanvas(renderer);
+    }
+    if (this._mask) {
+        renderer.maskManager.popMask(renderer);
+    }
+};
+
+/**
+ * Renders the object using the Canvas renderer
+ * @method renderCanvas
+ * @memberof PIXI.Container#
+ * @param {PIXI.CanvasRenderer} renderer - The renderer
+ */
+DisplayObject.prototype.renderCanvas = function renderCanvas(_renderer) {
+    // OVERWRITE;
+};
+
+/*!
+ * @pixi/canvas-text - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * @pixi/canvas-text is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/**
+ * Renders the object using the Canvas renderer
+ *
+ * @method _renderCanvas
+ * @memberof PIXI.Text#
+ * @private
+ * @param {PIXI.CanvasRenderer} renderer - The renderer
+ */
+Text.prototype._renderCanvas = function _renderCanvas(renderer) {
+    if (this._autoResolution && this._resolution !== renderer.resolution) {
+        this._resolution = renderer.resolution;
+        this.dirty = true;
+    }
+    this.updateText(true);
+    Sprite.prototype._renderCanvas.call(this, renderer);
+};
+
+/*!
+ * pixi.js-legacy - v5.3.7
+ * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ *
+ * pixi.js-legacy is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+CanvasRenderer.registerPlugin('accessibility', AccessibilityManager);
+CanvasRenderer.registerPlugin('extract', CanvasExtract);
+CanvasRenderer.registerPlugin('graphics', CanvasGraphicsRenderer);
+CanvasRenderer.registerPlugin('interaction', InteractionManager);
+CanvasRenderer.registerPlugin('mesh', CanvasMeshRenderer);
+CanvasRenderer.registerPlugin('prepare', CanvasPrepare);
+CanvasRenderer.registerPlugin('sprite', CanvasSpriteRenderer);
+
 /**
  * @typedef ViewportTouch
  * @property {number} id
@@ -55056,7 +57308,7 @@ var util;
 
 });
 
-var __extends$N = (commonjsGlobal$2 && commonjsGlobal$2.__extends) || (function () {
+var __extends$P = (commonjsGlobal$2 && commonjsGlobal$2.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -55123,7 +57375,7 @@ var quotelessJson$1 = function (obj) {
     return json.replace(/"([^"]+)":/g, '$1:');
 };
 var ZodError$1 = (function (_super) {
-    __extends$N(ZodError, _super);
+    __extends$P(ZodError, _super);
     function ZodError(issues) {
         var _newTarget = this.constructor;
         var _this = _super.call(this) || this;
