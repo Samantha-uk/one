@@ -21,6 +21,7 @@
 * [Configuration](#configuration)
 * [Usage](#usage)
 * [Key to display icons & legends](#key-to-display-icons--legends)
+* [If Zigzag is not working correctly](#if-zigzag-is-not-working-correctly)
 * [Know Issues](#know-issues)
 * [Contributing](#contributing)
 	* [License](#license)
@@ -51,7 +52,7 @@ At present the installation of Zigzag is a manual process.
 - [Home Assistant](https://www.home-assistant.io/) - version `2020.12.0` or more recent. 
 - [ZHA](https://www.home-assistant.io/integrations/zha/) - A Home Assistant Zigbee Integration.
  _The plugin architecture of Zigzag means new sources of Zigbee information can be easily added.  Support for zigbee2mqtt is under investigation._
-
+- A browser/os/driver combination that supports WebGL.  Zigzag requires WebGL to work.
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#installation-steps)
 
@@ -169,6 +170,14 @@ You can change the location of a Zag by dragging it.  Once this is done it will 
 
 # Key to display icons & legends
 TBD
+
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#if-zigzag-is-not-working-correctly)
+
+# If Zigzag is not working correctly
+- Check in the browser console and see if any errors are being reported. [Finding Your Browser's Developer Console](https://balsamiq.com/support/faqs/browserconsole/#:~:text=To%20open%20the%20developer%20console,(on%20Windows%2FLinux).)
+- Raise an [issue](https://github.com/Samantha-uk/one/issues) and include your browser console output.
+
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#know-issues)
 

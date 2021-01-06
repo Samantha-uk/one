@@ -24,7 +24,7 @@ At present the installation of Zigzag is a manual process.
 - [Home Assistant](https://www.home-assistant.io/) - version `2020.12.0` or more recent. 
 - [ZHA](https://www.home-assistant.io/integrations/zha/) - A Home Assistant Zigbee Integration.
  _The plugin architecture of Zigzag means new sources of Zigbee information can be easily added.  Support for zigbee2mqtt is under investigation._
-
+- A browser/os/driver combination that supports WebGL.  Zigzag requires WebGL to work.
 ## Installation Steps
 
 You will need to:
@@ -118,6 +118,11 @@ You can change the location of a Zag by dragging it.  Once this is done it will 
 
 # Key to display icons & legends
 TBD
+
+# If Zigzag is not working correctly
+- Check in the browser console and see if any errors are being reported. [Finding Your Browser's Developer Console](https://balsamiq.com/support/faqs/browserconsole/#:~:text=To%20open%20the%20developer%20console,(on%20Windows%2FLinux).)
+- Raise an [issue](https://github.com/Samantha-uk/one/issues) and include your browser console output.
+
 # Know Issues
 - It doesn't correctly Zoom to Fit on initial display.  Clicking the `ZOOM TO FIT` button will work.
 # Contributing
