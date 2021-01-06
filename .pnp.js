@@ -1754,7 +1754,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/gl-matrix", "npm:3.2.0"],
             ["gl-matrix", "npm:3.3.0"],
             ["pixi-viewport", "virtual:c4ad206be3db77e9884e4bf85a70c716ed5b483e3665989672f7e8c0c06df17533f8944088d2899e22ab97ccd853dfdadc7d35cc459a0832a29d129afe5ae0b8#npm:4.18.1"],
-            ["pixi.js", "npm:5.3.7"],
             ["pixi.js-legacy", "npm:5.3.7"],
             ["resize-observer-polyfill", "npm:1.5.1"],
             ["tslib", "npm:2.0.3"],
@@ -11417,7 +11416,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["pixi-viewport", "virtual:c4ad206be3db77e9884e4bf85a70c716ed5b483e3665989672f7e8c0c06df17533f8944088d2899e22ab97ccd853dfdadc7d35cc459a0832a29d129afe5ae0b8#npm:4.18.1"],
             ["@types/pixi.js", null],
             ["penner", "npm:0.1.3"],
-            ["pixi.js", "npm:5.3.7"]
+            ["pixi.js", null]
           ],
           "packagePeers": [
             "@types/pixi.js",
