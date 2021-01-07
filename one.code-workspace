@@ -5,6 +5,10 @@
       "path": "."
     },
     {
+      "name": "⚙️ @samantha-uk/penguin",
+      "path": "berry/penguin"
+    },
+    {
       "name": "✨ @samantha-uk/zigzag",
       "path": "zigzag/"
     },

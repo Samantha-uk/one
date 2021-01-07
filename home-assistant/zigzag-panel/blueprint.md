@@ -45,8 +45,8 @@ It should then look something like this (_There may be a number of .map files al
 ```
 - Copy the contents of `zigzag/zigzag-panel-config.yaml` into your Home Assistant `configuration.yaml` file.
 - Restart Home Assistant.
-- Zigzag should appear as an entry on the left of the display, which if you select should display your Zigbee network.
-_If not, check in the console of your web browser for any error messages._
+- Zigzag should appear as an entry on the left of the display, selecting this will display your Zigbee network.
+_If not, check in the console of your web browser for any error messages._ Check [If Zigzag is not working correctly](#if-zigzag-is-not-working-correctly) for details of how.
 
 # Plugins
 Plugins allow Zigzag behaviour to be configured.  A plugin based approach was selected to facilitate:

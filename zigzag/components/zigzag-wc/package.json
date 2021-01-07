@@ -15,9 +15,6 @@
     "tslib": "^2.0.3",
     "weightless": "^0.0.37"
   },
-  "peerDependencies": {
-    "@material/mwc-button": "^0.20.0"
-  },
   "description": "Zigzag base web component",
   "devDependencies": {
     "@samantha-uk/tools-builder": "workspace:*",

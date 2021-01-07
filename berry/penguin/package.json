@@ -1,0 +1,24 @@
+{
+  "name": "@samantha-uk./yarn-plugin-penguin",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@types/node": "*",
+    "@yarnpkg/builder": "*",
+    "@yarnpkg/core": "*",
+    "clipanion": "*",
+    "typescript": "*"
+  },
+  "scripts": {
+    "build": "builder build plugin",
+    "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json",
+    "build:plugin-stage": "builder build plugin",
+    "update:workspace": "mkdir -p /home/samantha/github/one/.yarn/plugins/@samantha-uk && cp ./bundles/@yarnpkg/plugin-penguin.js /home/samantha/github/one/.yarn/plugins/@samantha-uk/plugin-penguin.cjs",
+    "update:patch-name": "sed -i 's|@yarnpkg/plugin-penguin|@samantha-uk/plugin-penguin|g' ./bundles/@yarnpkg/plugin-penguin.js",
+    "update": "yarn build:plugin-stage && yarn update:patch-name && yarn update:workspace",
+    "update:local": "yarn build:plugin-stage && yarn update:workspace",
+    "release": "yarn build:plugin-stage && yarn update:patch-name",
+    "clean": "rimraf build bundles",
+    "test": "jest"
+  },
+  "license": "MIT"
+}
