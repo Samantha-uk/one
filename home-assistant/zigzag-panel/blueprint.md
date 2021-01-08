@@ -3,7 +3,7 @@
 
 {{ template:title }}
 
-{{ template:packageVersion }}{{ template:issues }} {{ template:semver }}{{ template:licence }} {{ template:commitizen }}{{ template:dependencies }} {{ template:vulnerabilities }}{{ template:maintained }}
+{{ template:packageVersion }}{{ template:issues }} {{ template:semver }}{{ template:licence }} {{ template:commitizen }}{{ template:dependencies }} {{ template:vulnerabilities }}{{ template:maintained }}![Discord](https://img.shields.io/discord/796659043195551774)
 
 {{ template:toc }}
 
