@@ -1,6 +1,6 @@
 {
   "name": "@samantha-uk./yarn-plugin-penguin",
-  "main": "./src/index.ts",
+  "main": "./src/plugin-penguin.ts",
   "dependencies": {
     "@types/node": "*",
     "@yarnpkg/builder": "*",
