@@ -1,8 +1,10 @@
+import { Logger } from "@samantha-uk/utils-logger";
 import { PluginConfigBaseSchema } from "@samantha-uk/utils-plugin";
 import * as glm from "gl-matrix"; // http://glmatrix.net/docs/
 import * as PIXI from "pixi.js-legacy";
 import { Viewport } from "pixi-viewport";
 import ResizeObserver from "resize-observer-polyfill";
+
 // eslint-disable-next-line import/no-cycle
 import {
   IconHelper,
@@ -17,6 +19,8 @@ import {
   PluginRenderBase,
 } from "@samantha-uk/zigzag-render";
 import * as z from "zod";
+
+const log = new Logger(`plugin-render-pixi`);
 
 const LINK_WIDTH = 5;
 const ICON_SCALE = 14;
@@ -96,9 +100,13 @@ export class RenderPlugin extends PluginRenderBase {
 
   private _parentDivElement?: HTMLDivElement;
 
-  private _renderer: PIXI.Renderer;
+  private _renderer: PIXI.Renderer | PIXI.CanvasRenderer;
 
   private _stage: PIXI.Container;
+
+  // private _version = `{{version}}`;
+
+  private _version = `0.1.3`;
 
   private _width = 0;
 
@@ -145,6 +153,7 @@ export class RenderPlugin extends PluginRenderBase {
     this._filterBlurUnfocussed.enabled = false;
 
     this._linkLayer.filters = [this._filterBlurUnfocussed];
+    log.info(`plugin:${this.fqpi} v${this._version} api v${this.apiVersion}`);
   }
 
   public get hasChanged(): boolean {
@@ -457,8 +466,7 @@ export class RenderPlugin extends PluginRenderBase {
     this._hasChanged = true;
     RLbl.html.style.setProperty(
       `transform`,
-      `translate(${(RLbl.offset as RenderPoint)?.x ?? 0}px, ${
-        (RLbl.offset as RenderPoint)?.y ?? 0
+      `translate(${(RLbl.offset as RenderPoint)?.x ?? 0}px, ${(RLbl.offset as RenderPoint)?.y ?? 0
       }px) rotate(${rotation}deg)`
     );
     RLbl.rotation = rotation;
@@ -527,8 +535,7 @@ export class RenderPlugin extends PluginRenderBase {
     this._hasChanged = true;
     RIcn.svg.style.setProperty(
       `transform`,
-      `translate(${offset.x * 0.7 - RIcn.radius * 0.5 * ICON_SCALE}px, ${
-        offset.y * 0.7 - RIcn.radius * 0.5 * ICON_SCALE
+      `translate(${offset.x * 0.7 - RIcn.radius * 0.5 * ICON_SCALE}px, ${offset.y * 0.7 - RIcn.radius * 0.5 * ICON_SCALE
       }px)`
     );
     return RIcn;

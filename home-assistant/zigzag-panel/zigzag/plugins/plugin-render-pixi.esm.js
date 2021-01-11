@@ -1,3 +1,63 @@
+let FORCE_COLOR, NODE_DISABLE_COLORS, NO_COLOR, TERM, isTTY=true;
+if (typeof process !== 'undefined') {
+	({ FORCE_COLOR, NODE_DISABLE_COLORS, NO_COLOR, TERM } = process.env);
+	isTTY = process.stdout && process.stdout.isTTY;
+}
+
+const $ = {
+	enabled: !NODE_DISABLE_COLORS && NO_COLOR == null && TERM !== 'dumb' && (
+		FORCE_COLOR != null && FORCE_COLOR !== '0' || isTTY
+	)
+};
+
+function init(x, y) {
+	let rgx = new RegExp(`\\x1b\\[${y}m`, 'g');
+	let open = `\x1b[${x}m`, close = `\x1b[${y}m`;
+
+	return function (txt) {
+		if (!$.enabled || txt == null) return txt;
+		return open + ((''+txt).includes(close) ? txt.replace(rgx, close + open) : txt) + close;
+	};
+}
+const grey = init(90, 39);
+
+/* eslint-disable no-console */
+// const bee = `\u{1F41D}`;
+const debug = `\u{1F3F7}`;
+const tick = `\u{2705}`;
+const error = `\u{2757}`;
+const warning = `\u{26A0}`;
+const info = `\u{2139}`;
+const fatal = `\u{203C}`;
+const play = `\u{1F41D}`;
+class Logger {
+    constructor(module) {
+        this._prefix = `${grey(`Zigzag`)} ${grey(`[${module}]`)}`;
+    }
+    debug(message) {
+        console.log(`${this._prefix} ${debug} ${message}`);
+    }
+    error(message) {
+        console.log(`${this._prefix} ${error} ${message}`);
+    }
+    fatal(message) {
+        console.log(`${this._prefix} ${fatal} ${message}`);
+    }
+    info(message) {
+        console.log(`${this._prefix} ${info} ${message}`);
+    }
+    success(message) {
+        console.log(`${this._prefix} ${tick} ${message}`);
+    }
+    start(message) {
+        console.log(`${this._prefix} ${play} ${message}`);
+    }
+    warn(message) {
+        console.log(`${this._prefix} ${warning} ${message}`);
+    }
+}
+/* eslint-enable no-console */
+
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 function getDefaultExportFromCjs (x) {
@@ -23,7 +83,6 @@ var __values = (commonjsGlobal && commonjsGlobal.__values) || function(o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.INVALID = Symbol('invalid_data');
-var util;
 (function (util) {
     function assertNever(_x) {
         throw new Error();
@@ -94,7 +153,7 @@ var util;
         }
         return undefined;
     };
-})(util = exports.util || (exports.util = {}));
+})(exports.util || (exports.util = {}));
 
 });
 
@@ -411,7 +470,7 @@ var PseudoPromise = (function () {
             return _this.then(function (_arg, ctx) {
                 if (ctx.async) {
                     var allValues = Promise.all(pps.map(function (pp) { return __awaiter(_this, void 0, void 0, function () {
-                        var asdf, err_1;
+                        var asdf;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -421,7 +480,7 @@ var PseudoPromise = (function () {
                                     asdf = _a.sent();
                                     return [2, asdf];
                                 case 2:
-                                    err_1 = _a.sent();
+                                    _a.sent();
                                     return [2, util_1.INVALID];
                                 case 3: return [2];
                             }
@@ -1661,9 +1720,6 @@ var __spread = (commonjsGlobal && commonjsGlobal.__spread) || function () {
     return ar;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-
-
-var ZodTypes;
 (function (ZodTypes) {
     ZodTypes["string"] = "string";
     ZodTypes["number"] = "number";
@@ -1692,7 +1748,7 @@ var ZodTypes;
     ZodTypes["transformer"] = "transformer";
     ZodTypes["optional"] = "optional";
     ZodTypes["nullable"] = "nullable";
-})(ZodTypes = exports.ZodTypes || (exports.ZodTypes = {}));
+})(exports.ZodTypes || (exports.ZodTypes = {}));
 exports.inputSchema = function (schema) {
     if (schema instanceof cjs.ZodTransformer) {
         return exports.inputSchema(schema._def.input);
@@ -1880,10 +1936,9 @@ exports.ZodType = ZodType;
 
 var errorUtil_1 = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var errorUtil;
 (function (errorUtil) {
     errorUtil.errToObj = function (message) { return (typeof message === 'string' ? { message: message } : message || {}); };
-})(errorUtil = exports.errorUtil || (exports.errorUtil = {}));
+})(exports.errorUtil || (exports.errorUtil = {}));
 
 });
 
@@ -2647,10 +2702,6 @@ var __spread = (commonjsGlobal && commonjsGlobal.__spread) || function () {
     return ar;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-
-
-
-var objectUtil;
 (function (objectUtil) {
     objectUtil.mergeShapes = function (first, second) {
         var e_1, _a;
@@ -2684,7 +2735,7 @@ var objectUtil;
         });
         return merged;
     }; };
-})(objectUtil = exports.objectUtil || (exports.objectUtil = {}));
+})(exports.objectUtil || (exports.objectUtil = {}));
 
 });
 
@@ -4066,66 +4117,6 @@ const PluginConfigBaseSchema = cjs.object({
     id: cjs.string(),
 })
     .catchall(cjs.unknown());
-
-let FORCE_COLOR, NODE_DISABLE_COLORS, NO_COLOR, TERM, isTTY=true;
-if (typeof process !== 'undefined') {
-	({ FORCE_COLOR, NODE_DISABLE_COLORS, NO_COLOR, TERM } = process.env);
-	isTTY = process.stdout && process.stdout.isTTY;
-}
-
-const $ = {
-	enabled: !NODE_DISABLE_COLORS && NO_COLOR == null && TERM !== 'dumb' && (
-		FORCE_COLOR != null && FORCE_COLOR !== '0' || isTTY
-	)
-};
-
-function init(x, y) {
-	let rgx = new RegExp(`\\x1b\\[${y}m`, 'g');
-	let open = `\x1b[${x}m`, close = `\x1b[${y}m`;
-
-	return function (txt) {
-		if (!$.enabled || txt == null) return txt;
-		return open + ((''+txt).includes(close) ? txt.replace(rgx, close + open) : txt) + close;
-	};
-}
-const grey = init(90, 39);
-
-/* eslint-disable no-console */
-// const bee = `\u{1F41D}`;
-const debug = `\u{1F3F7}`;
-const tick = `\u{2705}`;
-const error = `\u{2757}`;
-const warning = `\u{26A0}`;
-const info = `\u{2139}`;
-const fatal = `\u{203C}`;
-const play = `\u{1F41D}`;
-class Logger {
-    constructor(module) {
-        this._prefix = `${grey(`Zigzag`)} ${grey(`[${module}]`)}`;
-    }
-    debug(message) {
-        console.log(`${this._prefix} ${debug} ${message}`);
-    }
-    error(message) {
-        console.log(`${this._prefix} ${error} ${message}`);
-    }
-    fatal(message) {
-        console.log(`${this._prefix} ${fatal} ${message}`);
-    }
-    info(message) {
-        console.log(`${this._prefix} ${info} ${message}`);
-    }
-    success(message) {
-        console.log(`${this._prefix} ${tick} ${message}`);
-    }
-    start(message) {
-        console.log(`${this._prefix} ${play} ${message}`);
-    }
-    warn(message) {
-        console.log(`${this._prefix} ${warning} ${message}`);
-    }
-}
-/* eslint-enable no-console */
 
 // Note: this is the semver.org version of the spec that it implements
 // Not necessarily the package version of this code.
@@ -57233,7 +57224,6 @@ var __values = (commonjsGlobal$2 && commonjsGlobal$2.__values) || function(o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.INVALID = Symbol('invalid_data');
-var util;
 (function (util) {
     function assertNever(_x) {
         throw new Error();
@@ -57304,7 +57294,7 @@ var util;
         }
         return undefined;
     };
-})(util = exports.util || (exports.util = {}));
+})(exports.util || (exports.util = {}));
 
 });
 
@@ -57621,7 +57611,7 @@ var PseudoPromise = (function () {
             return _this.then(function (_arg, ctx) {
                 if (ctx.async) {
                     var allValues = Promise.all(pps.map(function (pp) { return __awaiter(_this, void 0, void 0, function () {
-                        var asdf, err_1;
+                        var asdf;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -57631,7 +57621,7 @@ var PseudoPromise = (function () {
                                     asdf = _a.sent();
                                     return [2, asdf];
                                 case 2:
-                                    err_1 = _a.sent();
+                                    _a.sent();
                                     return [2, util_1$1.INVALID];
                                 case 3: return [2];
                             }
@@ -58871,9 +58861,6 @@ var __spread = (commonjsGlobal$2 && commonjsGlobal$2.__spread) || function () {
     return ar;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-
-
-var ZodTypes;
 (function (ZodTypes) {
     ZodTypes["string"] = "string";
     ZodTypes["number"] = "number";
@@ -58902,7 +58889,7 @@ var ZodTypes;
     ZodTypes["transformer"] = "transformer";
     ZodTypes["optional"] = "optional";
     ZodTypes["nullable"] = "nullable";
-})(ZodTypes = exports.ZodTypes || (exports.ZodTypes = {}));
+})(exports.ZodTypes || (exports.ZodTypes = {}));
 exports.inputSchema = function (schema) {
     if (schema instanceof cjs$1.ZodTransformer) {
         return exports.inputSchema(schema._def.input);
@@ -59090,10 +59077,9 @@ exports.ZodType = ZodType;
 
 var errorUtil_1$1 = createCommonjsModule$2(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var errorUtil;
 (function (errorUtil) {
     errorUtil.errToObj = function (message) { return (typeof message === 'string' ? { message: message } : message || {}); };
-})(errorUtil = exports.errorUtil || (exports.errorUtil = {}));
+})(exports.errorUtil || (exports.errorUtil = {}));
 
 });
 
@@ -59857,10 +59843,6 @@ var __spread = (commonjsGlobal$2 && commonjsGlobal$2.__spread) || function () {
     return ar;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-
-
-
-var objectUtil;
 (function (objectUtil) {
     objectUtil.mergeShapes = function (first, second) {
         var e_1, _a;
@@ -59894,7 +59876,7 @@ var objectUtil;
         });
         return merged;
     }; };
-})(objectUtil = exports.objectUtil || (exports.objectUtil = {}));
+})(exports.objectUtil || (exports.objectUtil = {}));
 
 });
 
@@ -64020,6 +64002,7 @@ class PluginRenderBase extends PluginBase {
     }
 }
 
+const log$2 = new Logger(`plugin-render-pixi`);
 const LINK_WIDTH = 5;
 const ICON_SCALE = 14;
 const HOLD_TIME_THRESHOLD_MS = 400;
@@ -64040,6 +64023,8 @@ class RenderPlugin extends PluginRenderBase {
         this._hasChanged = true;
         this._height = 0;
         this._primaryBackgroundColor = 0;
+        // private _version = `{{version}}`;
+        this._version = `0.1.3`;
         this._width = 0;
         this.fqpi = `${this.id}-pixi`;
         this.config = config;
@@ -64074,6 +64059,7 @@ class RenderPlugin extends PluginRenderBase {
         this._filterBlurUnfocussed.blur = 20;
         this._filterBlurUnfocussed.enabled = false;
         this._linkLayer.filters = [this._filterBlurUnfocussed];
+        log$2.info(`plugin:${this.fqpi} v${this._version} api v${this.apiVersion}`);
     }
     get hasChanged() {
         return this._hasChanged;

@@ -5,7 +5,7 @@
     "@samantha-uk/utils-plugin": "workspace:*",
     "svg-path-bbox": "^0.2.0",
     "svgpath": "^2.3.0",
-    "tslib": "^2.0.3"
+    "tslib": "^2.1.0"
   },
   "devDependencies": {
     "@samantha-uk/tools-builder": "workspace:*",

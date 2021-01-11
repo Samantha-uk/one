@@ -1,7 +1,4 @@
 {
-  "name": "@samantha-uk/zigzag-grapher",
-  "description": "Zigzag grapher",
-  "version": "0.1.2",
   "author": "Samantha-uk <samantha.uk.github@gmail.com>",
   "dependencies": {
     "@samantha-uk/utils-logger": "workspace:*",
@@ -9,8 +6,9 @@
     "@samantha-uk/zigzag-layout": "workspace:*",
     "@samantha-uk/zigzag-render": "workspace:*",
     "perf-monitor": "^0.4.1",
-    "tslib": "^2.0.3"
+    "tslib": "^2.1.0"
   },
+  "description": "Zigzag grapher",
   "devDependencies": {
     "@samantha-uk/tools-builder": "workspace:*",
     "typescript": "^4.1.3"
@@ -22,6 +20,7 @@
   "license": "MIT",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
+  "name": "@samantha-uk/zigzag-grapher",
   "publishConfig": {
     "access": "public"
   },
@@ -34,5 +33,6 @@
     "watch": "builder --watch"
   },
   "source": "src/index.ts",
-  "types": "dist/index.d.ts"
+  "types": "dist/index.d.ts",
+  "version": "0.1.2"
 }

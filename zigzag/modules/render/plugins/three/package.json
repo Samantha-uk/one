@@ -7,8 +7,8 @@
     "resize-observer-polyfill": "^1.5.1",
     "three": "^0.124.0",
     "three-spritetext": "^1.5.3",
-    "tslib": "^2.0.3",
-    "zod": "^2.0.0-beta.29"
+    "tslib": "^2.1.0",
+    "zod": "2.0.0-beta.29"
   },
   "description": "Zigzag Three JS render plugin",
   "devDependencies": {

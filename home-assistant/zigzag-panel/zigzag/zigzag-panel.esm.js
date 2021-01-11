@@ -2795,7 +2795,6 @@ var __values = (commonjsGlobal && commonjsGlobal.__values) || function(o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.INVALID = Symbol('invalid_data');
-var util;
 (function (util) {
     function assertNever(_x) {
         throw new Error();
@@ -2866,7 +2865,7 @@ var util;
         }
         return undefined;
     };
-})(util = exports.util || (exports.util = {}));
+})(exports.util || (exports.util = {}));
 
 });
 
@@ -3183,7 +3182,7 @@ var PseudoPromise = (function () {
             return _this.then(function (_arg, ctx) {
                 if (ctx.async) {
                     var allValues = Promise.all(pps.map(function (pp) { return __awaiter(_this, void 0, void 0, function () {
-                        var asdf, err_1;
+                        var asdf;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -3193,7 +3192,7 @@ var PseudoPromise = (function () {
                                     asdf = _a.sent();
                                     return [2, asdf];
                                 case 2:
-                                    err_1 = _a.sent();
+                                    _a.sent();
                                     return [2, util_1.INVALID];
                                 case 3: return [2];
                             }
@@ -4433,9 +4432,6 @@ var __spread = (commonjsGlobal && commonjsGlobal.__spread) || function () {
     return ar;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-
-
-var ZodTypes;
 (function (ZodTypes) {
     ZodTypes["string"] = "string";
     ZodTypes["number"] = "number";
@@ -4464,7 +4460,7 @@ var ZodTypes;
     ZodTypes["transformer"] = "transformer";
     ZodTypes["optional"] = "optional";
     ZodTypes["nullable"] = "nullable";
-})(ZodTypes = exports.ZodTypes || (exports.ZodTypes = {}));
+})(exports.ZodTypes || (exports.ZodTypes = {}));
 exports.inputSchema = function (schema) {
     if (schema instanceof cjs.ZodTransformer) {
         return exports.inputSchema(schema._def.input);
@@ -4652,10 +4648,9 @@ exports.ZodType = ZodType;
 
 var errorUtil_1 = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var errorUtil;
 (function (errorUtil) {
     errorUtil.errToObj = function (message) { return (typeof message === 'string' ? { message: message } : message || {}); };
-})(errorUtil = exports.errorUtil || (exports.errorUtil = {}));
+})(exports.errorUtil || (exports.errorUtil = {}));
 
 });
 
@@ -5419,10 +5414,6 @@ var __spread = (commonjsGlobal && commonjsGlobal.__spread) || function () {
     return ar;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-
-
-
-var objectUtil;
 (function (objectUtil) {
     objectUtil.mergeShapes = function (first, second) {
         var e_1, _a;
@@ -5456,7 +5447,7 @@ var objectUtil;
         });
         return merged;
     }; };
-})(objectUtil = exports.objectUtil || (exports.objectUtil = {}));
+})(exports.objectUtil || (exports.objectUtil = {}));
 
 });
 

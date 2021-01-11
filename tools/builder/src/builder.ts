@@ -119,7 +119,7 @@ const plugins = [
     esModuleInterop: true,
     experimentalDecorators: true,
     forceConsistentCasingInFileNames: true,
-    lib: [`dom`, `DOM.Iterable`, `WebWorker`, `ESNext`],
+    lib: [`dom`, `DOM.Iterable`, `ESNext`],
     moduleResolution: `node`,
     noEmitOnError: false,
     noErrorTruncation: true,
@@ -147,8 +147,7 @@ function onwarn(
   log.warn(
     `${box.topLeft}${chalk.yellow(
       warning.code ?? ``
-    )} ${`${chalk.blueBright`File`}:[${
-      warning.loc?.file ?? ``
+    )} ${`${chalk.blueBright`File`}:[${warning.loc?.file ?? ``
     }]`} ${`${chalk.blueBright(`Line`)}:[${warning.loc?.line ?? ``}]`}`
   );
   log.warn(`${box.bottomLeft}${warning.message}`);

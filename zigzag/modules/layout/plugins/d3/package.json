@@ -5,7 +5,7 @@
     "@samantha-uk/zigzag-layout": "workspace:*",
     "@types/d3-force": "^2.1.0",
     "d3-force": "^2.1.1",
-    "zod": "^2.0.0-beta.29"
+    "zod": "2.0.0-beta.29"
   },
   "description": "Zigzag D3 layout plugin",
   "devDependencies": {

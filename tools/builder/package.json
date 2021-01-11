@@ -12,13 +12,13 @@
     "@rollup/plugin-node-resolve": "^11.0.1",
     "@rollup/plugin-typescript": "portal:/home/samantha/github/plugins/packages/typescript",
     "@samantha-uk/utils-logger": "workspace:*",
-    "@types/node": "~14.14.19",
+    "@types/node": "~14.14.20",
     "@types/rollup-plugin-progress": "^1.1.0",
     "@types/signale": "^1.4.1",
     "chalk": "^4.1.0",
     "figures": "^3.2.0",
-    "meow": "^8.1.0",
-    "rollup": "^2.35.1",
+    "meow": "^8.1.2",
+    "rollup": "^2.36.1",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-banner": "^0.2.1",
@@ -28,7 +28,7 @@
     "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-sizes": "^1.0.3",
     "signale": "1.4.0",
-    "tslib": "^2.0.3"
+    "tslib": "^2.1.0"
   },
   "description": "Builder tool for the one monorepo.",
   "devDependencies": {
