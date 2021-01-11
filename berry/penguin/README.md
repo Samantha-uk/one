@@ -12,30 +12,29 @@
 * [Installation](#installation)
 * [Configuration](#configuration)
 * [Usage](#usage)
-* [License](#license)
+	* [License](#license)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#description)
 
-## Description
+# Description
+Currently under development.
+Why [Penguin](https://en.wikipedia.org/wiki/Penguin_Books)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#installation)
 
-## Installation
+# Installation
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#configuration)
 
-## Configuration
+# Configuration
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#usage)
 
-## Usage
-
-Why [Penguin](https://en.wikipedia.org/wiki/Penguin_Books)
-
+# Usage
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#license)

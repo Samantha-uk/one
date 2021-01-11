@@ -3,7 +3,7 @@
 
 {{ template:title }}
 
-{{ template:packageVersion }}{{ template:issues }} {{ template:semver }}{{ template:licence }} {{ template:commitizen }}{{ template:dependencies }} {{ template:vulnerabilities }}{{ template:maintained }}![Discord](https://img.shields.io/discord/796659043195551774)
+{{ template:packageVersion }}{{ template:issues }} {{ template:semver }}{{ template:licence }} {{ template:commitizen }}{{ template:dependencies }} {{ template:vulnerabilities }}{{ template:maintained }}{{discord})
 
 {{ template:toc }}
 
@@ -121,7 +121,8 @@ TBD
 
 # If Zigzag is not working correctly
 - Check in the browser console and see if any errors are being reported. [Finding Your Browser's Developer Console](https://balsamiq.com/support/faqs/browserconsole/#:~:text=To%20open%20the%20developer%20console,(on%20Windows%2FLinux).)
-- Raise an [issue](https://github.com/Samantha-uk/one/issues) and include your browser console output or jump on the [Discord chat]()
+- Raise an [issue](https://github.com/Samantha-uk/one/issues) and include your browser console output.
+- Ask a question in {{discord}}
 
 # Know Issues
 - It doesn't correctly Zoom to Fit on initial display.  Clicking the `ZOOM TO FIT` button will work.

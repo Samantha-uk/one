@@ -55,6 +55,10 @@
     {
       "name": "maintained",
       "template": "![Maintained](https://img.shields.io/maintenance/yes/2021)"
+    },
+    {
+      "name": "discord",
+      "template": "    [![Discord](https://img.shields.io/discord/796659043195551774)](https://discord.gg/XZ49RcWQM2)"
     }
   ]
 }
