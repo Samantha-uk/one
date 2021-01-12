@@ -106,7 +106,7 @@ export class RenderPlugin extends PluginRenderBase {
 
   // private _version = `{{version}}`;
 
-  private _version = `0.1.3`;
+  private _version = `0.1.4`;
 
   private _width = 0;
 
@@ -134,6 +134,7 @@ export class RenderPlugin extends PluginRenderBase {
     // Create the PIXI things we need.
     this._renderer = PIXI.autoDetectRenderer({
       antialias: true,
+      autoDensity: true,
       transparent: true,
       resolution: window.devicePixelRatio,
     });

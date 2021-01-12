@@ -64024,7 +64024,7 @@ class RenderPlugin extends PluginRenderBase {
         this._height = 0;
         this._primaryBackgroundColor = 0;
         // private _version = `{{version}}`;
-        this._version = `0.1.3`;
+        this._version = `0.1.4`;
         this._width = 0;
         this.fqpi = `${this.id}-pixi`;
         this.config = config;
@@ -64043,6 +64043,7 @@ class RenderPlugin extends PluginRenderBase {
         // Create the PIXI things we need.
         this._renderer = autoDetectRenderer({
             antialias: true,
+            autoDensity: true,
             transparent: true,
             resolution: window.devicePixelRatio,
         });
