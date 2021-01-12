@@ -3,7 +3,7 @@
 
 <h1 align="center">@samantha-uk/zigzag-panel</h1>
 
-![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.8&color=orange)![Issues](https://img.shields.io/github/issues/Samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![GitHub](https://img.shields.io/badge/license-MIT-brightgreen) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![David](https://img.shields.io/david/Samantha-uk/one) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)![Maintained](https://img.shields.io/maintenance/yes/2021){{discord})
+![](https://img.shields.io/static/v1?label=Version&message=0.2.0-alpha-0.8&color=orange)![Issues](https://img.shields.io/github/issues/Samantha-uk/one) ![(https://semver.org/)](https://img.shields.io/badge/SemVer-2.0.0-brightgreen)![GitHub](https://img.shields.io/badge/license-MIT-brightgreen) ![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)![David](https://img.shields.io/david/Samantha-uk/one) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Samantha-uk/one)![Maintained](https://img.shields.io/maintenance/yes/2021)[![Discord](https://img.shields.io/discord/796659043195551774)](https://discord.gg/XZ49RcWQM2)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#table-of-contents)
@@ -177,7 +177,7 @@ TBD
 # If Zigzag is not working correctly
 - Check in the browser console and see if any errors are being reported. [Finding Your Browser's Developer Console](https://balsamiq.com/support/faqs/browserconsole/#:~:text=To%20open%20the%20developer%20console,(on%20Windows%2FLinux).)
 - Raise an [issue](https://github.com/Samantha-uk/one/issues) and include your browser console output.
-- Ask a question in discord
+- Ask a question in [![Discord](https://img.shields.io/discord/796659043195551774)](https://discord.gg/XZ49RcWQM2)
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png)](#know-issues)
