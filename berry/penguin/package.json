@@ -9,7 +9,7 @@
     "typescript": "^4.1.3"
   },
   "scripts": {
-    "build": "builder build plugin",
+    "build-hide": "builder build plugin",
     "readme": "yarn run -T readme generate --config=/home/samantha/github/one/blueprint.json",
     "build:plugin-stage": "builder build plugin",
     "update:workspace": "mkdir -p /home/samantha/github/one/.yarn/plugins/@samantha-uk && cp ./bundles/@yarnpkg/plugin-penguin.js /home/samantha/github/one/.yarn/plugins/@samantha-uk/plugin-penguin.cjs",

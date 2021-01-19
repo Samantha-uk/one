@@ -1,0 +1,10 @@
+{
+  "domain": "hue",
+  "name": "Zigzag",
+  "documentation": "https://github.com/Samantha-uk/one/zigzag-engine",
+  "issue_tracker": "https://github.com/Samantha-uk/one/issues",
+  "codeowners": [
+    "@Samantha-uk"
+  ],
+  "quality_scale": "internal"
+}

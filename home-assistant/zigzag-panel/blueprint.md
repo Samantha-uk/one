@@ -4,6 +4,7 @@
 {{ template:title }}
 
 {{ template:packageVersion }}{{ template:issues }} {{ template:semver }}{{ template:licence }} {{ template:commitizen }}{{ template:dependencies }} {{ template:vulnerabilities }}{{ template:maintained }}{{ template:discord }}
+![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)
 
 {{ template:toc }}
 

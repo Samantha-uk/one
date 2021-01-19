@@ -29,6 +29,7 @@
     "build": "builder",
     "l-bundle": "rimraf zigzag/ && cpy plugins zigzag/plugins && cpy dist/zigzag-panel.esm.* zigzag && cpy configuration/* zigzag",
     "l-publish": "run update-plugins && run l-bundle && run scp",
+    "gitpub": "run gitpub:core && run gitpub:readme",
     "clear-plugins": "rimraf ./plugins/*",
     "copy-plugins": "cpy /home/samantha/github/one/zigzag/**/dist/plugin-*.esm.* plugins",
     "lint": "builder --lint",
@@ -37,7 +38,11 @@
     "serve": "builder --serve",
     "test": "builder --test",
     "update-plugins": "run clear-plugins && run copy-plugins",
-    "watch": "builder --watch"
+    "watch": "builder --watch",
+    "gitpub:readme": "run readme && cpy README.md /home/samantha/github/zigzag-panel && cpy zig",
+    "gitpub:core": "cpy zigzag /home/samantha/github/zigzag-panel/zigzag",
+    "hacs":"cpy './**/*' '/home/samantha/github/zigzag-panel' --parents"
+    
   },
   "source": "src/zigzag-panel.ts",
   "types": "dist/zigzag-panel.d.ts",

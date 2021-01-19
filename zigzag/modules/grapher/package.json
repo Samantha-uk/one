@@ -18,8 +18,8 @@
     "src"
   ],
   "license": "MIT",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/grapher.cjs.js",
+  "module": "dist/grapher.esm.js",
   "name": "@samantha-uk/zigzag-grapher",
   "publishConfig": {
     "access": "public"
@@ -32,7 +32,7 @@
     "test": "builder --test",
     "watch": "builder --watch"
   },
-  "source": "src/index.ts",
-  "types": "dist/index.d.ts",
+  "source": "src/grapher.ts",
+  "types": "dist/grapher.d.ts",
   "version": "0.1.2"
 }
