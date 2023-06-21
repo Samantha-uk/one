@@ -17,7 +17,7 @@
     "@types/signale": "^1.4.1",
     "chalk": "^4.1.0",
     "figures": "^3.2.0",
-    "meow": "^8.1.2",
+    "meow": "^10.0.0",
     "rollup": "^2.36.1",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-auto-external": "^2.0.0",
