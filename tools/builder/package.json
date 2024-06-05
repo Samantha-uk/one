@@ -8,7 +8,7 @@
   },
   "contributors": [],
   "dependencies": {
-    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-commonjs": "^26.0.0",
     "@rollup/plugin-node-resolve": "^11.0.1",
     "@rollup/plugin-typescript": "portal:/home/samantha/github/plugins/packages/typescript",
     "@samantha-uk/utils-logger": "workspace:*",
