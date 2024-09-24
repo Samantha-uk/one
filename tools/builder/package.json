@@ -18,7 +18,7 @@
     "chalk": "^4.1.0",
     "figures": "^3.2.0",
     "meow": "^8.1.2",
-    "rollup": "^2.36.1",
+    "rollup": "^3.29.5",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-banner": "^0.2.1",
